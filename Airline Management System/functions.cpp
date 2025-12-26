@@ -1,15 +1,18 @@
-﻿#include "functions.h"
+﻿#include <stdlib.h>
+
+#include "functions.h"
 #include "models.h"
 
 void printError(std::string message) {
-	std::cout << "\033[1;31m" << message << "\033[0m" << std::endl;
+	std::cout << "\033[1;31m" << message << "\033[0m";
 }
 
 void printSuccess(std::string message) {
-	std::cout << "\033[1;32m" << message << "\033[0m" << std::endl;
+	std::cout << "\033[1;32m" << message << "\033[0m";
 }
 
 void printHeader() {
+	system("CLS");
 	std::string colorCyan = "\033[1;36m";
 	std::string colorYellow = "\033[1;33m";
 	std::string colorReset = "\033[0m";
@@ -50,3 +53,35 @@ User* loadUsers(int& size) {
 
 }
 
+int showMenu() {
+	int choice;
+	bool isValid = true;
+	do {
+		printHeader();
+		if (!isValid) {
+			printError("Invalid input, Press 1, 2 or 3\n");
+		}
+
+		std::cout << "Chose an option from the below(1-3): \n";
+		std::cout << "1. Login as admin\n";
+		std::cout << "2. Login as passenger\n";
+		printError("3. Exit\n");
+		std::cin >> choice;
+
+		if (std::cin.fail()) { 
+			std::cin.clear(); 
+			std::cin.ignore(1000, '\n'); 
+			choice = 0; 
+		}
+
+		if (choice < 1 || choice > 3) {
+			isValid = false;
+		}
+		else {
+			isValid = true;
+		}
+
+	} while (!isValid);
+
+	return choice;
+}

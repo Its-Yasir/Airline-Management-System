@@ -1,13 +1,13 @@
 #include <iostream>
 #include <stdlib.h>
 #include <conio.h>
+
 #include "functions.h"
 #include "models.h"
 
 int main()
 {
-    system("CLS");
-    printHeader();
+    int choice = showMenu();
     int totalUsers = 0;
     User* myUsers = loadUsers(totalUsers);
 
