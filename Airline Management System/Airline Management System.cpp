@@ -14,6 +14,8 @@ int main()
 
     User* Admins = loadAdmins(totalAdmins);
     User* myUsers = loadUsers(totalUsers);
+
+    createFlightsFile();
     
     while (true) {
         int choice = showMenu();

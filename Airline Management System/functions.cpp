@@ -101,6 +101,29 @@ void createAdminFile() {
 	}
 }
 
+void createFlightsFile() {
+	std::ofstream creatingFlightsFile("database/flights.txt");
+	if (!creatingFlightsFile.is_open()) {
+		printError("[ERROR]: While creating flights file!\n");
+	}
+	else {
+		//Format I am using
+		//ID ORIGIN DESTINATION DEPARTURE ARRIVAL EcoPRICE BusPRICE FirstPRICE EcoSEATS BusSEATS FirstSEATS
+		creatingFlightsFile << "PK-101 Lahore Istanbul 12Dec-08:00AM 12Dec-02:00PM 150000 450000 900000 60 20 8" << std::endl;
+		creatingFlightsFile << "PK-102 Karachi Dubai 13Dec-10:00AM 13Dec-01:00PM 80000 160000 300000 50 30 5" << std::endl;
+		creatingFlightsFile << "PK-205 Islamabad London 14Dec-03:00AM 14Dec-01:00PM 280000 600000 1200000 100 25 10" << std::endl;
+		creatingFlightsFile << "PK-050 Lahore Karachi 15Dec-06:00PM 15Dec-08:00PM 25000 55000 0 120 15 0" << std::endl;
+		creatingFlightsFile << "PK-301 Islamabad Jeddah 16Dec-05:00AM 16Dec-09:00AM 190000 400000 750000 80 20 10" << std::endl;
+		creatingFlightsFile << "PK-404 Peshawar Doha 17Dec-11:00PM 18Dec-02:00AM 110000 250000 500000 60 15 5" << std::endl;
+		creatingFlightsFile << "PK-701 Karachi New_York 19Dec-02:00AM 19Dec-06:00PM 350000 850000 1800000 150 40 12" << std::endl;
+		creatingFlightsFile << "PK-010 Lahore Islamabad 20Dec-09:00AM 20Dec-10:00AM 18000 35000 0 40 10 0" << std::endl;
+		creatingFlightsFile << "PK-110 Sialkot Dubai 21Dec-04:00PM 21Dec-07:00PM 85000 170000 320000 55 20 0" << std::endl;
+		creatingFlightsFile << "PK-555 Islamabad Beijing 22Dec-07:00AM 22Dec-03:00PM 220000 480000 800000 70 20 6" << std::endl;
+		std::cout << "File created Successfully!";
+		creatingFlightsFile.close();
+	}
+}
+
 int showMenu() {
 	int choice;
 	bool isValid = true;
