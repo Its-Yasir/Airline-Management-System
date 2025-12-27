@@ -9,14 +9,14 @@ int main()
 {
     int totalUsers = 0;
     int totalAdmins = 0;
+    int totalFlight = 0;
 
     std::string currentlyLoggenIn = "";
 
     User* Admins = loadAdmins(totalAdmins);
     User* myUsers = loadUsers(totalUsers);
+    Flight* availableFlight = loadFlights(totalFlight);
 
-    createFlightsFile();
-    
     while (true) {
         int choice = showMenu();
         if (choice == 3) {
@@ -71,7 +71,7 @@ int main()
 
 
 
-
+    delete[] availableFlight;
     delete[] myUsers;
     delete[] Admins;
 	std::cout << "Thanks for using our Airline Management System. Press any key to exit...";

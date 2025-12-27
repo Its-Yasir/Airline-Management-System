@@ -89,6 +89,45 @@ User* loadAdmins(int& size) {
 
 }
 
+Flight* loadFlights(int& size) {
+	std::ifstream loadFlightsFile("database/flights.txt");
+	if (!loadFlightsFile.is_open()) {
+		printError("[ERROR]: While opening flights file!\n");
+		return nullptr;
+	}
+	else {
+		std::string line;
+		while (std::getline(loadFlightsFile, line)) {
+			if (!line.empty()) {
+				size++;
+			}
+		}
+
+		loadFlightsFile.clear();
+		loadFlightsFile.seekg(0, std::ios::beg);
+		Flight* flightsArray = new Flight[size];
+		int count = 0;
+		while (count < size && loadFlightsFile
+			>> flightsArray[count].id
+			>> flightsArray[count].origin
+			>> flightsArray[count].destination
+			>> flightsArray[count].depTime
+			>> flightsArray[count].arrTime
+			>> flightsArray[count].priceBus
+			>> flightsArray[count].priceBus
+			>> flightsArray[count].priceFirst
+			>> flightsArray[count].seatsEco
+			>> flightsArray[count].seatsBus
+			>> flightsArray[count].seatsFirst
+			) {
+			count++;
+		}
+
+		loadFlightsFile.close();
+		return flightsArray;
+	}
+}
+
 void createAdminFile() {
 	std::ofstream adminFileCreate("database/admins.txt");
 	if (!adminFileCreate.is_open()) {

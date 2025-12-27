@@ -17,6 +17,7 @@ int showAdminMenu();
 
 //Functions for Flights
 void createFlightsFile();
+Flight* loadFlights(int& size);
 
 //Loading Users and admins functions
 User* loadUsers(int& size);
