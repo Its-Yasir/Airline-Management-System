@@ -7,17 +7,31 @@ struct User {
 };
 
 struct Flight {
-    std::string id;
-    std::string origin;
-    std::string destination;
-    std::string depTime;
-    std::string arrTime;
+    std::string id = "";
+    std::string origin = "";
+    std::string destination = "";
+    std::string depTime = "";
+    std::string arrTime = "";
 
-    long long priceEco;
-    long long priceBus;
-    long long priceFirst;
+    long long priceEco = 0;
+    long long priceBus = 0;
+    long long priceFirst = 0;
 
-    int seatsEco;
-    int seatsBus;
-    int seatsFirst;
+    int seatsEco = 0;
+    int seatsBus = 0;
+    int seatsFirst = 0;
+};
+
+struct SelectedFlight {
+    std::string userId = "";
+    std::string id = "";
+    std::string origin = "";
+    std::string destination = "";
+    std::string depTime = "";
+    std::string arrTime = "";
+    std::string classSelected = "";
+
+    long long price = 0;
+
+    int seats = 0;
 };

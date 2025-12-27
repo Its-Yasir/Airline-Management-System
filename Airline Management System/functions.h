@@ -9,6 +9,10 @@
 //Login Functions
 bool adminLogin(User arr[], int a);
 
+//Function for bookings
+void createBookingFile();
+void saveBookingToFile(SelectedFlight sec, std::string userID);
+
 
 //Showing menu functions
 int showMenu();

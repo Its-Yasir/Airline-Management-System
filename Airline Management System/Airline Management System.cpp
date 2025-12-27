@@ -3,6 +3,7 @@
 #include <conio.h>
 
 #include "functions.h"
+#include "userFunctions.h"
 #include "models.h"
 
 int main()
@@ -10,6 +11,7 @@ int main()
     int totalUsers = 0;
     int totalAdmins = 0;
     int totalFlight = 0;
+    std::string userID = "";
 
     std::string currentlyLoggenIn = "";
 
@@ -18,6 +20,7 @@ int main()
     Flight* availableFlight = loadFlights(totalFlight);
 
     while (true) {
+        SelectedFlight sec;
         int choice = showMenu();
         if (choice == 3) {
             break;
@@ -28,7 +31,7 @@ int main()
             }
         }
         else if (choice == 2) {
-            if (passengerLogin(myUsers, totalUsers)) {
+            if (passengerLogin(myUsers, totalUsers, userID)) {
                 currentlyLoggenIn = "user";
             }
         }
@@ -42,8 +45,12 @@ int main()
 
                 switch (userChoice) {
                     case 1: 
-                        bookFlights(availableFlight, totalFlight); 
-                        _getch(); 
+                        sec = bookFlights(availableFlight, totalFlight); 
+                        if (sec.id != "0") {
+                            saveBookingToFile(sec, userID);
+                        }
+                        printYellow("Press any key to exit!\n");
+                        _getch();
                         break;
                     case 2: 
                         cancelReservations(); 

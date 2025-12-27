@@ -65,7 +65,7 @@ int showUserMenu() {
 	return choice;
 }
 
-bool passengerLogin(User arr[], int a) {
+bool passengerLogin(User arr[], int a, std::string& userID) {
 	bool isAuthentic = false;
 	std::string inputUserId;
 	std::string inputPass;
@@ -87,6 +87,7 @@ bool passengerLogin(User arr[], int a) {
 				if (arr[i].password == inputPass) {
 					isAuthentic = true;
 					errrorMessage = "";
+					userID = inputUserId;
 					break;
 				}
 				else {
@@ -99,11 +100,139 @@ bool passengerLogin(User arr[], int a) {
 			errrorMessage = "[ERROR]: User ID not found!\n";
 		}
 	} while (!isAuthentic);
-
 	return isAuthentic;
 }
 
-void bookFlights(Flight arr[], int size) {
+SelectedFlight handleClassSeatsInput(Flight selectedFlight) {
+	bool isValidClass = false;
+	bool isValidClassSeats = false;
+	long long totalPrice = 0;
+	int noOfseats = 0;
+	std::string classSelected = "";
+	std::string errorMessage = "";
+	do {
+		printHeader();
+		printBlue("------ FLIGHT DETAILS ------\n");
+		std::cout << "Flight ID: " << selectedFlight.id << std::endl;
+		std::cout << "Origin: " << selectedFlight.origin << std::endl;
+		std::cout << "Destination: " << selectedFlight.destination << std::endl;
+		std::cout << "Departure Time: " << selectedFlight.depTime << std::endl;
+		std::cout << "Arrival Time: " << selectedFlight.arrTime << std::endl;
+		std::cout << "Price of Ticket Per Seat (Economy): " << selectedFlight.priceEco << std::endl;
+		std::cout << "Price of Ticket Per Seat (Business): " << selectedFlight.priceBus << std::endl;
+		std::cout << "Price of Ticket Per Seat (First Class): " << selectedFlight.priceFirst << std::endl;
+		std::cout << "Number of seats available (Economy): ";
+		if (selectedFlight.seatsEco > 0) {
+			std::cout << selectedFlight.seatsEco << std::endl;
+		}
+		else {
+			printError("FULL\n");
+		}
+		std::cout << "Number of seats available (Business): ";
+		if (selectedFlight.seatsBus > 0) {
+			std::cout << selectedFlight.seatsBus << std::endl;
+		}
+		else {
+			printError("FULL\n");
+		}
+		std::cout << "Number of seats available (First): ";
+		if (selectedFlight.seatsFirst > 0) {
+			std::cout << selectedFlight.seatsFirst<< std::endl;
+		}
+		else {
+			printError("FULL\n");
+		}
+		if (!isValidClassSeats) {
+			if (!errorMessage.empty()) {
+				printError(errorMessage);
+			}
+		}
+		std::cout << "Choose class to book 1(Economy) / 2(Business)/ 3(First): ";
+		int classChoice;
+		std::cin >> classChoice;
+		std::cout << "Choose number of seats: ";
+		int seatsInput;
+		int seatsAvailable = 0;
+		std::cin >> seatsInput;
+		if (classChoice > 0 && classChoice < 4) {
+			if (classChoice == 1) {
+				if (selectedFlight.seatsEco > 0) {
+					isValidClass = true;
+					seatsAvailable = selectedFlight.seatsEco;
+					classSelected = "Economy";
+					totalPrice = 1;
+				}
+				else {
+					isValidClass = false;
+					errorMessage = "This Class if Full.\n";
+				}
+			}else if (classChoice == 2) {
+				if (selectedFlight.seatsBus > 0) {
+					isValidClass = true;
+					seatsAvailable = selectedFlight.seatsBus;
+					classSelected = "Business";
+					totalPrice = 2;
+				}
+				else {
+					isValidClass = false;
+					errorMessage = "This Class if Full.\n";
+				}
+			}else if (classChoice == 3) {
+				if (selectedFlight.seatsFirst > 0) {
+					isValidClass = true;
+					seatsAvailable = selectedFlight.seatsFirst;
+					classSelected = "First";
+					totalPrice = 3;
+				}
+				else {
+					isValidClass = false;
+					errorMessage = "This Class if Full.\n";
+				}
+			}
+
+			if (isValidClass) {
+				if (!(seatsInput <= seatsAvailable)) {
+					errorMessage = "[INVALID_INPUT]: Number of seats in more than this class has.\n";
+				}
+				else if (seatsInput < 1) {
+					errorMessage = "[INVALID_INPUT]: Chose a number greated than zero.\n";
+				}
+				else {
+					noOfseats = seatsInput;
+					if (totalPrice == 1) {
+						totalPrice = noOfseats* selectedFlight.priceEco;
+					}else if (totalPrice == 2) {
+						totalPrice = noOfseats* selectedFlight.priceBus;
+					}else if (totalPrice == 3) {
+						totalPrice = noOfseats* selectedFlight.priceFirst;
+					}
+					isValidClassSeats = true;
+					break;
+				}
+			}
+		}
+		else {
+			isValidClassSeats = false;
+			errorMessage = "[INVALID_INPUT]: Press 1,2 or 3 for selecting class.\n";
+		}
+
+	} while (!isValidClassSeats);
+
+		SelectedFlight sec;
+		sec.id = selectedFlight.id;
+		sec.origin = selectedFlight.origin;
+		sec.destination = selectedFlight.destination;
+		sec.depTime = selectedFlight.depTime;
+		sec.arrTime = selectedFlight.arrTime;
+		sec.classSelected = classSelected;
+		sec.price = totalPrice;
+		sec.seats = noOfseats;
+
+		return sec;
+}
+
+SelectedFlight bookFlights(Flight arr[], int size) {
+	SelectedFlight sec;
 	bool isValid = false;
 	std::string message = "";
 	Flight selectedFlight = { "", "", "", "", "", 0, 0, 0, 0, 0, 0 };
@@ -131,45 +260,60 @@ void bookFlights(Flight arr[], int size) {
 	} while (!isValid);
 
 	if (isValid) {
-		bool isValidClassSeats = false;
-		do {
-			printHeader();
-			printBlue("Flight Details: \n");
-			std::cout << "Flight ID: " << selectedFlight.id << std::endl;
-			std::cout << "Origin: " << selectedFlight.origin << std::endl;
-			std::cout << "Destination: " << selectedFlight.destination << std::endl;
-			std::cout << "Departure Time: " << selectedFlight.depTime << std::endl;
-			std::cout << "Arrival Time: " << selectedFlight.arrTime << std::endl;
-			std::cout << "Price of Ticket Per Seat (Economy): " << selectedFlight.priceEco << std::endl;
-			std::cout << "Price of Ticket Per Seat (Business): " << selectedFlight.priceBus << std::endl;
-			std::cout << "Price of Ticket Per Seat (First Class): " << selectedFlight.priceFirst << std::endl;
-			std::cout << "Number of seats available (Economy): ";
-			if (selectedFlight.seatsEco > 0) {
-				std::cout << selectedFlight.seatsEco << std::endl;
-			}
-			else {
-				printError("FULL\n");
-			}
-			std::cout << "Number of seats available (Business): ";
-			if (selectedFlight.seatsBus > 0) {
-				std::cout << selectedFlight.seatsBus << std::endl;
-			}
-			else {
-				printError("FULL\n");
-			}
-			std::cout << "Number of seats available (First): ";
-			if (selectedFlight.seatsFirst > 0) {
-				std::cout << selectedFlight.seatsBus << std::endl;
-			}
-			else {
-				printError("FULL\n");
-			}
-			std::cout << "Choose class to book (1(Economy) / 2(Business)/ 3(First)): ";
-			int classChoice;
-			std::cin >> classChoice;
-
-		} while (!isValidClassSeats);
+		sec = handleClassSeatsInput(selectedFlight);
 	}
+
+	if (handleFinalBookFlight(sec)) {
+		return sec;
+	}
+	else {
+		sec.id = "0";
+		return sec;
+	}
+
+}
+
+bool handleFinalBookFlight(SelectedFlight sec) {
+	char choice;
+	bool isValid = false;
+	std::string errorMessage = "";
+	do {
+		printHeader();
+		printBlue("------ BOOKING SUMMARY ------\n");
+		std::cout << "ID:              " << sec.id << std::endl;
+		std::cout << "From:            " << sec.origin << std::endl;
+		std::cout << "To:              " << sec.destination << std::endl;
+		std::cout << "Departure Time:  " << sec.depTime << std::endl;
+		std::cout << "Arrival Time:    " << sec.arrTime << std::endl;
+		std::cout << "Class Selected:  " << sec.classSelected << std::endl;
+		std::cout << "Number of seats: " << sec.seats << std::endl;
+		std::cout << "Total Price:     " << sec.price << std::endl << std::endl;
+		if (!isValid) {
+			if (!errorMessage.empty()) {
+				printError(errorMessage);
+			}
+		}
+		printSkyBlue("Are you sure you want to confirm this booking?(y/n): ");
+		std::cin >> choice;
+		choice = std::tolower(choice);
+		if (choice == 'y' || choice == 'n') {
+			if (choice == 'y') {
+				return true;
+			}
+			else if (choice == 'n') {
+				return false;
+			}
+
+			isValid = true;
+			break;
+		}
+		else {
+			errorMessage = "[INVALID_INPUT]: Press y or n.\n";
+			isValid = false;
+		}
+	} while (!isValid);
+
+
 
 }
 

@@ -211,6 +211,44 @@ int showMenu() {
 	return choice;
 }
 
+void saveBookingToFile(SelectedFlight sec, std::string userID) {
+	sec.userId = userID;
+
+	std::ofstream loadBookingFileForSave("database/bookings.txt", std::ios::app);
+	if (!loadBookingFileForSave.is_open()) {
+		printError("[ERROR]: While opening bookings file for saving booking\n");
+	}
+	else {
+		loadBookingFileForSave <<
+			sec.userId << " "
+			<< sec.id << " "
+			<< sec.origin << " "
+			<< sec.destination << " "
+			<< sec.depTime << " "
+			<< sec.arrTime << " "
+			<< sec.classSelected << " "
+			<< sec.price << " "
+			<< sec.seats << "\n"
+			;
+		printSuccess("Flight has been booked successfully!\n");
+		loadBookingFileForSave.close();
+	}
+}
+
+void createBookingFile() {
+	std::ofstream creatingBookingFile("database/bookings.txt");
+
+	if (!creatingBookingFile.is_open()) {
+		printError("[ERROR]: While Creating Bookings File\n");
+	}
+	else {
+		creatingBookingFile << "yasir_ali PK-110 Lahore Dubai 12Dec-08:00PM 13Dec-05:00PM Business 1000000 2\n";
+		creatingBookingFile << "roshan_ali PK-102 Karachi Dubai 12Dec-08:00PM 13Dec-05:00PM First 2000000 1\n";
+
+		creatingBookingFile.close();
+	}
+}
+
 bool adminLogin(User arr[], int a) {
 	bool isAuthentic = false;
 	std::string inputAdminId;
