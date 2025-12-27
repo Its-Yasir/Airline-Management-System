@@ -1,5 +1,6 @@
 #pragma once
 #include "models.h"
+
 #include <iostream>
 #include <fstream>
 
@@ -28,7 +29,7 @@ void createAdminFile();
 //Users Menu Functions
 void bookFlights();
 void cancelReservations();
-void viewAvailableFlights();
+void viewAvailableFlights(Flight arr[], int size);
 void generateUserReservationReport();
 
 
@@ -45,3 +46,4 @@ void printBlue(std::string message);
 void printSkyBlue(std::string message);
 void printError(std::string message);
 void printSuccess(std::string message);
+void displayFlightHeader();

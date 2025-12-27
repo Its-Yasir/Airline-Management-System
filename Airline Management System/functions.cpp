@@ -1,10 +1,46 @@
 ﻿#include <stdlib.h>
+#include <iomanip>
 
 #include "functions.h"
 #include "models.h"
 
 void printError(std::string message) {
 	std::cout << "\033[1;31m" << message << "\033[0m";
+}
+
+void displayFlightHeader() {
+	std::string cCyan = "\033[1;36m";
+	std::string cYellow = "\033[1;33m";
+	std::string cReset = "\033[0m";
+
+	std::cout << cYellow << "===================================================================================================================================" << cReset << std::endl;
+
+	std::cout << cYellow << "|" << cReset;
+	std::cout << cCyan << "Flight-ID" << cReset;
+	std::cout << cYellow << " |" << cReset;
+	std::cout << cCyan << "Origin     " << cReset;
+	std::cout << cYellow << " |" << cReset;
+	std::cout << cCyan << "Destination" << cReset;
+	std::cout << cYellow << " |" << cReset;
+	std::cout << cCyan << "Depart Time  " << cReset;
+	std::cout << cYellow << " |" << cReset;
+	std::cout << cCyan << "Arrival Time " << cReset;
+	std::cout << cYellow << " |" << cReset;
+	std::cout << cCyan << "Price(E) " << cReset;
+	std::cout << cYellow << " |" << cReset;
+	std::cout << cCyan << "Price(B) " << cReset;
+	std::cout << cYellow << " |" << cReset;
+	std::cout << cCyan << "Price(F) " << cReset;
+	std::cout << cYellow << " |" << cReset;
+	std::cout << cCyan << "Seats(E)" << cReset;
+	std::cout << cYellow << " |" << cReset;
+	std::cout << cCyan << "Seats(B)" << cReset;
+	std::cout << cYellow << " |" << cReset;
+	std::cout << cCyan << "Seats(F)" << cReset;
+	std::cout << cYellow << " |" << cReset;
+
+	std::cout << std::endl;
+	std::cout << cYellow << "===================================================================================================================================" << cReset << std::endl;
 }
 
 void printBlue(std::string message) {
@@ -113,7 +149,7 @@ Flight* loadFlights(int& size) {
 			>> flightsArray[count].destination
 			>> flightsArray[count].depTime
 			>> flightsArray[count].arrTime
-			>> flightsArray[count].priceBus
+			>> flightsArray[count].priceEco
 			>> flightsArray[count].priceBus
 			>> flightsArray[count].priceFirst
 			>> flightsArray[count].seatsEco
@@ -350,8 +386,38 @@ void cancelReservations() {
 	printSuccess("Reservations canceled Successfuly!");
 }
 
-void viewAvailableFlights() {
-	printSuccess("Available flights viewed successfully!");
+void viewAvailableFlights(Flight arr[], int size) {
+	displayFlightHeader();
+	const int wID = 9;
+	const int wCity = 11;
+	const int wTime = 13;
+	const int wPrice = 9;
+	const int wSeat = 8;
+	std::string cYellow = "\033[1;33m";
+	std::string cReset = "\033[0m";
+	for (int i = 0; i < size; i++) {
+		std::cout << cYellow << "|" << cReset; 
+
+
+		std::cout << std::left << std::setw(wID) << arr[i].id << cYellow << " |" << cReset;
+		std::cout << std::left << std::setw(wCity) << arr[i].origin << cYellow << " |" << cReset;
+		std::cout << std::left << std::setw(wCity) << arr[i].destination << cYellow << " |" << cReset;
+		std::cout << std::left << std::setw(wTime) << arr[i].depTime << cYellow << " |" << cReset;
+		std::cout << std::left << std::setw(wTime) << arr[i].arrTime << cYellow << " |" << cReset;
+
+
+		std::cout << std::left << std::setw(wPrice) << arr[i].priceEco << cYellow << " |" << cReset;
+		std::cout << std::left << std::setw(wPrice) << arr[i].priceBus << cYellow << " |" << cReset;
+		std::cout << std::left << std::setw(wPrice) << arr[i].priceFirst << cYellow << " |" << cReset;
+
+
+		std::cout << std::left << std::setw(wSeat) << arr[i].seatsEco << cYellow << " |" << cReset;
+		std::cout << std::left << std::setw(wSeat) << arr[i].seatsBus << cYellow << " |" << cReset;
+		std::cout << std::left << std::setw(wSeat) << arr[i].seatsFirst << cYellow << " |" << cReset;
+
+		std::cout << std::endl;
+		std::cout << "-----------------------------------------------------------------------------------------------------------------------------------" << std::endl;
+	}
 }
 
 void generateUserReservationReport() {

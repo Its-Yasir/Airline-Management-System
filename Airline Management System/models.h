@@ -13,9 +13,9 @@ struct Flight {
     std::string depTime;
     std::string arrTime;
 
-    int priceEco;
-    int priceBus;
-    int priceFirst;
+    long long priceEco;
+    long long priceBus;
+    long long priceFirst;
 
     int seatsEco;
     int seatsBus;

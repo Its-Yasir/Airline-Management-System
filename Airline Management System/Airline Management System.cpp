@@ -43,7 +43,7 @@ int main()
                 switch (userChoice) {
                     case 1: bookFlights(); _getch(); break;
                     case 2: cancelReservations(); _getch(); break;
-                    case 3: viewAvailableFlights(); _getch(); break;
+                    case 3: viewAvailableFlights(availableFlight, totalFlight); _getch(); break;
                     case 4: generateUserReservationReport(); _getch(); break;
                 }
             }
@@ -67,8 +67,6 @@ int main()
         }
 
     }
-
-
 
 
     delete[] availableFlight;
