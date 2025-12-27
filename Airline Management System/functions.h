@@ -12,6 +12,8 @@ bool adminLogin(User arr[], int a);
 //Function for bookings
 void createBookingFile();
 void saveBookingToFile(SelectedFlight sec, std::string userID);
+SelectedFlight* getBookingsByUserId(std::string userId, int& count);
+SelectedFlight* loadBookings(int& size);
 
 
 //Showing menu functions

@@ -20,6 +20,8 @@ struct Flight {
     int seatsEco = 0;
     int seatsBus = 0;
     int seatsFirst = 0;
+
+    int refund = 0;
 };
 
 struct SelectedFlight {
@@ -30,7 +32,7 @@ struct SelectedFlight {
     std::string depTime = "";
     std::string arrTime = "";
     std::string classSelected = "";
-
+    int refund = 0;
     long long price = 0;
 
     int seats = 0;

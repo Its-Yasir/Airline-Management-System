@@ -142,6 +142,7 @@ SelectedFlight handleClassSeatsInput(Flight selectedFlight) {
 		else {
 			printError("FULL\n");
 		}
+		std::cout << "Refund PErcentage: " << selectedFlight.refund << "%" << std::endl;
 		if (!isValidClassSeats) {
 			if (!errorMessage.empty()) {
 				printError(errorMessage);
@@ -225,6 +226,7 @@ SelectedFlight handleClassSeatsInput(Flight selectedFlight) {
 		sec.depTime = selectedFlight.depTime;
 		sec.arrTime = selectedFlight.arrTime;
 		sec.classSelected = classSelected;
+		sec.refund = selectedFlight.refund;
 		sec.price = totalPrice;
 		sec.seats = noOfseats;
 
@@ -235,7 +237,7 @@ SelectedFlight bookFlights(Flight arr[], int size) {
 	SelectedFlight sec;
 	bool isValid = false;
 	std::string message = "";
-	Flight selectedFlight = { "", "", "", "", "", 0, 0, 0, 0, 0, 0 };
+	Flight selectedFlight = { "", "", "", "", "", 0, 0, 0, 0, 0, 0, 0 };
 	do {
 		printHeader();
 		viewAvailableFlights(arr, size);
@@ -288,6 +290,7 @@ bool handleFinalBookFlight(SelectedFlight sec) {
 		std::cout << "Class Selected:  " << sec.classSelected << std::endl;
 		std::cout << "Number of seats: " << sec.seats << std::endl;
 		std::cout << "Total Price:     " << sec.price << std::endl << std::endl;
+		std::cout << "Refund Percentage:     " << sec.refund << "%" << std::endl << std::endl;
 		if (!isValid) {
 			if (!errorMessage.empty()) {
 				printError(errorMessage);
@@ -326,8 +329,8 @@ void viewAvailableFlights(Flight arr[], int size) {
 	const int wID = 9;
 	const int wCity = 11;
 	const int wTime = 13;
-	const int wPrice = 9;
-	const int wSeat = 8;
+	const int wPrice = 8;
+	const int wSeat = 7;
 	std::string cYellow = "\033[1;33m";
 	std::string cReset = "\033[0m";
 	for (int i = 0; i < size; i++) {
@@ -346,12 +349,15 @@ void viewAvailableFlights(Flight arr[], int size) {
 		std::cout << std::left << std::setw(wPrice) << arr[i].priceFirst << cYellow << " |" << cReset;
 
 
+		std::cout << std::left << std::setw(6) << std::to_string(arr[i].refund) + "%" << cYellow << "|" << cReset;
+
+
 		std::cout << std::left << std::setw(wSeat) << arr[i].seatsEco << cYellow << " |" << cReset;
 		std::cout << std::left << std::setw(wSeat) << arr[i].seatsBus << cYellow << " |" << cReset;
 		std::cout << std::left << std::setw(wSeat) << arr[i].seatsFirst << cYellow << " |" << cReset;
 
 		std::cout << std::endl;
-		std::cout << "-----------------------------------------------------------------------------------------------------------------------------------" << std::endl;
+		std::cout << "-------------------------------------------------------------------------------------------------------------------------------------" << std::endl;
 	}
 }
 

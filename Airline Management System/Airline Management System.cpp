@@ -11,6 +11,7 @@ int main()
     int totalUsers = 0;
     int totalAdmins = 0;
     int totalFlight = 0;
+    int noOfBookingsForCurrentUser = 0;
     std::string userID = "";
 
     std::string currentlyLoggenIn = "";
@@ -18,6 +19,7 @@ int main()
     User* Admins = loadAdmins(totalAdmins);
     User* myUsers = loadUsers(totalUsers);
     Flight* availableFlight = loadFlights(totalFlight);
+    SelectedFlight* bookingsForUser = nullptr;
 
     while (true) {
         SelectedFlight sec;
@@ -33,6 +35,8 @@ int main()
         else if (choice == 2) {
             if (passengerLogin(myUsers, totalUsers, userID)) {
                 currentlyLoggenIn = "user";
+                if (bookingsForUser != nullptr) delete[] bookingsForUser;
+                bookingsForUser = getBookingsByUserId(userID, noOfBookingsForCurrentUser);
             }
         }
 
@@ -49,20 +53,23 @@ int main()
                         if (sec.id != "0") {
                             saveBookingToFile(sec, userID);
                         }
+                        else {
+                            printError("Your booing has been cancelled!\n");
+                        }
                         printYellow("Press any key to exit!\n");
-                        _getch();
+                        (void)_getch();
                         break;
                     case 2: 
                         cancelReservations(); 
-                        _getch(); 
+                        (void)_getch();
                         break;
                     case 3: 
 						printSuccess("*E = Economy, B = Business, F = First Class* \n");
 						printBlue("Press any key to return to the menu...\n");
                         viewAvailableFlights(availableFlight, totalFlight); 
-                        _getch(); 
+                        (void)_getch();
                         break;
-                    case 4: generateUserReservationReport(); _getch(); break;
+                    case 4: generateUserReservationReport(); (void)_getch(); break;
                 }
             }
         }
@@ -76,10 +83,10 @@ int main()
 
 
                 switch (adminChoice) {
-                case 1: managePassengers(); _getch(); break;
-                case 2: manageUsers(); _getch(); break;
-                case 3: manageFlights(); _getch(); break;
-                case 4: viewReservationReportsAdmin(); _getch(); break;
+                case 1: managePassengers(); (void)_getch(); break;
+                case 2: manageUsers(); (void)_getch(); break;
+                case 3: manageFlights(); (void)_getch(); break;
+                case 4: viewReservationReportsAdmin(); (void)_getch(); break;
                 }
             }
         }
@@ -87,10 +94,11 @@ int main()
     }
 
 
+    delete[] bookingsForUser;
     delete[] availableFlight;
     delete[] myUsers;
     delete[] Admins;
 	std::cout << "Thanks for using our Airline Management System. Press any key to exit...";
-	_getch();
+    (void)_getch();
     return 0;
 }

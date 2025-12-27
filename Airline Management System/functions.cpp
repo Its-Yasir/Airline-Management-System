@@ -13,7 +13,7 @@ void displayFlightHeader() {
 	std::string cYellow = "\033[1;33m";
 	std::string cReset = "\033[0m";
 
-	std::cout << cYellow << "===================================================================================================================================" << cReset << std::endl;
+	std::cout << cYellow << "=====================================================================================================================================" << cReset << std::endl;
 
 	std::cout << cYellow << "|" << cReset;
 	std::cout << cCyan << "Flight-ID" << cReset;
@@ -26,21 +26,23 @@ void displayFlightHeader() {
 	std::cout << cYellow << " |" << cReset;
 	std::cout << cCyan << "Arrival Time " << cReset;
 	std::cout << cYellow << " |" << cReset;
-	std::cout << cCyan << "Price(E) " << cReset;
+	std::cout << cCyan << "Price(E)" << cReset;
 	std::cout << cYellow << " |" << cReset;
-	std::cout << cCyan << "Price(B) " << cReset;
+	std::cout << cCyan << "Price(B)" << cReset;
 	std::cout << cYellow << " |" << cReset;
-	std::cout << cCyan << "Price(F) " << cReset;
+	std::cout << cCyan << "Price(F)" << cReset;
+	std::cout << cYellow << " |" << cReset;
+	std::cout << cCyan << "Refund" << cReset;
 	std::cout << cYellow << " |" << cReset;
 	std::cout << cCyan << "Seats(E)" << cReset;
-	std::cout << cYellow << " |" << cReset;
+	std::cout << cYellow << "|" << cReset;
 	std::cout << cCyan << "Seats(B)" << cReset;
-	std::cout << cYellow << " |" << cReset;
+	std::cout << cYellow << "|" << cReset;
 	std::cout << cCyan << "Seats(F)" << cReset;
-	std::cout << cYellow << " |" << cReset;
+	std::cout << cYellow << "|" << cReset;
 
 	std::cout << std::endl;
-	std::cout << cYellow << "===================================================================================================================================" << cReset << std::endl;
+	std::cout << cYellow << "=====================================================================================================================================" << cReset << std::endl;
 }
 
 void printBlue(std::string message) {
@@ -134,6 +136,7 @@ Flight* loadFlights(int& size) {
 			>> flightsArray[count].seatsEco
 			>> flightsArray[count].seatsBus
 			>> flightsArray[count].seatsFirst
+			>> flightsArray[count].refund
 			) {
 			count++;
 		}
@@ -175,6 +178,43 @@ void createFlightsFile() {
 		creatingFlightsFile << "PK-555 Islamabad Beijing 22Dec-07:00AM 22Dec-03:00PM 220000 480000 800000 70 20 6" << std::endl;
 		std::cout << "File created Successfully!";
 		creatingFlightsFile.close();
+	}
+}
+
+SelectedFlight* loadBookings(int& size) {
+	std::ifstream loadBookingsFile("database/bookings.txt");
+	if (!loadBookingsFile.is_open()) {
+		printError("[ERROR]: While opening flights file!\n");
+		return nullptr;
+	}
+	else {
+		std::string line;
+		while (std::getline(loadBookingsFile, line)) {
+			if (!line.empty()) {
+				size++;
+			}
+		}
+
+		loadBookingsFile.clear();
+		loadBookingsFile.seekg(0, std::ios::beg);
+		SelectedFlight* bookingsArray = new SelectedFlight[size];
+		int count = 0;
+		while (count < size && loadBookingsFile
+			>> bookingsArray[count].userId
+			>> bookingsArray[count].id
+			>> bookingsArray[count].origin
+			>> bookingsArray[count].destination
+			>> bookingsArray[count].depTime
+			>> bookingsArray[count].arrTime
+			>> bookingsArray[count].classSelected
+			>> bookingsArray[count].price
+			>> bookingsArray[count].seats
+			) {
+			count++;
+		}
+
+		loadBookingsFile.close();
+		return bookingsArray;
 	}
 }
 
@@ -233,6 +273,27 @@ void saveBookingToFile(SelectedFlight sec, std::string userID) {
 		printSuccess("Flight has been booked successfully!\n");
 		loadBookingFileForSave.close();
 	}
+}
+
+SelectedFlight* getBookingsByUserId(std::string userId, int& count) {
+	int size = 0;
+	SelectedFlight* loadedBookings = loadBookings(size);
+	for (int i = 0; i < size; i++) {
+		if (loadedBookings[i].userId == userId) {
+			count++;
+		}
+	}
+	SelectedFlight* bookingsForUser = new SelectedFlight[count];
+	int temp = 0;
+	for (int i = 0; i < size; i++) {
+		if (loadedBookings[i].userId == userId && temp < count) {
+			bookingsForUser[temp] = loadedBookings[i];
+			temp++;
+		}
+	}
+
+	delete[] loadedBookings;
+	return bookingsForUser;
 }
 
 void createBookingFile() {
