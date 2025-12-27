@@ -7,6 +7,14 @@ void printError(std::string message) {
 	std::cout << "\033[1;31m" << message << "\033[0m";
 }
 
+void printBlue(std::string message) {
+	std::cout << "\033[1;34m" << message << "\033[0m";
+}
+
+void printSkyBlue(std::string message) {
+	std::cout << "\033[1;36m" << message << "\033[0m";
+}
+
 void printSuccess(std::string message) {
 	std::cout << "\033[1;32m" << message << "\033[0m";
 }
@@ -59,7 +67,7 @@ int showMenu() {
 	do {
 		printHeader();
 		if (!isValid) {
-			printError("Invalid input, Press 1, 2 or 3\n");
+			printError("[ERROR]: Invalid input, Press 1, 2 or 3\n");
 		}
 
 		std::cout << "Chose an option from the below(1-3): \n";
@@ -85,3 +93,80 @@ int showMenu() {
 
 	return choice;
 }
+
+bool passengerLogin(User arr[], int a) {
+	bool isAuthentic = false;
+	std::string inputUserId;
+	std::string inputPass;
+	std::string errrorMessage = "";
+	do {
+		printHeader();
+		printBlue("Passenger Login: \n");
+		if (!errrorMessage.empty()) {
+			printError(errrorMessage);
+		}
+		std::cout << "Enter Username: ";
+		std::cin >> inputUserId;
+		std::cout << "Enter Password: ";
+		std::cin >> inputPass;
+		bool idFound = false;
+		for (int i = 0; i < a; i++) {
+			if (arr[i].userID == inputUserId) {
+				idFound = true;
+				if (arr[i].password == inputPass) {
+					isAuthentic = true;
+					errrorMessage = "";
+					break;
+				}
+				else {
+					errrorMessage = "[ERROR]: Password is incorrect!\n";
+					break;
+				}
+			}
+		}
+		if (!idFound) {
+			errrorMessage = "[ERROR]: User ID not found!\n";
+		}
+	} while (!isAuthentic);
+
+	return isAuthentic;
+}
+
+bool adminLogin(User arr[], int a) {
+	bool isAuthentic = false;
+	std::string inputAdminId;
+	std::string inputPass;
+	std::string errrorMessage = "";
+	do {
+		printHeader();
+		printBlue("Passenger Login: \n");
+		if (!errrorMessage.empty()) {
+			printError(errrorMessage);
+		}
+		std::cout << "Enter Admin ID: ";
+		std::cin >> inputAdminId;
+		std::cout << "Enter Password: ";
+		std::cin >> inputPass;
+		bool idFound = false;
+		for (int i = 0; i < a; i++) {
+			if (arr[i].userID == inputAdminId) {
+				idFound = true;
+				if (arr[i].password == inputPass) {
+					isAuthentic = true;
+					errrorMessage = "";
+					break;
+				}
+				else {
+					errrorMessage = "[ERROR]: Password is incorrect!\n";
+					break;
+				}
+			}
+		}
+		if (!idFound) {
+			errrorMessage = "[ERROR]: User ID not found!\n";
+		}
+	} while (!isAuthentic);
+
+	return isAuthentic;
+}
+

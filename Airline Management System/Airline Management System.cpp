@@ -7,10 +7,19 @@
 
 int main()
 {
+    bool tr = false;
     int choice = showMenu();
     int totalUsers = 0;
     User* myUsers = loadUsers(totalUsers);
-
+    switch (choice) {
+    case 1:
+        tr = adminLogin(myUsers, totalUsers);
+    case 2:
+        tr = passengerLogin(myUsers, totalUsers);
+        break;
+    default:
+        std::cout << "E";
+    }
 
 
 
