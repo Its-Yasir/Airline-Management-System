@@ -3,16 +3,15 @@
 
 #include <iostream>
 #include <fstream>
+#include <string>
 
 
 //Login Functions
-bool passengerLogin(User arr[], int a);
 bool adminLogin(User arr[], int a);
 
 
 //Showing menu functions
 int showMenu();
-int showUserMenu();
 int showAdminMenu();
 
 
@@ -20,17 +19,9 @@ int showAdminMenu();
 void createFlightsFile();
 Flight* loadFlights(int& size);
 
-//Loading Users and admins functions
-User* loadUsers(int& size);
+
 User* loadAdmins(int& size);
 void createAdminFile();
-
-
-//Users Menu Functions
-void bookFlights();
-void cancelReservations();
-void viewAvailableFlights(Flight arr[], int size);
-void generateUserReservationReport();
 
 
 //Admin Menu Functions
@@ -44,6 +35,8 @@ void viewReservationReportsAdmin();
 void printHeader();
 void printBlue(std::string message);
 void printSkyBlue(std::string message);
+void printYellow(std::string text);
 void printError(std::string message);
+void printBold(std::string text);
 void printSuccess(std::string message);
 void displayFlightHeader();

@@ -41,9 +41,20 @@ int main()
                 }
 
                 switch (userChoice) {
-                    case 1: bookFlights(); _getch(); break;
-                    case 2: cancelReservations(); _getch(); break;
-                    case 3: viewAvailableFlights(availableFlight, totalFlight); _getch(); break;
+                    case 1: 
+                        bookFlights(availableFlight, totalFlight); 
+                        _getch(); 
+                        break;
+                    case 2: 
+                        cancelReservations(); 
+                        _getch(); 
+                        break;
+                    case 3: 
+						printSuccess("*E = Economy, B = Business, F = First Class* \n");
+						printBlue("Press any key to return to the menu...\n");
+                        viewAvailableFlights(availableFlight, totalFlight); 
+                        _getch(); 
+                        break;
                     case 4: generateUserReservationReport(); _getch(); break;
                 }
             }
