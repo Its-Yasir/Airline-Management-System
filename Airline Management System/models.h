@@ -37,3 +37,8 @@ struct SelectedFlight {
 
     int seats = 0;
 };
+
+struct UserBalance {
+    std::string userId = "";
+    long long balance = 0;
+};

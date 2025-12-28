@@ -233,7 +233,7 @@ SelectedFlight handleClassSeatsInput(Flight selectedFlight) {
 		return sec;
 }
 
-SelectedFlight bookFlights(Flight arr[], int size) {
+SelectedFlight bookFlights(Flight arr[], int size, std::string userId, UserBalance* balanceArr, int sizeOfBalanceUsers) {
 	SelectedFlight sec;
 	bool isValid = false;
 	std::string message = "";
@@ -265,7 +265,8 @@ SelectedFlight bookFlights(Flight arr[], int size) {
 		sec = handleClassSeatsInput(selectedFlight);
 	}
 
-	if (handleFinalBookFlight(sec)) {
+	std::cout<< sec.id << " Selected Flight ID " << std::endl;
+	if (handleFinalBookFlight(sec, userId, balanceArr, sizeOfBalanceUsers)) {
 		return sec;
 	}
 	else {
@@ -275,7 +276,7 @@ SelectedFlight bookFlights(Flight arr[], int size) {
 
 }
 
-bool handleFinalBookFlight(SelectedFlight sec) {
+bool handleFinalBookFlight(SelectedFlight sec, std::string userId, UserBalance* arr, int size ) {
 	char choice;
 	bool isValid = false;
 	std::string errorMessage = "";
@@ -298,10 +299,18 @@ bool handleFinalBookFlight(SelectedFlight sec) {
 		}
 		printSkyBlue("Are you sure you want to confirm this booking?(y/n): ");
 		std::cin >> choice;
+		bool isAmountOk = false;
 		choice = std::tolower(choice);
 		if (choice == 'y' || choice == 'n') {
 			if (choice == 'y') {
-				return true;
+				DeductBalanceForUser(userId, sec.price, arr, size, isAmountOk);
+				if (isAmountOk) {
+					SaveBalanceForUsers(arr, size);
+					return true;
+				}
+				else {
+					return false;
+				}
 			}
 			else if (choice == 'n') {
 				return false;

@@ -9,6 +9,7 @@
 int main()
 {
     int totalUsers = 0;
+	int totalUsersWithBalance = 0;
     int totalAdmins = 0;
     int totalFlight = 0;
     int noOfBookingsForCurrentUser = 0;
@@ -20,6 +21,8 @@ int main()
     User* myUsers = loadUsers(totalUsers);
     Flight* availableFlight = loadFlights(totalFlight);
     SelectedFlight* bookingsForUser = nullptr;
+	UserBalance* userBalances = loadBalanceForUsers(totalUsersWithBalance);
+
 
     while (true) {
         SelectedFlight sec;
@@ -49,7 +52,7 @@ int main()
 
                 switch (userChoice) {
                     case 1: 
-                        sec = bookFlights(availableFlight, totalFlight); 
+                        sec = bookFlights(availableFlight, totalFlight, userID, userBalances, totalUsersWithBalance ); 
                         if (sec.id != "0") {
                             saveBookingToFile(sec, userID);
                         }
@@ -92,7 +95,6 @@ int main()
         }
 
     }
-
 
     delete[] bookingsForUser;
     delete[] availableFlight;

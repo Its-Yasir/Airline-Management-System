@@ -8,6 +8,74 @@ void printError(std::string message) {
 	std::cout << "\033[1;31m" << message << "\033[0m";
 }
 
+UserBalance* loadBalanceForUsers(int& size) {
+	std::ifstream userBalanceFile("database/users-balance.txt");
+	if(!userBalanceFile.is_open()) {
+		printError("[ERROR]: There was an error while opening the user balance file.");
+		return nullptr;
+	}
+	else {
+		std::string line;
+		while (std::getline(userBalanceFile, line)) {
+			if (!line.empty()) {
+				size++;
+			}
+		}
+		userBalanceFile.clear();
+		userBalanceFile.seekg(0, std::ios::beg);
+		UserBalance* userBalanceArray = new UserBalance[size];
+		int count = 0;
+		while (count < size && userBalanceFile >> userBalanceArray[count].userId >> userBalanceArray[count].balance) {
+			count++;
+		}
+		userBalanceFile.close();
+		return userBalanceArray;
+	}
+}
+
+void SaveBalanceForUsers(UserBalance arr[], int size) {
+	std::ofstream userBalanceFile("database/users-balance.txt");
+	if (!userBalanceFile.is_open()) {
+		printError("[ERROR]: There was an error while opening the user balance file for saving.");
+	}
+	else {
+		for (int i = 0; i < size; i++) {
+			userBalanceFile << arr[i].userId << " " << arr[i].balance << "\n";
+		}
+		printSuccess("Your balance has been updated!\n");
+		userBalanceFile.close();
+	}
+}
+
+UserBalance* DeductBalanceForUser(std::string userId, long long amount, UserBalance arr[], int size, bool& isAmountOk) {
+	bool userFound = false;
+
+	for (int i = 0; i < size; i++) {
+		if (arr[i].userId == userId) {
+			userFound = true;
+
+			if (arr[i].balance >= amount) {
+				arr[i].balance -= amount;
+				printSuccess("Amount deducted successfully from your balance!\n");
+				printSkyBlue("Your New Balance is: " + std::to_string(arr[i].balance) + "/- PKR\n");
+				isAmountOk = true;
+			}
+			else {
+				printError("[ERROR]: Insufficient balance! Transaction Failed.\n");
+				printYellow("Your Current Balance is: " + std::to_string(arr[i].balance) + "/- PKR\n");
+				isAmountOk = false;
+			}
+			break;
+		}
+	}
+	if (!userFound) {
+		printError("[ERROR]: User ID not found in Balance Database. Contact Admin.\n");
+		isAmountOk = false;
+	}
+
+	return arr;
+}
+
 void displayFlightHeader() {
 	std::string cCyan = "\033[1;36m";
 	std::string cYellow = "\033[1;33m";

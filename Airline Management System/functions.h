@@ -28,6 +28,9 @@ Flight* loadFlights(int& size);
 
 User* loadAdmins(int& size);
 void createAdminFile();
+UserBalance* loadBalanceForUsers(int& size);
+void SaveBalanceForUsers(UserBalance arr[], int size);
+UserBalance* DeductBalanceForUser(std::string userId, long long amount, UserBalance arr[], int size, bool& isAmountOk);
 
 
 //Admin Menu Functions
