@@ -4,3 +4,4 @@ yasir_ali PK-010 Lahore Islamabad 20Dec-09:00AM 20Dec-10:00AM Business 10 70000 
 yasir_ali PK-010 Lahore Islamabad 20Dec-09:00AM 20Dec-10:00AM Economy 18000 1
 yasir_ali PK-010 Lahore Islamabad 20Dec-09:00AM 20Dec-10:00AM Business 350000 10
 yasir_ali PK-010 Lahore Islamabad 20Dec-09:00AM 20Dec-10:00AM Economy 720000 40
+yasir_ali PK-010 Lahore Islamabad 20Dec-09:00AM 20Dec-10:00AM Business 315000 9

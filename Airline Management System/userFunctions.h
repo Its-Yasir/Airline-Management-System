@@ -12,8 +12,8 @@ int showUserMenu();
 bool passengerLogin(User arr[], int a, std::string& userID);
 
 SelectedFlight handleClassSeatsInput(Flight selectedFlight);
-SelectedFlight bookFlights(Flight arr[], int size, std::string userId, UserBalance* balanceArr, int sizeOfBalanceUsers);
-bool handleFinalBookFlight(SelectedFlight sec, std::string userId, UserBalance* arr, int size);
+SelectedFlight bookFlights(Flight arr[], int size, std::string userId, UserBalance* balanceArr, int sizeOfBalanceUsers, int flightSize);
+bool handleFinalBookFlight(SelectedFlight sec, std::string userId, UserBalance* arr, int size, Flight flightArr[], int flightSize);
 void cancelReservations();
 void viewAvailableFlights(Flight arr[], int size);
 void generateUserReservationReport();

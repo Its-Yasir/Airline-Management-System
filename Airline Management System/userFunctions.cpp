@@ -233,7 +233,7 @@ SelectedFlight handleClassSeatsInput(Flight selectedFlight) {
 		return sec;
 }
 
-SelectedFlight bookFlights(Flight arr[], int size, std::string userId, UserBalance* balanceArr, int sizeOfBalanceUsers) {
+SelectedFlight bookFlights(Flight arr[], int size, std::string userId, UserBalance* balanceArr, int sizeOfBalanceUsers, int flightSize) {
 	SelectedFlight sec;
 	bool isValid = false;
 	std::string message = "";
@@ -266,7 +266,7 @@ SelectedFlight bookFlights(Flight arr[], int size, std::string userId, UserBalan
 	}
 
 	std::cout<< sec.id << " Selected Flight ID " << std::endl;
-	if (handleFinalBookFlight(sec, userId, balanceArr, sizeOfBalanceUsers)) {
+	if (handleFinalBookFlight(sec, userId, balanceArr, sizeOfBalanceUsers, arr, flightSize)) {
 		return sec;
 	}
 	else {
@@ -276,7 +276,7 @@ SelectedFlight bookFlights(Flight arr[], int size, std::string userId, UserBalan
 
 }
 
-bool handleFinalBookFlight(SelectedFlight sec, std::string userId, UserBalance* arr, int size ) {
+bool handleFinalBookFlight(SelectedFlight sec, std::string userId, UserBalance* arr, int size, Flight flightArr[], int flightSize) {
 	char choice;
 	bool isValid = false;
 	std::string errorMessage = "";
@@ -306,6 +306,7 @@ bool handleFinalBookFlight(SelectedFlight sec, std::string userId, UserBalance* 
 				DeductBalanceForUser(userId, sec.price, arr, size, isAmountOk);
 				if (isAmountOk) {
 					SaveBalanceForUsers(arr, size);
+					updateFlightsFile(flightArr, flightSize, sec.id, sec.seats, sec.classSelected);
 					return true;
 				}
 				else {
@@ -358,7 +359,7 @@ void viewAvailableFlights(Flight arr[], int size) {
 		std::cout << std::left << std::setw(wPrice) << arr[i].priceFirst << cYellow << " |" << cReset;
 
 
-		std::cout << std::left << std::setw(6) << std::to_string(arr[i].refund) + "%" << cYellow << "|" << cReset;
+		std::cout << std::left << std::setw(7) << std::to_string(arr[i].refund) + "%" << cYellow << "|" << cReset;
 
 
 		std::cout << std::left << std::setw(wSeat) << arr[i].seatsEco << cYellow << " |" << cReset;

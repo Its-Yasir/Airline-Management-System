@@ -17,11 +17,13 @@ int main()
 
     std::string currentlyLoggenIn = "";
 
+
     User* Admins = loadAdmins(totalAdmins);
     User* myUsers = loadUsers(totalUsers);
     Flight* availableFlight = loadFlights(totalFlight);
     SelectedFlight* bookingsForUser = nullptr;
 	UserBalance* userBalances = loadBalanceForUsers(totalUsersWithBalance);
+
 
 
     while (true) {
@@ -52,7 +54,7 @@ int main()
 
                 switch (userChoice) {
                     case 1: 
-                        sec = bookFlights(availableFlight, totalFlight, userID, userBalances, totalUsersWithBalance ); 
+                        sec = bookFlights(availableFlight, totalFlight, userID, userBalances, totalUsersWithBalance, totalFlight ); 
                         if (sec.id != "0") {
                             saveBookingToFile(sec, userID);
                         }

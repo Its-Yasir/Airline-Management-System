@@ -4,9 +4,6 @@
 #include "functions.h"
 #include "models.h"
 
-void printError(std::string message) {
-	std::cout << "\033[1;31m" << message << "\033[0m";
-}
 
 UserBalance* loadBalanceForUsers(int& size) {
 	std::ifstream userBalanceFile("database/users-balance.txt");
@@ -111,6 +108,10 @@ void displayFlightHeader() {
 
 	std::cout << std::endl;
 	std::cout << cYellow << "=====================================================================================================================================" << cReset << std::endl;
+}
+
+void printError(std::string message) {
+	std::cout << "\033[1;31m" << message << "\033[0m";
 }
 
 void printBlue(std::string message) {
@@ -234,18 +235,71 @@ void createFlightsFile() {
 	else {
 		//Format I am using
 		//ID ORIGIN DESTINATION DEPARTURE ARRIVAL EcoPRICE BusPRICE FirstPRICE EcoSEATS BusSEATS FirstSEATS
-		creatingFlightsFile << "PK-101 Lahore Istanbul 12Dec-08:00AM 12Dec-02:00PM 150000 450000 900000 60 20 8" << std::endl;
-		creatingFlightsFile << "PK-102 Karachi Dubai 13Dec-10:00AM 13Dec-01:00PM 80000 160000 300000 50 30 5" << std::endl;
-		creatingFlightsFile << "PK-205 Islamabad London 14Dec-03:00AM 14Dec-01:00PM 280000 600000 1200000 100 25 10" << std::endl;
-		creatingFlightsFile << "PK-050 Lahore Karachi 15Dec-06:00PM 15Dec-08:00PM 25000 55000 0 120 15 0" << std::endl;
-		creatingFlightsFile << "PK-301 Islamabad Jeddah 16Dec-05:00AM 16Dec-09:00AM 190000 400000 750000 80 20 10" << std::endl;
-		creatingFlightsFile << "PK-404 Peshawar Doha 17Dec-11:00PM 18Dec-02:00AM 110000 250000 500000 60 15 5" << std::endl;
-		creatingFlightsFile << "PK-701 Karachi New_York 19Dec-02:00AM 19Dec-06:00PM 350000 850000 1800000 150 40 12" << std::endl;
-		creatingFlightsFile << "PK-010 Lahore Islamabad 20Dec-09:00AM 20Dec-10:00AM 18000 35000 0 40 10 0" << std::endl;
-		creatingFlightsFile << "PK-110 Sialkot Dubai 21Dec-04:00PM 21Dec-07:00PM 85000 170000 320000 55 20 0" << std::endl;
-		creatingFlightsFile << "PK-555 Islamabad Beijing 22Dec-07:00AM 22Dec-03:00PM 220000 480000 800000 70 20 6" << std::endl;
+		creatingFlightsFile << "PK-101 Lahore Istanbul 12Dec-08:00AM 12Dec-02:00PM 150000 450000 900000 60 20 8 15" << std::endl;
+		creatingFlightsFile << "PK-102 Karachi Dubai 13Dec-10:00AM 13Dec-01:00PM 80000 160000 300000 50 30 5 25" << std::endl;
+		creatingFlightsFile << "PK-205 Islamabad London 14Dec-03:00AM 14Dec-01:00PM 280000 600000 1200000 100 25 10 0" << std::endl;
+		creatingFlightsFile << "PK-050 Lahore Karachi 15Dec-06:00PM 15Dec-08:00PM 25000 55000 0 120 15 0 100" << std::endl;
+		creatingFlightsFile << "PK-301 Islamabad Jeddah 16Dec-05:00AM 16Dec-09:00AM 190000 400000 750000 80 20 10 50" << std::endl;
+		creatingFlightsFile << "PK-404 Peshawar Doha 17Dec-11:00PM 18Dec-02:00AM 110000 250000 500000 60 15 5 75" << std::endl;
+		creatingFlightsFile << "PK-701 Karachi New_York 19Dec-02:00AM 19Dec-06:00PM 350000 850000 1800000 150 40 12 30" << std::endl;
+		creatingFlightsFile << "PK-010 Lahore Islamabad 20Dec-09:00AM 20Dec-10:00AM 18000 35000 0 40 10 0 90" << std::endl;
+		creatingFlightsFile << "PK-110 Sialkot Dubai 21Dec-04:00PM 21Dec-07:00PM 85000 170000 320000 55 20 0 10" << std::endl;
+		creatingFlightsFile << "PK-555 Islamabad Beijing 22Dec-07:00AM 22Dec-03:00PM 220000 480000 800000 70 20 6 0" << std::endl;
 		std::cout << "File created Successfully!";
 		creatingFlightsFile.close();
+	}
+}
+
+void updateFlightsFile(Flight arr[], int size, std::string flightID, int seats, std::string clasS) {
+	for (int i = 0; i < size; i++) {
+		if (flightID == arr[i].id) {
+			if (clasS == "Economy") {
+				arr[i].seatsEco -= seats;
+			}
+			else if (clasS == "Business") {
+				arr[i].seatsBus -= seats;
+			}
+			else if (clasS == "First") {
+				arr[i].seatsFirst -= seats;
+			}
+		}
+	}
+
+	std::ofstream updateFlightsFile("database/flights.txt");
+	if (!updateFlightsFile.is_open()) {
+		printError("[ERROR]: While opening file for upadting flights\n");
+	}
+	else {
+		for (int i = 0; i < size; i++) {
+			updateFlightsFile
+				<< arr[i].id
+				<< " "
+				<< arr[i].origin
+				<< " "
+				<< arr[i].destination
+				<< " "
+				<< arr[i].depTime
+				<< " "
+				<< arr[i].arrTime
+				<< " "
+				<< arr[i].priceEco
+				<< " "
+				<< arr[i].priceBus
+				<< " "
+				<< arr[i].priceFirst
+				<< " "
+				<< arr[i].seatsEco
+				<< " "
+				<< arr[i].seatsBus
+				<< " "
+				<< arr[i].seatsFirst
+				<< " "
+				<< arr[i].refund
+				<< " "
+				<< std::endl;
+		}
+
+		updateFlightsFile.close();
 	}
 }
 

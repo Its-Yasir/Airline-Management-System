@@ -23,6 +23,7 @@ int showAdminMenu();
 
 //Functions for Flights
 void createFlightsFile();
+void updateFlightsFile(Flight arr[], int size, std::string flightID, int seats, std::string clasS);
 Flight* loadFlights(int& size);
 
 
