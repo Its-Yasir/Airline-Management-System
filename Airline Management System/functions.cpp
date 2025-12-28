@@ -329,6 +329,7 @@ SelectedFlight* loadBookings(int& size) {
 			>> bookingsArray[count].depTime
 			>> bookingsArray[count].arrTime
 			>> bookingsArray[count].classSelected
+			>> bookingsArray[count].refund
 			>> bookingsArray[count].price
 			>> bookingsArray[count].seats
 			) {

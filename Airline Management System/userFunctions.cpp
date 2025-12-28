@@ -264,8 +264,6 @@ SelectedFlight bookFlights(Flight arr[], int size, std::string userId, UserBalan
 	if (isValid) {
 		sec = handleClassSeatsInput(selectedFlight);
 	}
-
-	std::cout<< sec.id << " Selected Flight ID " << std::endl;
 	if (handleFinalBookFlight(sec, userId, balanceArr, sizeOfBalanceUsers, arr, flightSize)) {
 		return sec;
 	}
@@ -330,8 +328,105 @@ bool handleFinalBookFlight(SelectedFlight sec, std::string userId, UserBalance* 
 
 }
 
-void cancelReservations() {
-	printSuccess("Reservations canceled Successfuly!");
+void printBookingsTableHeader() {
+	std::string cCyan = "\033[1;36m";
+	std::string cYellow = "\033[1;33m";
+	std::string cReset = "\033[0m";
+
+	printHeader();
+
+	std::cout << cYellow << "=====================================================================================================================================" << cReset << std::endl;
+
+	std::cout << cYellow << "|" << cReset;
+	std::cout << cCyan << " Flight-ID" << cReset;
+	std::cout << cYellow << " |" << cReset;
+	std::cout << cCyan << " Origin     " << cReset;
+	std::cout << cYellow << " |" << cReset;
+	std::cout << cCyan << " Destination  " << cReset;
+	std::cout << cYellow << " |" << cReset;
+	std::cout << cCyan << " Depart Time  " << cReset;
+	std::cout << cYellow << " |" << cReset;
+	std::cout << cCyan << " Arrival Time " << cReset;
+	std::cout << cYellow << " |" << cReset;
+	std::cout << cCyan << " Price  " << cReset;
+	std::cout << cYellow << " |" << cReset;
+	std::cout << cCyan << " Class    " << cReset;
+	std::cout << cYellow << " |" << cReset;
+	std::cout << cCyan << " Seats    " << cReset;
+	std::cout << cYellow << " |" << cReset;
+	std::cout << cCyan << " Refund %" << cReset;
+	std::cout << cYellow << " |" << cReset;
+
+	std::cout << std::endl;
+	std::cout << cYellow << "=====================================================================================================================================" << cReset << std::endl;
+}
+
+void viewReservations(SelectedFlight* bookings, int size) {
+	printBookingsTableHeader();
+	const int wID = 10;
+	const int wCity = 12;
+	const int wTime = 14;
+	const int wPrice = 10;
+	const int wSeat = 7;
+	std::string cYellow = "\033[1;33m";
+	std::string cReset = "\033[0m";
+	for (int i = 0; i < size; i++) {
+		std::cout << cYellow << "|" << cReset;
+
+
+		std::cout << std::left << std::setw(wID) << bookings[i].id << cYellow << " |" << cReset;
+		std::cout << std::left << std::setw(wCity) << bookings[i].origin << cYellow << " |" << cReset;
+		std::cout << std::left << std::setw(wCity + 2) << bookings[i].destination << cYellow << " |" << cReset;
+		std::cout << std::left << std::setw(wTime) << bookings[i].depTime << cYellow << " |" << cReset;
+		std::cout << std::left << std::setw(wTime) << bookings[i].arrTime << cYellow << " |" << cReset;
+
+
+		std::cout << std::left << std::setw(8) << bookings[i].price << cYellow << " |" << cReset;
+		std::cout << std::left << std::setw(wPrice) << bookings[i].classSelected << cYellow << " |" << cReset;
+
+
+		std::cout << std::left << std::setw(11) << std::to_string(bookings[i].seats) << cYellow << "|" << cReset;
+
+
+		std::cout << std::left << std::setw(9) << std::to_string(bookings[i].refund) + "%" << cYellow << " |" << cReset;
+
+		std::cout << std::endl;
+		std::cout << "-------------------------------------------------------------------------------------------------------------------------------------" << std::endl;
+	}
+}
+
+void cancelReservations(SelectedFlight* bookings, int size) {
+	bool isValid = false;
+	std::string message = "";
+	SelectedFlight selectedFlight = { "", "", "", "", "", "", "", 0, 0, 0 };
+	do {
+		viewReservations(bookings, size);
+		if (!isValid) {
+			if (!message.empty()) {
+				printError(message);
+			}
+		}
+		printBlue("Enter Flight ID to cancel it: \n");
+		std::string inputID;
+		std::cin >> inputID;
+		for (int i = 0; i < size; i++) {
+			if (bookings[i].id == inputID) {
+				selectedFlight = bookings[i];
+				isValid = true;
+				break;
+			}
+		}
+		if (!isValid) {
+			message = "[ERROR]: Flight ID not found! Please try again.\n";
+		}
+	} while (!isValid);
+
+	if (isValid) {
+		printHeader();
+		printBlue("----------- RESERVATION SUMMARY -----------\n");
+		std::cout << "Flight ID : " << selectedFlight.id << std::endl;
+		std::cout << "Flight ID : " << selectedFlight.id << std::endl;
+	}
 }
 
 void viewAvailableFlights(Flight arr[], int size) {

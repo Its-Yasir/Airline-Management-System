@@ -25,7 +25,6 @@ int main()
 	UserBalance* userBalances = loadBalanceForUsers(totalUsersWithBalance);
 
 
-
     while (true) {
         SelectedFlight sec;
         int choice = showMenu();
@@ -65,7 +64,7 @@ int main()
                         (void)_getch();
                         break;
                     case 2: 
-                        cancelReservations(); 
+                        cancelReservations(bookingsForUser, noOfBookingsForCurrentUser);
                         (void)_getch();
                         break;
                     case 3: 
@@ -98,6 +97,8 @@ int main()
 
     }
 
+
+    delete[] userBalances;
     delete[] bookingsForUser;
     delete[] availableFlight;
     delete[] myUsers;
