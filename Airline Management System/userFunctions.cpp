@@ -524,6 +524,94 @@ void viewAvailableFlights(Flight arr[], int size) {
 
 void generateUserReservationReport(std::string userId, int& count) {
 	SelectedFlight* bookingsForUser = getBookingsByUserId(userId, count);
+
+
+	if (count == 0) {
+		printHeader();
+		printError("\n[INFO]: No flight history found for user: " + userId + "\n");
+		if (bookingsForUser != nullptr) delete[] bookingsForUser;
+		return;
+	}
+
+
+	long long totalSpent = 0;
+	int totalSeats = 0;
+
+	int seatsEco = 0, seatsBus = 0, seatsFirst = 0;
+	long long spendEco = 0, spendBus = 0, spendFirst = 0;
+
+	for (int i = 0; i < count; i++) {
+		totalSpent += bookingsForUser[i].price;
+		totalSeats += bookingsForUser[i].seats;
+
+		if (bookingsForUser[i].classSelected == "Economy") {
+			seatsEco += bookingsForUser[i].seats;
+			spendEco += bookingsForUser[i].price;
+		}
+		else if (bookingsForUser[i].classSelected == "Business") {
+			seatsBus += bookingsForUser[i].seats;
+			spendBus += bookingsForUser[i].price;
+		}
+		else if (bookingsForUser[i].classSelected == "First") {
+			seatsFirst += bookingsForUser[i].seats;
+			spendFirst += bookingsForUser[i].price;
+		}
+	}
+
+	std::string highestClass = "None";
+	long long highestAmount = 0;
+
+	if (spendEco >= spendBus && spendEco >= spendFirst) {
+		highestClass = "Economy";
+		highestAmount = spendEco;
+	}
+	else if (spendBus >= spendEco && spendBus >= spendFirst) {
+		highestClass = "Business";
+		highestAmount = spendBus;
+	}
+	else {
+		highestClass = "First Class";
+		highestAmount = spendFirst;
+	}
+
+	printHeader();
+	printBlue("\n===========================================================\n");
+	printBold("               PERSONAL RESERVATION REPORT                 \n");
+	printBlue("===========================================================\n");
+
+	std::cout << " User ID: " << userId << "\n";
+	std::cout << " Total Bookings: " << count << " flight(s)\n\n";
+
+	printYellow("---------------------- SUMMARY ----------------------------\n");
+	std::cout << " Total Seats Booked:    " << totalSeats << "\n";
+	std::cout << " Total Amount Spent:    ";
+	printSuccess(std::to_string(totalSpent) + "/- PKR\n");
+	printYellow("-----------------------------------------------------------\n\n");
+
+	printSkyBlue(" CLASS BREAKDOWN:\n");
+	std::cout << std::left << std::setw(15) << " Category"
+		<< std::left << std::setw(15) << " | Seats"
+		<< std::left << std::setw(20) << " | Total Spent" << "\n";
+	std::cout << " --------------------------------------------------\n";
+
+	std::cout << std::left << std::setw(15) << " Economy"
+		<< "| " << std::left << std::setw(13) << seatsEco
+		<< "| " << spendEco << "/- PKR\n";
+
+	std::cout << std::left << std::setw(15) << " Business"
+		<< "| " << std::left << std::setw(13) << seatsBus
+		<< "| " << spendBus << "/- PKR\n";
+
+	std::cout << std::left << std::setw(15) << " First"
+		<< "| " << std::left << std::setw(13) << seatsFirst
+		<< "| " << spendFirst << "/- PKR\n\n";
+
+	printYellow("---------------------- INSIGHTS ---------------------------\n");
+	std::cout << " Most Money Spent On:   ";
+	printSkyBlue(highestClass + " (" + std::to_string(highestAmount) + "/- PKR)\n");
+	printYellow("-----------------------------------------------------------\n");
+
+	delete[] bookingsForUser;
 }
 
 
