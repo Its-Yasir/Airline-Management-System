@@ -25,12 +25,15 @@ int showAdminMenu();
 void createFlightsFile();
 void updateFlightsFile(Flight arr[], int size, std::string flightID, int seats, std::string clasS);
 Flight* loadFlights(int& size);
+void updateFlightFile(std::string flightId, std::string clasS, int seats);
 
 
 User* loadAdmins(int& size);
 void createAdminFile();
 UserBalance* loadBalanceForUsers(int& size);
 void SaveBalanceForUsers(UserBalance arr[], int size);
+void updateBalance(long long amount, std::string userId, int op);
+void updateBookings(std::string userId, std::string flightId);
 UserBalance* DeductBalanceForUser(std::string userId, long long amount, UserBalance arr[], int size, bool& isAmountOk);
 
 

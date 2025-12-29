@@ -5,7 +5,7 @@
 #include <fstream>
 #include <string>
 #include <iomanip>
-
+#include <conio.h>
 
 User* loadUsers(int& size);
 int showUserMenu();
@@ -16,7 +16,7 @@ SelectedFlight bookFlights(Flight arr[], int size, std::string userId, UserBalan
 bool handleFinalBookFlight(SelectedFlight sec, std::string userId, UserBalance* arr, int size, Flight flightArr[], int flightSize);
 void viewAvailableFlights(Flight arr[], int size);
 
-void cancelReservations(SelectedFlight* bookings, int size);
+void cancelReservations(SelectedFlight* bookings, int size, std::string userId);
 void viewReservations(SelectedFlight* bookings, int size);
 void printBookingsTableHeader();
 

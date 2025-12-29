@@ -395,8 +395,9 @@ void viewReservations(SelectedFlight* bookings, int size) {
 	}
 }
 
-void cancelReservations(SelectedFlight* bookings, int size) {
+void cancelReservations(SelectedFlight* bookings, int size, std::string userId) {
 	bool isValid = false;
+	long long getBack;
 	std::string message = "";
 	SelectedFlight selectedFlight = { "", "", "", "", "", "", "", 0, 0, 0 };
 	do {
@@ -423,10 +424,65 @@ void cancelReservations(SelectedFlight* bookings, int size) {
 
 	if (isValid) {
 		printHeader();
-		printBlue("----------- RESERVATION SUMMARY -----------\n");
-		std::cout << "Flight ID : " << selectedFlight.id << std::endl;
-		std::cout << "Flight ID : " << selectedFlight.id << std::endl;
+		printBlue("----------- RESERVATION SUMMARY -----------\n\n");
+		std::cout << "Flight ID     : " << selectedFlight.id << std::endl;
+		std::cout << "Origin        : " << selectedFlight.origin << std::endl;
+		std::cout << "Destination   : " << selectedFlight.destination << std::endl;
+		std::cout << "Departue Time : " << selectedFlight.depTime << std::endl;
+		std::cout << "Arrival Time  : " << selectedFlight.arrTime << std::endl;
+		std::cout << "Price         : " << selectedFlight.price << std::endl;
+		std::cout << "Class         : " << selectedFlight.classSelected << std::endl;
+		std::cout << "Seats         : " << selectedFlight.seats << std::endl;
+		std::cout << "Refund        : " << std::to_string(selectedFlight.refund) + "%" << std::endl << std::endl;
+		getBack = selectedFlight.price * selectedFlight.refund / 100;
+		if (getBack == 0) {
+			std::cout << "Money You Get Back : ";
+			printError(std::to_string(getBack) + "/- PKR\n");
+		}
+		else if (selectedFlight.refund == 100) {
+			std::cout << "Money You Get Back : ";
+			printSuccess(std::to_string(getBack) + "/- PKR\n\n");
+
+		}
+		else {
+			std::cout << "Money You Get Back : ";
+			printSkyBlue(std::to_string(getBack) + "/- PKR\n\n");
+		}
 	}
+	char choice; 
+	bool isValidConfirmation = false;
+	std::string errorMessage = "";
+	do {
+		if (!isValidConfirmation) {
+			if (!errorMessage.empty()) {
+				printError(errorMessage);
+			}
+		}
+		printBlue("Are you sure you want to cancel the reservation? (y/n): ");
+		std::cin >> choice;
+		if (choice == 'y' || choice == 'n') {
+			if (choice == 'n') {
+				printSuccess("Reservation in not canceled!\n");
+				printYellow("Press any key to exit!\n");
+				(void)_getch();
+			}
+			else if (choice == 'y') {
+				if (getBack != 0) {
+					updateBalance(getBack, userId, 2);
+				}
+				updateBookings(userId, selectedFlight.id);
+				updateFlightFile(selectedFlight.id, selectedFlight.classSelected, selectedFlight.seats);
+				printSuccess("Reservation canceled successfully!\n");
+			}
+
+			isValidConfirmation = true;
+			break;
+		}
+		else {
+			errorMessage = "[INVALID_INPUT]: Press y or n\n";
+			isValidConfirmation = false;
+		}
+	} while (!isValidConfirmation);
 }
 
 void viewAvailableFlights(Flight arr[], int size) {

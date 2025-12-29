@@ -17,10 +17,10 @@ int main()
 
     std::string currentlyLoggenIn = "";
 
-
     User* Admins = loadAdmins(totalAdmins);
     User* myUsers = loadUsers(totalUsers);
-    Flight* availableFlight = loadFlights(totalFlight);
+	Flight* availableFlight = nullptr;
+    availableFlight = loadFlights(totalFlight);
     SelectedFlight* bookingsForUser = nullptr;
 	UserBalance* userBalances = loadBalanceForUsers(totalUsersWithBalance);
 
@@ -64,7 +64,11 @@ int main()
                         (void)_getch();
                         break;
                     case 2: 
-                        cancelReservations(bookingsForUser, noOfBookingsForCurrentUser);
+                        if (bookingsForUser != nullptr) delete[] bookingsForUser;
+                        bookingsForUser = getBookingsByUserId(userID, noOfBookingsForCurrentUser);
+                        cancelReservations(bookingsForUser, noOfBookingsForCurrentUser, userID);
+                        if (availableFlight != nullptr) delete[] availableFlight;
+                        availableFlight = loadFlights(totalFlight);
                         (void)_getch();
                         break;
                     case 3: 

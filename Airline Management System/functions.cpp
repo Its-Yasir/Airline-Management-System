@@ -110,6 +110,221 @@ void displayFlightHeader() {
 	std::cout << cYellow << "=====================================================================================================================================" << cReset << std::endl;
 }
 
+void updateBalance(long long amount, std::string userId, int op) {
+	std::ifstream loadUserBalanceFile("database/users-balance.txt");
+
+	if (!loadUserBalanceFile.is_open()) {
+		printError("[ERROR]: Could not open balance file!\n");
+		return;
+	}
+
+	int noOfRecords = 0;
+	std::string line;
+	while (std::getline(loadUserBalanceFile, line)) {
+		if (!line.empty()) {
+			noOfRecords++;
+		}
+	}
+
+
+	UserBalance* allUSersBalanceRecords = new UserBalance[noOfRecords];
+
+	loadUserBalanceFile.clear(); 
+	loadUserBalanceFile.seekg(0, std::ios::beg); 
+
+
+	int i = 0;
+	while (i < noOfRecords && loadUserBalanceFile >> allUSersBalanceRecords[i].userId >> allUSersBalanceRecords[i].balance) {
+		i++;
+	}
+	loadUserBalanceFile.close();
+
+
+	bool found = false;
+	for (int k = 0; k < noOfRecords; k++) {
+		if (allUSersBalanceRecords[k].userId == userId) {
+			found = true;
+			if (op > 0) {
+				allUSersBalanceRecords[k].balance += amount;
+				printSuccess("Refund added to wallet successfully!\n");
+			}
+			else if (op < 0) {
+				if (allUSersBalanceRecords[k].balance >= amount) {
+					allUSersBalanceRecords[k].balance -= amount;
+					printSuccess("Payment deducted successfully!\n");
+				}
+				else {
+					printError("[ERROR]: Insufficient Balance!\n");
+				}
+			}
+			break;
+		}
+	}
+
+	if (!found) {
+		printError("[ERROR]: User ID not found in balance records.\n");
+	}
+
+
+	std::ofstream saveFile("database/users-balance.txt"); 
+	if (saveFile.is_open()) {
+		for (int k = 0; k < noOfRecords; k++) {
+			saveFile << allUSersBalanceRecords[k].userId << " " << allUSersBalanceRecords[k].balance << std::endl;
+		}
+		saveFile.close();
+	}
+	else {
+		printError("[ERROR]: Could not save updated balance!\n");
+	}
+
+
+	delete[] allUSersBalanceRecords;
+}
+
+void updateBookings(std::string userId, std::string flightId) {
+	int noOfRecords = 0;
+	SelectedFlight* bookingsArray = nullptr;
+
+	std::ifstream loadBookingsFile("database/bookings.txt");
+	if (!loadBookingsFile.is_open()) {
+		printError("There was an error while opening the bookings file.\n");
+		return;
+	}
+
+
+	std::string line;
+	while (std::getline(loadBookingsFile, line)) {
+		if (!line.empty()) noOfRecords++;
+	}
+
+
+	loadBookingsFile.clear();
+	loadBookingsFile.seekg(0, std::ios::beg);
+
+	bookingsArray = new SelectedFlight[noOfRecords];
+	int count = 0;
+
+
+	while (count < noOfRecords && loadBookingsFile
+		>> bookingsArray[count].userId
+		>> bookingsArray[count].id
+		>> bookingsArray[count].origin
+		>> bookingsArray[count].destination
+		>> bookingsArray[count].depTime
+		>> bookingsArray[count].arrTime
+		>> bookingsArray[count].classSelected
+		>> bookingsArray[count].price
+		>> bookingsArray[count].refund
+		>> bookingsArray[count].seats
+		) {
+		count++;
+	}
+	loadBookingsFile.close();
+
+
+	std::ofstream createNewBookingsFile("database/bookings.txt");
+	if (!createNewBookingsFile.is_open()) {
+		printError("There was an error while opening the bookings file for updating.\n");
+	}
+	else {
+		for (int i = 0; i < noOfRecords; i++) {
+
+			if (!(bookingsArray[i].userId == userId && bookingsArray[i].id == flightId)) {
+				createNewBookingsFile
+					<< bookingsArray[i].userId << " "
+					<< bookingsArray[i].id << " "
+					<< bookingsArray[i].origin << " "
+					<< bookingsArray[i].destination << " "
+					<< bookingsArray[i].depTime << " "
+					<< bookingsArray[i].arrTime << " "
+					<< bookingsArray[i].classSelected << " "
+					<< bookingsArray[i].price << " "
+					<< bookingsArray[i].refund << " "
+					<< bookingsArray[i].seats << "\n";
+			}
+		}
+		createNewBookingsFile.close();
+	}
+
+	delete[] bookingsArray;
+}
+
+void updateFlightFile(std::string flightId, std::string clasS, int seats) {
+	int noOfFlights = 0;
+	Flight* flightsArray = nullptr;
+	std::ifstream updateFlightsFile("database/flights.txt");
+	if (!updateFlightsFile.is_open()) {
+		printError("[ERROR]: While opening flights file!\n");
+	}
+	else {
+		std::string line;
+		while (std::getline(updateFlightsFile, line)) {
+			if (!line.empty()) {
+				noOfFlights++;
+			}
+		}
+		updateFlightsFile.clear();
+		updateFlightsFile.seekg(0, std::ios::beg);
+		flightsArray = new Flight[noOfFlights];
+		int count = 0;
+		while (count < noOfFlights && updateFlightsFile
+			>> flightsArray[count].id
+			>> flightsArray[count].origin
+			>> flightsArray[count].destination
+			>> flightsArray[count].depTime
+			>> flightsArray[count].arrTime
+			>> flightsArray[count].priceEco
+			>> flightsArray[count].priceBus
+			>> flightsArray[count].priceFirst
+			>> flightsArray[count].seatsEco
+			>> flightsArray[count].seatsBus
+			>> flightsArray[count].seatsFirst
+			>> flightsArray[count].refund
+			) {
+			count++;
+		}
+		updateFlightsFile.close();
+		for (int j = 0; j < noOfFlights; j++) {
+			if (flightsArray[j].id == flightId) {
+				if (clasS == "Economy") {
+					flightsArray[j].seatsEco += seats;
+				}
+				else if (clasS == "Business") {
+					flightsArray[j].seatsBus += seats;
+				}
+				else if (clasS == "First") {
+					flightsArray[j].seatsFirst += seats;
+				}
+				break;
+			}
+		}
+	}
+
+	std::ofstream saveUpdatedFlightsFile("database/flights.txt");
+	if (!saveUpdatedFlightsFile.is_open()) {
+		printError("There was an error while saving updated flights file.\n");
+	}
+	else {
+		for (int i = 0; i < noOfFlights; i++) {
+			saveUpdatedFlightsFile
+				<< flightsArray[i].id << " "
+				<< flightsArray[i].origin << " "
+				<< flightsArray[i].destination << " "
+				<< flightsArray[i].depTime << " "
+				<< flightsArray[i].arrTime << " "
+				<< flightsArray[i].priceEco << " "
+				<< flightsArray[i].priceBus << " "
+				<< flightsArray[i].priceFirst << " "
+				<< flightsArray[i].seatsEco << " "
+				<< flightsArray[i].seatsBus << " "
+				<< flightsArray[i].seatsFirst << " "
+				<< flightsArray[i].refund << "\n";
+		}
+		saveUpdatedFlightsFile.close();
+	}
+
+}
+
 void printError(std::string message) {
 	std::cout << "\033[1;31m" << message << "\033[0m";
 }
@@ -304,6 +519,7 @@ void updateFlightsFile(Flight arr[], int size, std::string flightID, int seats, 
 }
 
 SelectedFlight* loadBookings(int& size) {
+	size = 0;
 	std::ifstream loadBookingsFile("database/bookings.txt");
 	if (!loadBookingsFile.is_open()) {
 		printError("[ERROR]: While opening flights file!\n");
@@ -329,8 +545,8 @@ SelectedFlight* loadBookings(int& size) {
 			>> bookingsArray[count].depTime
 			>> bookingsArray[count].arrTime
 			>> bookingsArray[count].classSelected
-			>> bookingsArray[count].refund
 			>> bookingsArray[count].price
+			>> bookingsArray[count].refund
 			>> bookingsArray[count].seats
 			) {
 			count++;
@@ -391,6 +607,7 @@ void saveBookingToFile(SelectedFlight sec, std::string userID) {
 			<< sec.arrTime << " "
 			<< sec.classSelected << " "
 			<< sec.price << " "
+			<< sec.refund << " "
 			<< sec.seats << "\n"
 			;
 		printSuccess("Flight has been booked successfully!\n");
@@ -399,22 +616,28 @@ void saveBookingToFile(SelectedFlight sec, std::string userID) {
 }
 
 SelectedFlight* getBookingsByUserId(std::string userId, int& count) {
-	int size = 0;
-	SelectedFlight* loadedBookings = loadBookings(size);
-	for (int i = 0; i < size; i++) {
+	int totalFileLines = 0;
+
+	SelectedFlight* loadedBookings = loadBookings(totalFileLines);
+
+	int userBookingCount = 0;
+	for (int i = 0; i < totalFileLines; i++) {
 		if (loadedBookings[i].userId == userId) {
-			count++;
+			userBookingCount++;
 		}
 	}
-	SelectedFlight* bookingsForUser = new SelectedFlight[count];
+
+	SelectedFlight* bookingsForUser = new SelectedFlight[userBookingCount];
 	int temp = 0;
-	for (int i = 0; i < size; i++) {
-		if (loadedBookings[i].userId == userId && temp < count) {
+
+	for (int i = 0; i < totalFileLines; i++) {
+		if (loadedBookings[i].userId == userId) {
 			bookingsForUser[temp] = loadedBookings[i];
 			temp++;
 		}
 	}
 
+	count = userBookingCount;
 	delete[] loadedBookings;
 	return bookingsForUser;
 }
@@ -426,8 +649,8 @@ void createBookingFile() {
 		printError("[ERROR]: While Creating Bookings File\n");
 	}
 	else {
-		creatingBookingFile << "yasir_ali PK-110 Lahore Dubai 12Dec-08:00PM 13Dec-05:00PM Business 1000000 2\n";
-		creatingBookingFile << "roshan_ali PK-102 Karachi Dubai 12Dec-08:00PM 13Dec-05:00PM First 2000000 1\n";
+		creatingBookingFile << "yasir_ali PK-110 Lahore Dubai 12Dec-08:00PM 13Dec-05:00PM Business 1000000 10 2\n";
+		creatingBookingFile << "roshan_ali PK-102 Karachi Dubai 12Dec-08:00PM 13Dec-05:00PM First 2000000 20 1\n";
 
 		creatingBookingFile.close();
 	}
