@@ -65,6 +65,23 @@ int showUserMenu() {
 	return choice;
 }
 
+void generateFileForUsersExtraInfo() {
+	std::string filePath = "database/users-extra-data.txt";
+	std::ofstream outFile(filePath);
+
+	if (outFile.is_open()) {
+
+		outFile << "yasir_ali|House 12-A, Street 5, Johar Town|Lahore|Punjab|Pakistan|+923001234567|PK-8829102" << std::endl;
+		outFile << "roshan_haider|88 West Broadway, Apt 402|Vancouver|British Columbia|Canada|+16045550199|CA-9912388" << std::endl;
+
+		outFile.close();
+		std::cout << "File generated successfully inside 'databse' folder." << std::endl;
+	}
+	else {
+		printError("Unable to create file. Please ensure the folder 'databse' exists.");
+	}
+}
+
 bool passengerLogin(User arr[], int a, std::string& userID) {
 	bool isAuthentic = false;
 	std::string inputUserId;

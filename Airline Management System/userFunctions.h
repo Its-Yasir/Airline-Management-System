@@ -10,6 +10,7 @@
 User* loadUsers(int& size);
 int showUserMenu();
 bool passengerLogin(User arr[], int a, std::string& userID);
+void generateFileForUsersExtraInfo();
 
 SelectedFlight handleClassSeatsInput(Flight selectedFlight);
 SelectedFlight bookFlights(Flight arr[], int size, std::string userId, UserBalance* balanceArr, int sizeOfBalanceUsers, int flightSize);
