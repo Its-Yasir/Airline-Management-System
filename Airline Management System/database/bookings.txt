@@ -1,3 +1,2 @@
 yasir_ali PK-110 Lahore Dubai 12Dec-08:00PM 13Dec-05:00PM Business 1000000 10 2
 roshan_ali PK-102 Karachi Dubai 12Dec-08:00PM 13Dec-05:00PM First 2000000 20 1
-yasir_ali PK-010 Lahore Islamabad 20Dec-09:00AM 20Dec-10:00AM Business 210000 90 6

@@ -391,6 +391,7 @@ User* loadAdmins(int& size) {
 }
 
 Flight* loadFlights(int& size) {
+	size = 0;
 	std::ifstream loadFlightsFile("database/flights.txt");
 	if (!loadFlightsFile.is_open()) {
 		printError("[ERROR]: While opening flights file!\n");
