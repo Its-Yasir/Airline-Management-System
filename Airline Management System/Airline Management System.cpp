@@ -22,7 +22,8 @@ int main()
 	Flight* availableFlight = nullptr;
     availableFlight = loadFlights(totalFlight);
     SelectedFlight* bookingsForUser = nullptr;
-	UserBalance* userBalances = loadBalanceForUsers(totalUsersWithBalance);
+    UserBalance* userBalances = nullptr;
+	userBalances = loadBalanceForUsers(totalUsersWithBalance);
 
 
     while (true) {
@@ -69,6 +70,7 @@ int main()
                         cancelReservations(bookingsForUser, noOfBookingsForCurrentUser, userID);
                         if (availableFlight != nullptr) delete[] availableFlight;
                         availableFlight = loadFlights(totalFlight);
+                        userBalances = loadBalanceForUsers(totalUsersWithBalance);
                         (void)_getch();
                         break;
                     case 3: 
@@ -78,7 +80,7 @@ int main()
                         (void)_getch();
                         break;
                     case 4: 
-                        generateUserReservationReport(userID, noOfBookingsForCurrentUser); 
+                        generateUserReservationReport(userID, noOfBookingsForCurrentUser, userBalances, totalUsersWithBalance); 
                         (void)_getch(); 
                         break;
                 }

@@ -522,9 +522,18 @@ void viewAvailableFlights(Flight arr[], int size) {
 	}
 }
 
-void generateUserReservationReport(std::string userId, int& count) {
+void generateUserReservationReport(std::string userId, int& count, UserBalance* userBalance, int size) {
 	SelectedFlight* bookingsForUser = getBookingsByUserId(userId, count);
 
+	UserBalance* allBalanceForUsers = loadBalanceForUsers(size);
+
+	UserBalance balanceForUser = { "", 0 };
+	for (int i = 0; i < size; i++) {
+		if (allBalanceForUsers[i].userId == userId) {
+			balanceForUser = allBalanceForUsers[i];
+			break;
+		}
+	}
 
 	if (count == 0) {
 		printHeader();
@@ -586,6 +595,13 @@ void generateUserReservationReport(std::string userId, int& count) {
 	std::cout << " Total Seats Booked:    " << totalSeats << "\n";
 	std::cout << " Total Amount Spent:    ";
 	printSuccess(std::to_string(totalSpent) + "/- PKR\n");
+	std::cout << " Available Balance:      ";
+	if (balanceForUser.balance <= 0) {
+		printError(std::to_string(balanceForUser.balance) + "/- PKR\n");
+	}
+	else {
+		printSuccess(std::to_string(balanceForUser.balance) + "/- PKR\n");
+	}
 	printYellow("-----------------------------------------------------------\n\n");
 
 	printSkyBlue(" CLASS BREAKDOWN:\n");
@@ -594,15 +610,15 @@ void generateUserReservationReport(std::string userId, int& count) {
 		<< std::left << std::setw(20) << " | Total Spent" << "\n";
 	std::cout << " --------------------------------------------------\n";
 
-	std::cout << std::left << std::setw(15) << " Economy"
+	std::cout << std::left << std::setw(16) << " Economy"
 		<< "| " << std::left << std::setw(13) << seatsEco
 		<< "| " << spendEco << "/- PKR\n";
 
-	std::cout << std::left << std::setw(15) << " Business"
+	std::cout << std::left << std::setw(16) << " Business"
 		<< "| " << std::left << std::setw(13) << seatsBus
 		<< "| " << spendBus << "/- PKR\n";
 
-	std::cout << std::left << std::setw(15) << " First"
+	std::cout << std::left << std::setw(16) << " First"
 		<< "| " << std::left << std::setw(13) << seatsFirst
 		<< "| " << spendFirst << "/- PKR\n\n";
 

@@ -6,6 +6,7 @@
 
 
 UserBalance* loadBalanceForUsers(int& size) {
+	size = 0;
 	std::ifstream userBalanceFile("database/users-balance.txt");
 	if(!userBalanceFile.is_open()) {
 		printError("[ERROR]: There was an error while opening the user balance file.");
