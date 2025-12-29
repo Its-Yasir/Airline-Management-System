@@ -77,7 +77,10 @@ int main()
                         viewAvailableFlights(availableFlight, totalFlight); 
                         (void)_getch();
                         break;
-                    case 4: generateUserReservationReport(); (void)_getch(); break;
+                    case 4: 
+                        generateUserReservationReport(userID, noOfBookingsForCurrentUser); 
+                        (void)_getch(); 
+                        break;
                 }
             }
         }

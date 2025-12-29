@@ -618,6 +618,7 @@ void saveBookingToFile(SelectedFlight sec, std::string userID) {
 
 SelectedFlight* getBookingsByUserId(std::string userId, int& count) {
 	int totalFileLines = 0;
+	count = 0;
 
 	SelectedFlight* loadedBookings = loadBookings(totalFileLines);
 

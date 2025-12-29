@@ -522,8 +522,8 @@ void viewAvailableFlights(Flight arr[], int size) {
 	}
 }
 
-void generateUserReservationReport() {
-	printSuccess("Report Genrated Successfully!");
+void generateUserReservationReport(std::string userId, int& count) {
+	SelectedFlight* bookingsForUser = getBookingsByUserId(userId, count);
 }
 
 

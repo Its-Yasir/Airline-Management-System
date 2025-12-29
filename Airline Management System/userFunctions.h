@@ -20,4 +20,4 @@ void cancelReservations(SelectedFlight* bookings, int size, std::string userId);
 void viewReservations(SelectedFlight* bookings, int size);
 void printBookingsTableHeader();
 
-void generateUserReservationReport();
+void generateUserReservationReport(std::string userId, int& count);
