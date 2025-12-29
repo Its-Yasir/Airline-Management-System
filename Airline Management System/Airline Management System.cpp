@@ -16,6 +16,7 @@ int main()
     int noOfBookingsForCurrentUser = 0;
     std::string userID = "";
 
+
     std::string currentlyLoggenIn = "";
     User* Admins = loadAdmins(totalAdmins);
     User* myUsers = loadUsers(totalUsers);
