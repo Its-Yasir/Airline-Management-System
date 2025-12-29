@@ -5,10 +5,6 @@
 #include <fstream>
 #include <string>
 
-
-//Login Functions
-bool adminLogin(User arr[], int a);
-
 //Function for bookings
 void createBookingFile();
 void saveBookingToFile(SelectedFlight sec, std::string userID);
@@ -18,7 +14,6 @@ SelectedFlight* loadBookings(int& size);
 
 //Showing menu functions
 int showMenu();
-int showAdminMenu();
 
 
 //Functions for Flights
@@ -27,9 +22,6 @@ void updateFlightsFile(Flight arr[], int size, std::string flightID, int seats, 
 Flight* loadFlights(int& size);
 void updateFlightFile(std::string flightId, std::string clasS, int seats);
 
-
-User* loadAdmins(int& size);
-void createAdminFile();
 UserBalance* loadBalanceForUsers(int& size);
 void SaveBalanceForUsers(UserBalance arr[], int size);
 void updateBalance(long long amount, std::string userId, int op);
@@ -37,11 +29,6 @@ void updateBookings(std::string userId, std::string flightId);
 UserBalance* DeductBalanceForUser(std::string userId, long long amount, UserBalance arr[], int size, bool& isAmountOk);
 
 
-//Admin Menu Functions
-void managePassengers();
-void manageUsers();
-void manageFlights();
-void viewReservationReportsAdmin();
 
 
 //Functions for printing outputs in different colors

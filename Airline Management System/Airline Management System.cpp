@@ -5,6 +5,7 @@
 #include "functions.h"
 #include "userFunctions.h"
 #include "models.h"
+#include "adminFunctions.h"
 
 int main()
 {
@@ -90,16 +91,15 @@ int main()
             while (true) {
                 int adminChoice = showAdminMenu();
 
-                if (adminChoice == 5) {
+                if (adminChoice == 4) {
                     break;
                 }
 
 
                 switch (adminChoice) {
-                case 1: managePassengers(); (void)_getch(); break;
-                case 2: manageUsers(); (void)_getch(); break;
-                case 3: manageFlights(); (void)_getch(); break;
-                case 4: viewReservationReportsAdmin(); (void)_getch(); break;
+                case 1: manageUsers(); (void)_getch(); break;
+                case 2: manageFlights(); (void)_getch(); break;
+                case 3: viewReservationReportsAdmin(); (void)_getch(); break;
                 }
             }
         }
