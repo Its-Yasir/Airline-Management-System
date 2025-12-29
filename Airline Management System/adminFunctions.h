@@ -15,6 +15,8 @@ User* loadAdmins(int& size);
 
 void createAdminFile();
 
+int showMangeUsersMenu();
+
 //Admin Menu Functions
 void manageUsers();
 void manageFlights();

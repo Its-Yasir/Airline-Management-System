@@ -88,6 +88,37 @@ void createAdminFile() {
 	}
 }
 
+//Manage Users Menu
+int showMangeUsersMenu() {
+	int choice;
+	bool isValid = true;
+	do {
+		printHeader();
+		if (!isValid) {
+			printError("[INVALID_INPUT]: Press 1, 2, 3, 4, or 5\n");
+		}
+		printSkyBlue("Chose an option from the below(1-5): \n");
+		std::cout << "1. View Users =>\n";
+		std::cout << "2. Edit Users Details =>\n";
+		std::cout << "3. Add User =>\n";
+		std::cout << "4. Remove User =>\n";
+		printError("5. <= Exit\n");
+		std::cin >> choice;
+		if (std::cin.fail()) {
+			std::cin.clear();
+			std::cin.ignore(1000, '\n');
+			choice = 0;
+		}
+		if (choice < 1 || choice > 5) {
+			isValid = false;
+		}
+		else {
+			isValid = true;
+		}
+	} while (!isValid);
+	return choice;
+}
+
 //Load Admins from file
 User* loadAdmins(int& size) {
 	std::ifstream adminsFile("database/admins.txt");
@@ -118,7 +149,8 @@ User* loadAdmins(int& size) {
 }
 
 void manageUsers() {
-	printSuccess("User managed successfully!");
+	int choice = showMangeUsersMenu();
+	printSuccess("Users managed Successfully" + std::to_string(choice));
 }
 
 void manageFlights() {
