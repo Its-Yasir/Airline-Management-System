@@ -123,11 +123,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="adminFunctions.cpp" />
     <ClCompile Include="Airline Management System.cpp" />
     <ClCompile Include="functions.cpp" />
     <ClCompile Include="userFunctions.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="adminFunctions.h" />
     <ClInclude Include="functions.h" />
     <ClInclude Include="models.h" />
     <ClInclude Include="userFunctions.h" />
