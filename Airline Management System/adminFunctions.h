@@ -43,6 +43,8 @@ void viewCreateNewUserHeader(UsersDetails newUserDetails, int detailsTaken);
 
 UsersDetails getAllInputsForNewUser(UsersDetails newUserDetails, int detailsTaken);
 
+bool checkBreakFunction(int detailsTaken, UsersDetails newUserDetails);
+
 UsersDetails getUserDetailsAfterChange(UsersDetails det, int type);
 
 UsersDetails getDetailsForOneUser(std::string userId, int noOfBalanceUsers, User myUsers[], int noOfUsers);

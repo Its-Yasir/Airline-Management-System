@@ -989,22 +989,190 @@ void viewCreateNewUserHeader(UsersDetails newUserDetails, int detailsTaken) {
 	}
 }
 
+//This function check if function is exited or not
+bool checkBreakFunction(int detailsTaken, UsersDetails newUserDetails) {
+	switch (detailsTaken) {
+	case 0:
+		if (newUserDetails.userName == "") {
+			printError("You canceled the creation of new User!\n");
+			printYellow("Press any ket to exit!\n");
+			return true;
+		}
+		else {
+			return false;
+		}
+		break;
+	case 1:
+		if (newUserDetails.id == "") {
+			printError("You canceled the creation of new User!\n");
+			printYellow("Press any ket to exit!\n");
+			return true;
+		}
+		else {
+			return false;
+		}
+		break;
+	case 2:
+		if (newUserDetails.address == "") {
+			printError("You canceled the creation of new User!\n");
+			printYellow("Press any ket to exit!\n");
+			return true;
+		}
+		else {
+			return false;
+		}
+		break;
+	case 3:
+		if (newUserDetails.city == "") {
+			printError("You canceled the creation of new User!\n");
+			printYellow("Press any ket to exit!\n");
+			return true;
+		}
+		else {
+			return false;
+		}
+		break;
+	case 4:
+		if (newUserDetails.province == "") {
+			printError("You canceled the creation of new User!\n");
+			printYellow("Press any ket to exit!\n");
+			return true;
+		}
+		else {
+			return false;
+		}
+		break;
+	case 5:
+		if (newUserDetails.country == "") {
+			printError("You canceled the creation of new User!\n");
+			printYellow("Press any ket to exit!\n");
+			return true;
+		}
+		else {
+			return false;
+		}
+		break;
+	case 6:
+		if (newUserDetails.contact == "") {
+			printError("You canceled the creation of new User!\n");
+			printYellow("Press any ket to exit!\n");
+			return true;
+		}
+		else {
+			return false;
+		}
+		break;
+	case 7:
+		if (newUserDetails.passport == "") {
+			printError("You canceled the creation of new User!\n");
+			printYellow("Press any ket to exit!\n");
+			return true;
+		}
+		else {
+			return false;
+		}
+		break;
+	case 8:
+		if (newUserDetails.password == "") {
+			printError("You canceled the creation of new User!\n");
+			printYellow("Press any ket to exit!\n");
+			return true;
+		}
+		else {
+			return false;
+		}
+		break;
+	case 9:
+		if (newUserDetails.balance == 0) {
+			printError("You canceled the creation of new User!\n");
+			printYellow("Press any ket to exit!\n");
+			return true;
+		}
+		else {
+			return false;
+		}
+		break;
+	default:
+		break;
+	}
+}
+
 //Function to input all inputs for new user
 UsersDetails getAllInputsForNewUser(UsersDetails newUserDetails, int detailsTaken) {
 	bool isValid = false;
 	std::string errorMessage = "";
 	std::string inputTaken;
+	switch (detailsTaken) {
+	case 0:
+		do {
+			viewCreateNewUserHeader(newUserDetails, detailsTaken);
+			std::cout << "Enter Username: ";
+			std::getline(std::cin >> std::ws, inputTaken);
+			if(inputTaken.empty()) {
+				errorMessage = "[ERROR]: Username cannot be empty!\n";
+				isValid = false;
+			}else if(inputTaken.length() <5) {
+				errorMessage = "[ERROR]: Username must be at least 5 characters long!\n";
+				isValid = false;
+			}else {
+				isValid = true;
+				newUserDetails.username = inputTaken;
+				break;
+			}
+		} while (!isValid);
+		break;
+	case 1:
+		do {
+			viewCreateNewUserHeader(newUserDetails, detailsTaken);
+			std::cout << "Enter User ID: ";
+			std::getline(std::cin >> std::ws, inputTaken);
+			if(inputTaken.empty()) {
+				errorMessage = "[ERROR]: User ID cannot be empty!\n";
+				isValid = false;
+			}else if(inputTaken.length() <5) {
+				errorMessage = "[ERROR]: User ID must be at least 5 characters long!\n";
+				isValid = false;
+			}else if(isUserIDExists(inputTaken)) {
+				errorMessage = "[ERROR]: User ID already exists!\n";
+				isValid = false;
+			}else {
+				isValid = true;
+				newUserDetails.userId = inputTaken;
+				break;
+			}
+		} while (!isValid);
+		break;
+	case 2:
+		do {
+			viewCreateNewUserHeader(newUserDetails, detailsTaken);
+			std::cout << "Enter Address: ";
+			std::getline(std::cin >> std::ws, inputTaken);
+			if(inputTaken.empty()) {
+				errorMessage = "[ERROR]: Address cannot be empty!\n";
+				isValid = false;
+			}else if(inputTaken.length() <10) {
+				errorMessage = "[ERROR]: Address must be at least 10 characters long!\n";
+				isValid = false;
+			}else {
+				isValid = true;
+				newUserDetails.address = inputTaken;
+				break;
+			}
+		} while (!isValid);
+		break;
+	}
 }
 
 //Function to add a new user
 void addUser(int& noOfUsers, User*& users, int& noOfBalanceUsers, UserBalance*& userBalances) {
 	UsersDetails newUserDetails = { "", "", "", "", "", "", "", "", "", 0 };
 	int detailsTaken = 0;
-	do {
-		for (detailsTaken; detailsTaken < 10; detailsTaken++) {
-			newUserDetails = getAllInputsForNewUser(newUserDetails, detailsTaken);
+	for (detailsTaken; detailsTaken < 10; detailsTaken++) {
+		newUserDetails = getAllInputsForNewUser(newUserDetails, detailsTaken);
+		if (checkBreakFunction(detailsTaken, newUserDetails)) {
+			break;
 		}
-	} while (!isValid);
+	}
 }
 
 //Function to manage users
