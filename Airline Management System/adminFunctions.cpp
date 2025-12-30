@@ -951,21 +951,80 @@ void editUserDetails(User* users, int noOfUsers, int noOfBalanceUsers) {
 	editAField(userId, userDetails, changeCoice, noOfBalanceUsers, users);
 }
 
-void manageUsers(int noOfBalanceUsers, User* users, int noOfUsers) {
+//Function to show header while creating a new user
+void viewCreateNewUserHeader(UsersDetails newUserDetails, int detailsTaken) {
+	printHeader();
+	printSuccess("--------------- ADDING A NEW USER ---------------\n\n");
+	printSkyBlue("Enter 0 at any point to cancel adding a new user.\n");
+	printBlue("Details you have entered so far: " + std::to_string(detailsTaken) + "/10\n");
+	if (!newUserDetails.userName.empty()) {
+		printBlue("\tUsername: " + newUserDetails.userName + "\n");
+	}
+	if (!newUserDetails.id.empty()) {
+		printBlue("\tUser ID: " + newUserDetails.id + "\n");
+	}
+	if (!newUserDetails.address.empty()) {
+		printBlue("\tAddress: " + newUserDetails.address + "\n");
+	}
+	if (!newUserDetails.city.empty()) {
+		printBlue("\tCity: " + newUserDetails.city + "\n");
+	}
+	if (!newUserDetails.province.empty()) {
+		printBlue("\tProvince: " + newUserDetails.province + "\n");
+	}
+	if (!newUserDetails.country.empty()) {
+		printBlue("\tCountry: " + newUserDetails.country + "\n");
+	}
+	if (!newUserDetails.contact.empty()) {
+		printBlue("\tContact: " + newUserDetails.contact + "\n");
+	}
+	if (!newUserDetails.passport.empty()) {
+		printBlue("\tPassport NO#: " + newUserDetails.passport + "\n");
+	}
+	if (!newUserDetails.password.empty()) {
+		printBlue("\tPassword: " + newUserDetails.password + "\n");
+	}
+	if (newUserDetails.balance != 0) {
+		printBlue("\tBalance: " + std::to_string(newUserDetails.balance) + "\n");
+	}
+}
+
+//Function to input all inputs for new user
+UsersDetails getAllInputsForNewUser(UsersDetails newUserDetails, int detailsTaken) {
+	bool isValid = false;
+	std::string errorMessage = "";
+	std::string inputTaken;
+}
+
+//Function to add a new user
+void addUser(int& noOfUsers, User*& users, int& noOfBalanceUsers, UserBalance*& userBalances) {
+	UsersDetails newUserDetails = { "", "", "", "", "", "", "", "", "", 0 };
+	int detailsTaken = 0;
+	do {
+		for (detailsTaken; detailsTaken < 10; detailsTaken++) {
+			newUserDetails = getAllInputsForNewUser(newUserDetails, detailsTaken);
+		}
+	} while (!isValid);
+}
+
+//Function to manage users
+void manageUsers(int& noOfBalanceUsers, User*& users, int& noOfUsers, UserBalance*& userBalances) {
 	int choice = showManageUsersMenu();
 	switch (choice)
 	{
-		case 1:
-			viewAllUsersData(noOfBalanceUsers);
-			break;
-		case 2:
-			editUserDetails(users, noOfUsers, noOfBalanceUsers);
-			break;
+	case 1:
+		viewAllUsersData(noOfBalanceUsers);
+		break;
+	case 2:
+		editUserDetails(users, noOfUsers, noOfBalanceUsers);
+		break;
+	case 3:
+		addUser(noOfUsers, users, noOfBalanceUsers, userBalances);
+		break;
 	default:
 		break;
 	}
 }
-
 void manageFlights() {
 	printSuccess("Flights managed Successfully");
 }

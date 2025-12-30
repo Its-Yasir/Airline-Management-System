@@ -25,6 +25,8 @@ int showManageUsersMenu();
 
 std::string getBalanceForUser(std::string userId, int size);
 
+void addUser(int& noOfUsers, User*& users, int& noOfBalanceUsers, UserBalance*& userBalances);
+
 void viewAllUsersData(int noOfBalanceUsers);
 
 void editUserDetails(User* users, int noOfUsers, int noOfBalanceUsers);
@@ -37,11 +39,15 @@ void editAField(std::string userId, UsersDetails det, int type, int noOfBalanceU
 
 void updateUserDetailsFile(UsersDetails userDetail);
 
+void viewCreateNewUserHeader(UsersDetails newUserDetails, int detailsTaken);
+
+UsersDetails getAllInputsForNewUser(UsersDetails newUserDetails, int detailsTaken);
+
 UsersDetails getUserDetailsAfterChange(UsersDetails det, int type);
 
 UsersDetails getDetailsForOneUser(std::string userId, int noOfBalanceUsers, User myUsers[], int noOfUsers);
 
 //Admin Menu Functions
-void manageUsers(int noOfBalanceUsers, User* users, int noOfUsers);
+void manageUsers(int& noOfBalanceUsers, User*& users, int& noOfUsers, UserBalance*& userBalances);
 void manageFlights();
 void viewReservationReportsAdmin();
