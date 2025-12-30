@@ -31,6 +31,29 @@ UserBalance* loadBalanceForUsers(int& size) {
 	}
 }
 
+int getValidInteger(int min, int max, bool& valid) {
+	int value;
+	while (true) {
+		if (std::cin >> value) {
+			if (value >= min && value <= max) {
+				valid = true;
+				return value;
+			}
+			else {
+				printError("[INVALID_RANGE] Please enter between " + std::to_string(min) + " and " + std::to_string(max));
+				valid = false;
+			}
+		}
+		else {
+			std::cin.clear();
+			std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+			printError("[INVALID_INPUT] Please enter a number.");
+			valid = false;
+		}
+		std::cout << " Try again: ";
+	}
+}
+
 void SaveBalanceForUsers(UserBalance arr[], int size) {
 	std::ofstream userBalanceFile("database/users-balance.txt");
 	if (!userBalanceFile.is_open()) {

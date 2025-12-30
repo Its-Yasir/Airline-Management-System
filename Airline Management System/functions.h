@@ -5,6 +5,8 @@
 #include <fstream>
 #include <string>
 
+int getValidInteger(int min, int max, bool& valid);
+
 //Function for bookings
 void createBookingFile();
 void saveBookingToFile(SelectedFlight sec, std::string userID);

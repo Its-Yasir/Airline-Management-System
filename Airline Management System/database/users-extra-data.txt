@@ -1,2 +1,2 @@
-Yasir Ali|yasir_ali|House 12-A, Street 5, Johar Town|Lahore|Punjab|Pakistan|+923001234567|PK-8829102
-Roshan Ali|roshan_ali|88 West Broadway, Apt 402|Vancouver|British Columbia|Canada|+16045550199|CA-9912388
+Yasir Ali|yasir_ali|House 12-A, Street 5, Johar Town|Lahore|Punjab|Pakistan|+923001234567|PK-8829102|yas_123_@|1434000
+Roshan Ali|roshan_ali|88 West Broadway, Apt 402|Vancouver|British Columbia|Canada|+16045550199|CA-9912388|ros_345_#|4500000

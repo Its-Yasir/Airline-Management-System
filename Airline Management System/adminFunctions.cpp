@@ -47,10 +47,10 @@ int showAdminMenu() {
 	do {
 		printHeader();
 		if (!isValid) {
-			printError("[INVALID_INPUT]: Press 1, 2, 3, 4, or 5\n");
+			printError("[INVALID_INPUT]: Press 1, 2, 3, or 4\n");
 		}
 
-		printSkyBlue("Chose an option from the below(1-5): \n");
+		printSkyBlue("Chose an option from the below(1-4): \n");
 		std::cout << "1. Manage Users =>\n";
 		std::cout << "2. Manage Flight Inventory =>\n";
 		std::cout << "3. View Reservation Reports =>\n";
@@ -179,14 +179,14 @@ void viewAllUsersData(int noOfBalanceUsers) {
 
 	std::string line;
 	int count = 1;
-
+	printHeader();
 	printBlue("==========================================");
 	printYellow("           ALL USERS DETAILES                    ");
-	printBlue("==========================================");
+	printBlue("==========================================\n");
 
 	while (std::getline(file, line)) {
 		std::stringstream ss(line);
-		std::string username, userId, address, city, province, country, phone, passport;
+		std::string username, userId, address, city, province, country, phone, passport, balance, password;
 
 
 		std::getline(ss, username, '|');
@@ -197,9 +197,9 @@ void viewAllUsersData(int noOfBalanceUsers) {
 		std::getline(ss, country, '|');
 		std::getline(ss, phone, '|');
 		std::getline(ss, passport, '|');
+		std::getline(ss, password, '|');
+		std::getline(ss, balance, '|');
 
-
-		std::string balance = getBalanceForUser(userId, noOfBalanceUsers);
 
 		printBlue("--------------------------------------------------------");
 		std::string header = " [" + std::to_string(count) + "] User: " + username;
@@ -227,6 +227,9 @@ void viewAllUsersData(int noOfBalanceUsers) {
 		printSkyBlue(" Balance:   ");
 		printSuccess("PKR " + balance);
 
+		printSkyBlue(" Pasword:   ");
+		printSuccess(password + "\n");
+
 		std::cout << std::endl;
 		count++;
 	}
@@ -238,13 +241,645 @@ void viewAllUsersData(int noOfBalanceUsers) {
 	file.close();
 }
 
-void manageUsers(int noOfBalanceUsers) {
+//Get Users List containing IDs only
+void displayUsersWithIDs(User* users, int noOfUsers) {
+	printHeader();
+	printYellow("List of users: \n");
+	for (int i = 0; i < noOfUsers; i++) {
+		printBlue("\t" + users[i].userID + "\n");
+	}
+}
+
+//Update Users Extra data file
+void updateUserDetailsFile(UsersDetails userDetail, int size) {
+	std::ifstream loadUserDetailsFile("database/users-extra-data.txt");
+	UsersDetails* allUserDetails = nullptr;
+	allUserDetails = new UsersDetails[size];
+	if (!loadUserDetailsFile.is_open()) {
+		printError("There was an error while opening the file!\n");
+	}
+	else {
+		std::string line;
+		int count = 0;
+		while (count < size && std::getline(loadUserDetailsFile, line)) {
+			std::stringstream ss(line);
+			std::string username, userId, address, city, province, country, phone, passport, password, balance;
+			std::getline(ss, username, '|');
+			std::getline(ss, userId, '|');
+			std::getline(ss, address, '|');
+			std::getline(ss, city, '|');
+			std::getline(ss, province, '|');
+			std::getline(ss, country, '|');
+			std::getline(ss, phone, '|');
+			std::getline(ss, passport, '|');
+			std::getline(ss, password, '|');
+			std::getline(ss, balance, '|');
+
+			allUserDetails[count].userName = username;
+			allUserDetails[count].id = userId;
+			allUserDetails[count].address = address;
+			allUserDetails[count].city = city;
+			allUserDetails[count].province = province;
+			allUserDetails[count].country = country;
+			allUserDetails[count].country = country;
+			allUserDetails[count].contact = phone;
+			allUserDetails[count].passport = passport;
+			allUserDetails[count].password = password;
+			allUserDetails[count].balance = std::stoll(balance);
+			count++;
+		}
+
+		loadUserDetailsFile.close();
+	}
+
+	for(int i = 0; i < size; i++) {
+		if(allUserDetails[i].id == userDetail.id) {
+			allUserDetails[i] = userDetail;
+			break;
+		}
+	}
+
+	std::ofstream saveUpdatedUserDetailsFile("database/users-extra-data.txt");
+	if (!saveUpdatedUserDetailsFile.is_open()) {
+		printError("there was an error while saving new content to file!\n");
+	}
+	else {
+		for (int i = 0; i < size; i++) {
+			saveUpdatedUserDetailsFile
+				<< allUserDetails[i].userName + "|"
+				<< allUserDetails[i].id + "|"
+				<< allUserDetails[i].address + "|"
+				<< allUserDetails[i].city + "|"
+				<< allUserDetails[i].province + "|"
+				<< allUserDetails[i].country + "|"
+				<< allUserDetails[i].contact + "|"
+				<< allUserDetails[i].passport + "|"
+				<< allUserDetails[i].password + "|"
+				<< allUserDetails[i].balance + "\n";
+		}
+
+		printSuccess("Changes have been updated!\n");
+		saveUpdatedUserDetailsFile.close();
+	}
+
+	delete[] allUserDetails;
+}
+
+//Function to find if another user exists with same userID
+bool isUserIDExists(std::string userId) {
+	std::ifstream usersFile("database/passengers.txt");
+	if(!usersFile.is_open()) {
+		printError("There was an error while opening the file!\n");
+		return false;
+	}
+	else {
+		std::string line;
+		while (std::getline(usersFile, line)) {
+			std::stringstream ss(line);
+			std::string id, password;
+			std::getline(ss, id, ' ');
+			std::getline(ss, password, ' ');
+			if(id == userId) {
+				usersFile.close();
+				return true;
+			}
+		}
+		usersFile.close();
+	}
+	return false;
+}
+
+
+//Function to update passengers file when userID is changed
+void updatePassengersFile(std::string newUserId, std::string oldUserId, User users[], int noOfUsers) {
+	for(int i = 0; i < noOfUsers; i++) {
+		if(users[i].userID == oldUserId) {
+			users[i].userID = newUserId;
+			break;
+		}
+	}
+
+	std::ofstream savePassengersFile("database/passengers.txt");
+	if (!savePassengersFile.is_open()) {
+		printError("There was an error while saving updated passengers file.\n");
+	}
+	else {
+		for (int i = 0; i < noOfUsers; i++) {
+			savePassengersFile << users[i].userID << " " << users[i].password << "\n";
+		}
+		printSuccess("Passengers file has been updated with new User ID!\n");
+		savePassengersFile.close();
+	}
+}
+
+//Get Info for One User
+UsersDetails getDetailsForOneUser(std::string userId, int noOfBalanceUsers, User myUsers[], int noOfUsers) {
+	UsersDetails userDetails = { "", "", "", "", "", "", "", "", "", 0, };
+
+	for (int i = 0; i < noOfUsers; i++) {
+		if(myUsers[i].userID == userId) {
+			userDetails.password = myUsers[i].password;
+			break;
+		}
+	}
+
+	std::ifstream usersExtraDataFile("database/users-extra-data.txt");
+	if (!usersExtraDataFile.is_open()) {
+		printError("There was an error while opening the file\n");
+	}
+	std::string line;
+	while (std::getline(usersExtraDataFile, line)) {
+		std::stringstream ss(line);
+		std::string username, userIdFormFile, address, city, province, country, phone, passport;
+
+
+		std::getline(ss, username, '|');
+		std::getline(ss, userIdFormFile, '|');
+		std::getline(ss, address, '|');
+		std::getline(ss, city, '|');
+		std::getline(ss, province, '|');
+		std::getline(ss, country, '|');
+		std::getline(ss, phone, '|');
+		std::getline(ss, passport, '|');
+
+		std::string balance = getBalanceForUser(userId, noOfBalanceUsers);
+
+		if (userIdFormFile == userId) {
+			userDetails.id = userIdFormFile;
+			userDetails.userName = username;
+			userDetails.address = address;
+			userDetails.city = city;
+			userDetails.province = province;
+			userDetails.country = country;
+			userDetails.contact = phone;
+			userDetails.passport = passport;
+			userDetails.balance = std::stoll(balance); //Convert string to int
+
+			usersExtraDataFile.close();
+			return userDetails;
+		}
+
+	}
+}
+
+//This funtion will change the UserDetails object and return an updated one
+UsersDetails getUserDetailsAfterChange(UsersDetails det, int type) {
+	std::string inputTaken;
+	std::string errorMessage = "";
+	long long amountInput = 0;
+	bool isFound = false;
+	bool isValid = false;
+	switch (type) {
+		case 1:
+			errorMessage = "";
+			isValid = false;
+			do {
+				printHeader();
+				if (!isValid) {
+					if (!errorMessage.empty()) {
+						printError(errorMessage);
+					}
+				}
+				printBlue("Current Username: " + det.userName + "\n");
+				printSkyBlue("Enter 0 to exit without changing any data\n");
+				std::cout << "Enter new Username: ";
+				std::getline(std::cin >> std::ws, inputTaken);
+				if(inputTaken.find_first_not_of(' ') != std::string::npos) {
+					if (inputTaken.length() > 3) {
+						if(inputTaken == "0") {
+							isValid = true;
+							return det;
+						}
+						else {
+							det.userName = inputTaken;
+							isValid = true;
+							return det;
+						}
+					}
+					else {
+						isValid = false;
+						errorMessage = "[INVALID_INPUT]: Username must be at least 4 characters long!\n";
+					}
+				}
+				else {
+					isValid = false;
+					errorMessage = "[INVALID_INPUT]: Username cannot be empty or spaces only!\n";
+				}
+			} while (!isValid);
+
+		case 2:
+			isValid = false;
+			errorMessage = "";
+			do {
+				printHeader();
+				if (!isFound) {
+					if (!errorMessage.empty()) {
+						printError(errorMessage);
+					}
+				}
+				printSkyBlue("Enter 0 to exit without changing any data\n");
+				std::cout << "Enter new User ID: ";
+				std::getline(std::cin >> std::ws, inputTaken);
+				if(inputTaken == "0") {
+					isValid = true;
+					return det;
+				}
+				else {
+					if (inputTaken.length() >= 5) {
+						if (!isUserIDExists(inputTaken)) {
+							det.id = inputTaken;
+							isFound = true;
+							isValid = true;
+						}
+						else {
+							isFound = false;
+							errorMessage = "[INVALID_INPUT]: This User ID already exists! Try another one.\n";
+						}
+					}
+					else {
+						isFound = false;
+						errorMessage = "[INVALID_INPUT]: User ID must be at least 5 characters long!\n";
+					}
+				}
+			} while (!isFound || !isValid);
+			return det;
+		case 3:
+			isValid = false;
+			errorMessage = "";
+			do {
+				printHeader();
+				if (!isValid) {
+					if (!errorMessage.empty()) {
+						printError(errorMessage);
+					}
+				}
+				printBlue("Current Address: " + det.address + "\n");
+				printSkyBlue("Enter 0 to exit without changing any data\n");
+				std::cout << "Enter new Address: ";
+				std::getline(std::cin >> std::ws, inputTaken);
+				if(inputTaken == "0") {
+					isValid = true;
+					return det;
+				}
+				else {
+					if (inputTaken.length() >= 10) {
+						det.address = inputTaken;
+						isValid = true;
+					}
+					else {
+						isValid = false;
+						errorMessage = "[INVALID_INPUT]: Address must be at least 10 characters long!\n";
+					}
+				}
+			} while (!isValid);
+		case 4:
+			isValid = false;
+			errorMessage = "";
+			do {
+				printHeader();
+				if (!isValid) {
+					if (!errorMessage.empty()) {
+						printError(errorMessage);
+					}
+				}
+				printBlue("Current City: " + det.city + "\n");
+				printSkyBlue("Enter 0 to exit without changing any data\n");
+				std::cout << "Enter new City: ";
+				std::getline(std::cin >> std::ws, inputTaken);
+				if(inputTaken == "0") {
+					isValid = true;
+					return det;
+				}
+				else {
+					if (inputTaken.length() >= 3) {
+						det.city = inputTaken;
+						isValid = true;
+					}
+					else {
+						isValid = false;
+						errorMessage = "[INVALID_INPUT]: City must be at least 3 characters long!\n";
+					}
+				}
+			} while (!isValid);
+		case 5:
+			isValid = false;
+			errorMessage = "";
+			do {
+				printHeader();
+				if (!isValid) {
+					if (!errorMessage.empty()) {
+						printError(errorMessage);
+					}
+				}
+				printBlue("Current Province: " + det.province + "\n");
+				printSkyBlue("Enter 0 to exit without changing any data\n");
+				std::cout << "Enter new Province: ";
+				std::getline(std::cin >> std::ws, inputTaken);
+				if(inputTaken == "0") {
+					isValid = true;
+					return det;
+				}
+				else {
+					if (inputTaken.length() >= 3) {
+						det.province = inputTaken;
+						isValid = true;
+					}
+					else {
+						isValid = false;
+						errorMessage = "[INVALID_INPUT]: Province must be at least 3 characters long!\n";
+					}
+				}
+			} while (!isValid);
+		case 6:
+			isValid = false;
+			errorMessage = "";
+			do {
+				printHeader();
+				if (!isValid) {
+					if (!errorMessage.empty()) {
+						printError(errorMessage);
+					}
+				}
+				printBlue("Current Country: " + det.country + "\n");
+				printSkyBlue("Enter 0 to exit without changing any data\n");
+				std::cout << "Enter new Country: ";
+				std::getline(std::cin >> std::ws, inputTaken);
+				if(inputTaken == "0") {
+					isValid = true;
+					return det;
+				}
+				else {
+					if (inputTaken.length() >= 3) {
+						det.country = inputTaken;
+						isValid = true;
+					}
+					else {
+						isValid = false;
+						errorMessage = "[INVALID_INPUT]: Country must be at least 3 characters long!\n";
+					}
+				}
+			} while (!isValid);
+		case 7:
+			isValid = false;
+			errorMessage = "";
+			do {
+				printHeader();
+				if (!isValid) {
+					if (!errorMessage.empty()) {
+						printError(errorMessage);
+					}
+				}
+				printBlue("Current Contact: " + det.contact + "\n");
+				printSkyBlue("Enter 0 to exit without changing any data\n");
+				std::cout << "Enter new Contact: ";
+				std::getline(std::cin >> std::ws, inputTaken);
+				if(inputTaken == "0") {
+					isValid = true;
+					return det;
+				}
+				else {
+					if (inputTaken.length() >= 10) {
+						det.contact = inputTaken;
+						isValid = true;
+					}
+					else {
+						isValid = false;
+						errorMessage = "[INVALID_INPUT]: Contact must be at least 10 characters long!\n";
+					}
+				}
+			} while (!isValid);
+
+		case 8:
+			isValid = false;
+			errorMessage = "";
+			do {
+				printHeader();
+				if (!isValid) {
+					if (!errorMessage.empty()) {
+						printError(errorMessage);
+					}
+				}
+				printBlue("Current Passport NO#: " + det.passport + "\n");
+				printSkyBlue("Enter 0 to exit without changing any data\n");
+				std::cout << "Enter new Passport NO#: ";
+				std::getline(std::cin >> std::ws, inputTaken);
+				if(inputTaken == "0") {
+					isValid = true;
+					return det;
+				}
+				else {
+					if (inputTaken.length() >= 8) {
+						det.passport = inputTaken;
+						isValid = true;
+					}
+					else {
+						isValid = false;
+						errorMessage = "[INVALID_INPUT]: Passport NO# must be at least 8 characters long!\n";
+					}
+				}
+			} while (!isValid);
+		case 9:
+			isValid = false;
+			errorMessage = "";
+			do {
+				printHeader();
+				if (!isValid) {
+					if (!errorMessage.empty()) {
+						printError(errorMessage);
+					}
+				}
+				printBlue("Current Password: " + det.password + "\n");
+				printSkyBlue("Enter 0 to exit without changing any data\n");
+				std::cout << "Enter new Password: ";
+				std::getline(std::cin >> std::ws, inputTaken);
+				if(inputTaken == "0") {
+					isValid = true;
+					return det;
+				}
+				else {
+					if (inputTaken.length() >= 6) {
+						det.password = inputTaken;
+						isValid = true;
+					}
+					else {
+						isValid = false;
+						errorMessage = "[INVALID_INPUT]: Password must be at least 6 characters long!\n";
+					}
+				}
+			} while (!isValid);
+		case 10:
+			isValid = false;
+			errorMessage = "";
+			do {
+				printHeader();
+				if(!isValid) {
+					if (!errorMessage.empty()) {
+						printError(errorMessage);
+					}
+				}
+				printBlue("Current Balance: " + std::to_string(det.balance) + "\n");
+				printSkyBlue("Enter 0 to exit without changing any data\n");
+				std::cout << "Enter new Balance: ";
+				std::cin >> inputTaken;
+				if(inputTaken == "0") {
+					isValid = true;
+					return det;
+				}
+				else {
+					try {
+						amountInput = std::stoll(inputTaken);
+						if(amountInput >= 0) {
+							det.balance = amountInput;
+							isValid = true;
+						}
+						else {
+							isValid = false;
+							errorMessage = "[INVALID_INPUT]: Balance cannot be negative!\n";
+						}
+					}
+					catch (std::invalid_argument&) {
+						isValid = false;
+						errorMessage = "[INVALID_INPUT]: Please enter a valid numeric value for balance!\n";
+					}
+					catch (std::out_of_range&) {
+						isValid = false;
+						errorMessage = "[INVALID_INPUT]: The entered balance is out of range!\n";
+					}
+				}
+			} while (!isValid);
+
+		default:
+			return det;
+	}
+}
+
+//Function to edit a field and save changes in file
+void editAField(std::string userId, UsersDetails det, int type, int noOfBalanceUsers, User users[]) {
+	std::ofstream savePassengersFile;
+	switch (type) {
+		case 1:
+			det = getUserDetailsAfterChange(det, 1);
+			updateUserDetailsFile(det, noOfBalanceUsers);
+			break;
+		case 2:
+			det = getUserDetailsAfterChange(det, 2);
+			updateUserDetailsFile(det, noOfBalanceUsers);
+			updatePassengersFile(det.id, userId, users, noOfBalanceUsers);
+			break;
+		case 3:
+			det = getUserDetailsAfterChange(det, 3);
+			updateUserDetailsFile(det, noOfBalanceUsers);
+			break;
+		case 4:
+			det = getUserDetailsAfterChange(det, 4);
+			updateUserDetailsFile(det, noOfBalanceUsers);
+			break;
+		case 5:
+			det = getUserDetailsAfterChange(det, 5);
+			updateUserDetailsFile(det, noOfBalanceUsers);
+			break;
+		case 6:
+			det = getUserDetailsAfterChange(det, 6);
+			updateUserDetailsFile(det, noOfBalanceUsers);
+			break;
+		case 7:
+			det = getUserDetailsAfterChange(det, 7);
+			updateUserDetailsFile(det, noOfBalanceUsers);
+			break;
+		case 8:
+			det = getUserDetailsAfterChange(det, 8);
+			updateUserDetailsFile(det, noOfBalanceUsers);
+			break;
+		case 9:
+			det = getUserDetailsAfterChange(det, 9);
+			updateUserDetailsFile(det, noOfBalanceUsers);
+			for (int i = 0; i < noOfBalanceUsers; i++) {
+				if (users[i].userID == det.id) {
+					users[i].password = det.password;
+					break;
+				}
+			}
+			savePassengersFile.open("database/passengers.txt");
+			if (!savePassengersFile.is_open()) {
+				printError("There was an error while saving updated passengers file.\n");
+			}
+			else {
+				for (int i = 0; i < noOfBalanceUsers; i++) {
+					savePassengersFile << users[i].userID << " " << users[i].password << "\n";
+				}
+				printSuccess("Passengers file has been updated with new Password!\n");
+				savePassengersFile.close();
+			}
+			break;
+
+		case 10:
+			det = getUserDetailsAfterChange(det, 10);
+			updateUserDetailsFile(det, noOfBalanceUsers);
+			break;
+		default:
+			break;
+	}
+}
+
+//Edit Users Details
+void editUserDetails(User* users, int noOfUsers, int noOfBalanceUsers) {
+	bool isValid = false;
+	std::string userId;
+	std::string errorMessage = "";
+	do {
+		displayUsersWithIDs(users, noOfUsers);
+		if (!isValid) {
+			if (!errorMessage.empty()) {
+				printError(errorMessage);
+			}
+		}
+		std::cout << "Enter ID of the user you want to change: ";
+		std::cin >> userId;
+		for (int i = 0; i < noOfUsers; i++) {
+			if (userId == users[i].userID) {
+				isValid = true;
+				break;
+			}
+		}
+		if (!isValid) {
+			errorMessage = "[INVALID_INPUT]: This ID does not exist!\n";
+		}
+	} while (!isValid);
+
+	UsersDetails userDetails = getDetailsForOneUser(userId, noOfBalanceUsers, users, noOfUsers);
+	isValid = false;
+	errorMessage = "";
+	int changeCoice = 0;
+	do {
+		printHeader();
+		printBlue("-------------- USER DETAILS --------------\n");
+		std::cout << "\t1. UserName:     " + userDetails.userName << std::endl;
+		std::cout << "\t2. ID:           " + userDetails.id << std::endl;
+		std::cout << "\t3. Address:      " + userDetails.address << std::endl;
+		std::cout << "\t4. City:         " + userDetails.city << std::endl;
+		std::cout << "\t5. Province:     " + userDetails.province << std::endl;
+		std::cout << "\t6. Country:      " + userDetails.country << std::endl;
+		std::cout << "\t7. Contact:      " + userDetails.contact << std::endl;
+		std::cout << "\t8. Passport NO#: " + userDetails.passport << std::endl;
+		std::cout << "\t9. Password:     " + userDetails.password << std::endl;
+		std::cout << "\t10. Balance:     " + std::to_string(userDetails.balance) << std::endl;
+		std::cout << "Enter a number to change/edit that thing (1-10): ";
+		changeCoice = getValidInteger(1, 10, isValid);
+	} while (!isValid);
+
+	editAField(userId, userDetails, changeCoice, noOfBalanceUsers, users);
+}
+
+void manageUsers(int noOfBalanceUsers, User* users, int noOfUsers) {
 	int choice = showManageUsersMenu();
 	switch (choice)
 	{
 		case 1:
-		viewAllUsersData(noOfBalanceUsers);
-		break;
+			viewAllUsersData(noOfBalanceUsers);
+			break;
+		case 2:
+			editUserDetails(users, noOfUsers, noOfBalanceUsers);
+			break;
 	default:
 		break;
 	}

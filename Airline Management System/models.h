@@ -42,3 +42,16 @@ struct UserBalance {
     std::string userId = "";
     long long balance = 0;
 };
+
+struct UsersDetails {
+    std::string userName = "";
+    std::string id = "";
+    std::string address = "";
+    std::string city = "";
+    std::string province = "";
+    std::string country = "";
+    std::string contact = "";
+    std::string passport = "";
+    std::string password = "";
+    long long balance = 0;
+};
