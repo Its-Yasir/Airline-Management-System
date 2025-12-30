@@ -35,7 +35,7 @@ void updatePassengersFile(std::string newUserId, std::string oldUserId, User use
 
 void editAField(std::string userId, UsersDetails det, int type, int noOfBalanceUsers, User users[]);
 
-void updateUserDetailsFile(UsersDetails userDetail, int size);
+void updateUserDetailsFile(UsersDetails userDetail);
 
 UsersDetails getUserDetailsAfterChange(UsersDetails det, int type);
 

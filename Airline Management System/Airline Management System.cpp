@@ -17,6 +17,7 @@ int main()
     std::string userID = "";
 
 
+
     std::string currentlyLoggenIn = "";
     User* Admins = loadAdmins(totalAdmins);
     User* myUsers = loadUsers(totalUsers);

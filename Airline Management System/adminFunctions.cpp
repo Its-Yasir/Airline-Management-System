@@ -204,7 +204,7 @@ void viewAllUsersData(int noOfBalanceUsers) {
 		printBlue("--------------------------------------------------------");
 		std::string header = " [" + std::to_string(count) + "] User: " + username;
 		printYellow(header);
-		printBlue("--------------------------------------------------------\n");
+		printBlue(" --------------------------------------------------------\n");
 
 		printSkyBlue(" Address:   ");
 		std::cout << address << std::endl;
@@ -251,61 +251,79 @@ void displayUsersWithIDs(User* users, int noOfUsers) {
 }
 
 //Update Users Extra data file
-void updateUserDetailsFile(UsersDetails userDetail, int size) {
-	std::ifstream loadUserDetailsFile("database/users-extra-data.txt");
-	UsersDetails* allUserDetails = nullptr;
-	allUserDetails = new UsersDetails[size];
-	if (!loadUserDetailsFile.is_open()) {
-		printError("There was an error while opening the file!\n");
-	}
-	else {
-		std::string line;
-		int count = 0;
-		while (count < size && std::getline(loadUserDetailsFile, line)) {
-			std::stringstream ss(line);
-			std::string username, userId, address, city, province, country, phone, passport, password, balance;
-			std::getline(ss, username, '|');
-			std::getline(ss, userId, '|');
-			std::getline(ss, address, '|');
-			std::getline(ss, city, '|');
-			std::getline(ss, province, '|');
-			std::getline(ss, country, '|');
-			std::getline(ss, phone, '|');
-			std::getline(ss, passport, '|');
-			std::getline(ss, password, '|');
-			std::getline(ss, balance, '|');
-
-			allUserDetails[count].userName = username;
-			allUserDetails[count].id = userId;
-			allUserDetails[count].address = address;
-			allUserDetails[count].city = city;
-			allUserDetails[count].province = province;
-			allUserDetails[count].country = country;
-			allUserDetails[count].country = country;
-			allUserDetails[count].contact = phone;
-			allUserDetails[count].passport = passport;
-			allUserDetails[count].password = password;
-			allUserDetails[count].balance = std::stoll(balance);
-			count++;
+void updateUserDetailsFile(UsersDetails userDetail) {
+	std::ifstream countFile("database/users-extra-data.txt");
+	int actualCount = 0;
+	std::string tempLine;
+	if (countFile.is_open()) {
+		while (std::getline(countFile, tempLine)) {
+			if (!tempLine.empty()) actualCount++;
 		}
-
-		loadUserDetailsFile.close();
+		countFile.close();
 	}
 
-	for(int i = 0; i < size; i++) {
-		if(allUserDetails[i].id == userDetail.id) {
-			allUserDetails[i] = userDetail;
+	int maxCapacity = actualCount + 1;
+	UsersDetails* allUserDetails = new UsersDetails[maxCapacity];
+
+	std::ifstream loadFile("database/users-extra-data.txt");
+	int loadedCount = 0;
+
+	if (loadFile.is_open()) {
+		std::string line;
+		while (loadedCount < actualCount && std::getline(loadFile, line)) {
+			if (line.empty()) continue;
+
+			std::stringstream ss(line);
+			std::string uName, uId, uAddr, uCity, uProv, uCount, uPhone, uPass, uPwd, uBal;
+
+			std::getline(ss, uName, '|');
+			std::getline(ss, uId, '|');
+			std::getline(ss, uAddr, '|');
+			std::getline(ss, uCity, '|');
+			std::getline(ss, uProv, '|');
+			std::getline(ss, uCount, '|');
+			std::getline(ss, uPhone, '|');
+			std::getline(ss, uPass, '|');
+			std::getline(ss, uPwd, '|');
+			std::getline(ss, uBal, '|');
+
+			allUserDetails[loadedCount].userName = uName;
+			allUserDetails[loadedCount].id = uId;
+			allUserDetails[loadedCount].address = uAddr;
+			allUserDetails[loadedCount].city = uCity;
+			allUserDetails[loadedCount].province = uProv;
+			allUserDetails[loadedCount].country = uCount;
+			allUserDetails[loadedCount].contact = uPhone;
+			allUserDetails[loadedCount].passport = uPass;
+			allUserDetails[loadedCount].password = uPwd;
+			try { allUserDetails[loadedCount].balance = std::stoll(uBal); }
+			catch (...) { allUserDetails[loadedCount].balance = 0; }
+
+			loadedCount++;
+		}
+		loadFile.close();
+	}
+
+
+	bool found = false;
+	for (int i = 0; i < loadedCount; i++) {
+		if (allUserDetails[i].id == userDetail.id) {
+			allUserDetails[i] = userDetail; // Update existing
+			found = true;
 			break;
 		}
 	}
 
-	std::ofstream saveUpdatedUserDetailsFile("database/users-extra-data.txt");
-	if (!saveUpdatedUserDetailsFile.is_open()) {
-		printError("there was an error while saving new content to file!\n");
+	if (!found) {
+		allUserDetails[loadedCount] = userDetail;
+		loadedCount++;
 	}
-	else {
-		for (int i = 0; i < size; i++) {
-			saveUpdatedUserDetailsFile
+
+
+	std::ofstream saveFile("database/users-extra-data.txt");
+	if (saveFile.is_open()) {
+		for (int i = 0; i < loadedCount; i++) {
+			saveFile
 				<< allUserDetails[i].userName + "|"
 				<< allUserDetails[i].id + "|"
 				<< allUserDetails[i].address + "|"
@@ -315,11 +333,13 @@ void updateUserDetailsFile(UsersDetails userDetail, int size) {
 				<< allUserDetails[i].contact + "|"
 				<< allUserDetails[i].passport + "|"
 				<< allUserDetails[i].password + "|"
-				<< allUserDetails[i].balance + "\n";
+				<< allUserDetails[i].balance << "\n";
 		}
-
-		printSuccess("Changes have been updated!\n");
-		saveUpdatedUserDetailsFile.close();
+		printSuccess("File updated successfully!\n");
+		saveFile.close();
+	}
+	else {
+		printError("Error saving file!\n");
 	}
 
 	delete[] allUserDetails;
@@ -374,38 +394,46 @@ void updatePassengersFile(std::string newUserId, std::string oldUserId, User use
 
 //Get Info for One User
 UsersDetails getDetailsForOneUser(std::string userId, int noOfBalanceUsers, User myUsers[], int noOfUsers) {
-	UsersDetails userDetails = { "", "", "", "", "", "", "", "", "", 0, };
+	UsersDetails userDetails = { "", "", "", "", "", "", "", "", "", 0 };
 
+	bool foundInLogin = false;
 	for (int i = 0; i < noOfUsers; i++) {
-		if(myUsers[i].userID == userId) {
+		if (myUsers[i].userID == userId) {
 			userDetails.password = myUsers[i].password;
+			userDetails.id = userId;
+			foundInLogin = true;
 			break;
 		}
 	}
 
+	if (!foundInLogin) return userDetails;
+
 	std::ifstream usersExtraDataFile("database/users-extra-data.txt");
 	if (!usersExtraDataFile.is_open()) {
-		printError("There was an error while opening the file\n");
+		printError("Warning: users-extra-data.txt not found. Returning partial info.\n");
+		return userDetails;
 	}
+
 	std::string line;
 	while (std::getline(usersExtraDataFile, line)) {
-		std::stringstream ss(line);
-		std::string username, userIdFormFile, address, city, province, country, phone, passport;
+		if (line.empty()) continue;
 
+		std::stringstream ss(line);
+		std::string username, userIdFormFile, address, city, province, country, phone, passport, password, balanceStr;
 
 		std::getline(ss, username, '|');
 		std::getline(ss, userIdFormFile, '|');
-		std::getline(ss, address, '|');
-		std::getline(ss, city, '|');
-		std::getline(ss, province, '|');
-		std::getline(ss, country, '|');
-		std::getline(ss, phone, '|');
-		std::getline(ss, passport, '|');
-
-		std::string balance = getBalanceForUser(userId, noOfBalanceUsers);
 
 		if (userIdFormFile == userId) {
-			userDetails.id = userIdFormFile;
+			std::getline(ss, address, '|');
+			std::getline(ss, city, '|');
+			std::getline(ss, province, '|');
+			std::getline(ss, country, '|');
+			std::getline(ss, phone, '|');
+			std::getline(ss, passport, '|');
+			std::getline(ss, password, '|');
+			std::getline(ss, balanceStr, '|');
+
 			userDetails.userName = username;
 			userDetails.address = address;
 			userDetails.city = city;
@@ -413,13 +441,27 @@ UsersDetails getDetailsForOneUser(std::string userId, int noOfBalanceUsers, User
 			userDetails.country = country;
 			userDetails.contact = phone;
 			userDetails.passport = passport;
-			userDetails.balance = std::stoll(balance); //Convert string to int
+
+			try {
+				if (!balanceStr.empty()) {
+					userDetails.balance = std::stoll(balanceStr);
+				}
+				else {
+					std::string bal = getBalanceForUser(userId, noOfBalanceUsers);
+					userDetails.balance = std::stoll(bal);
+				}
+			}
+			catch (...) {
+				userDetails.balance = 0;
+			}
 
 			usersExtraDataFile.close();
 			return userDetails;
 		}
-
 	}
+
+	usersExtraDataFile.close();
+	return userDetails;
 }
 
 //This funtion will change the UserDetails object and return an updated one
@@ -778,40 +820,40 @@ void editAField(std::string userId, UsersDetails det, int type, int noOfBalanceU
 	switch (type) {
 		case 1:
 			det = getUserDetailsAfterChange(det, 1);
-			updateUserDetailsFile(det, noOfBalanceUsers);
+			updateUserDetailsFile(det);
 			break;
 		case 2:
 			det = getUserDetailsAfterChange(det, 2);
-			updateUserDetailsFile(det, noOfBalanceUsers);
+			updateUserDetailsFile(det);
 			updatePassengersFile(det.id, userId, users, noOfBalanceUsers);
 			break;
 		case 3:
 			det = getUserDetailsAfterChange(det, 3);
-			updateUserDetailsFile(det, noOfBalanceUsers);
+			updateUserDetailsFile(det);
 			break;
 		case 4:
 			det = getUserDetailsAfterChange(det, 4);
-			updateUserDetailsFile(det, noOfBalanceUsers);
+			updateUserDetailsFile(det);
 			break;
 		case 5:
 			det = getUserDetailsAfterChange(det, 5);
-			updateUserDetailsFile(det, noOfBalanceUsers);
+			updateUserDetailsFile(det);
 			break;
 		case 6:
 			det = getUserDetailsAfterChange(det, 6);
-			updateUserDetailsFile(det, noOfBalanceUsers);
+			updateUserDetailsFile(det);
 			break;
 		case 7:
 			det = getUserDetailsAfterChange(det, 7);
-			updateUserDetailsFile(det, noOfBalanceUsers);
+			updateUserDetailsFile(det);
 			break;
 		case 8:
 			det = getUserDetailsAfterChange(det, 8);
-			updateUserDetailsFile(det, noOfBalanceUsers);
+			updateUserDetailsFile(det);
 			break;
 		case 9:
 			det = getUserDetailsAfterChange(det, 9);
-			updateUserDetailsFile(det, noOfBalanceUsers);
+			updateUserDetailsFile(det);
 			for (int i = 0; i < noOfBalanceUsers; i++) {
 				if (users[i].userID == det.id) {
 					users[i].password = det.password;
@@ -833,7 +875,7 @@ void editAField(std::string userId, UsersDetails det, int type, int noOfBalanceU
 
 		case 10:
 			det = getUserDetailsAfterChange(det, 10);
-			updateUserDetailsFile(det, noOfBalanceUsers);
+			updateUserDetailsFile(det);
 			break;
 		default:
 			break;
@@ -866,6 +908,26 @@ void editUserDetails(User* users, int noOfUsers, int noOfBalanceUsers) {
 	} while (!isValid);
 
 	UsersDetails userDetails = getDetailsForOneUser(userId, noOfBalanceUsers, users, noOfUsers);
+
+	if (userDetails.userName.empty()) {
+		printError("Warning: No detailed data found for this user.\n");
+		printSkyBlue("You are about to create new data for User ID: " + userId + "\n");
+		userDetails.id = userId;
+		if (userDetails.password.empty()) {
+			userDetails.password = "pass123";
+		}
+		userDetails.userName = "New User";
+		userDetails.address = "Not Set";
+		userDetails.city = "Not Set";
+		userDetails.province = "Not Set";
+		userDetails.country = "Not Set";
+		userDetails.contact = "Not Set";
+		userDetails.passport = "Not Set";
+		userDetails.balance = 0;
+		updateUserDetailsFile(userDetails);
+		printSuccess("New user details created with default values. You can edit them now.\n");
+	}
+
 	isValid = false;
 	errorMessage = "";
 	int changeCoice = 0;
