@@ -97,7 +97,7 @@ int main()
 
 
                 switch (adminChoice) {
-                case 1: manageUsers(); (void)_getch(); break;
+                case 1: manageUsers(totalUsersWithBalance); (void)_getch(); break;
                 case 2: manageFlights(); (void)_getch(); break;
                 case 3: viewReservationReportsAdmin(); (void)_getch(); break;
                 }

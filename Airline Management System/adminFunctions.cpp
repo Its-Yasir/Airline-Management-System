@@ -89,7 +89,7 @@ void createAdminFile() {
 }
 
 //Manage Users Menu
-int showMangeUsersMenu() {
+int showManageUsersMenu() {
 	int choice;
 	bool isValid = true;
 	do {
@@ -148,9 +148,106 @@ User* loadAdmins(int& size) {
 
 }
 
-void manageUsers() {
-	int choice = showMangeUsersMenu();
-	printSuccess("Users managed Successfully" + std::to_string(choice));
+//Find balance for a specific username
+std::string getBalanceForUser(std::string userId, int size) {
+	std::ifstream balanceFile("database/users-balance.txt");
+	if (!balanceFile.is_open()) {
+		printError("Could not open users-balance.txt file.");
+		return "0";
+	}
+	int count = 0;
+	std::string line, user, balance;
+	while (count < size && balanceFile
+		>> user
+		>> balance) {
+		count++;
+		if(user == userId) {
+			balanceFile.close();
+			return balance;
+		}
+	}
+	return "0";
+}
+
+//View All Userrs
+void viewAllUsersData(int noOfBalanceUsers) {
+	std::ifstream file("database/users-extra-data.txt");
+	if (!file.is_open()) {
+		printError("There was an error while opening users-extra-data.txt");
+		return;
+	}
+
+	std::string line;
+	int count = 1;
+
+	printBlue("==========================================");
+	printYellow("           ALL USERS DETAILES                    ");
+	printBlue("==========================================");
+
+	while (std::getline(file, line)) {
+		std::stringstream ss(line);
+		std::string username, userId, address, city, province, country, phone, passport;
+
+
+		std::getline(ss, username, '|');
+		std::getline(ss, userId, '|');
+		std::getline(ss, address, '|');
+		std::getline(ss, city, '|');
+		std::getline(ss, province, '|');
+		std::getline(ss, country, '|');
+		std::getline(ss, phone, '|');
+		std::getline(ss, passport, '|');
+
+
+		std::string balance = getBalanceForUser(userId, noOfBalanceUsers);
+
+		printBlue("--------------------------------------------------------");
+		std::string header = " [" + std::to_string(count) + "] User: " + username;
+		printYellow(header);
+		printBlue("--------------------------------------------------------\n");
+
+		printSkyBlue(" Address:   ");
+		std::cout << address << std::endl;
+
+		printSkyBlue(" City:      ");
+		std::cout << city << std::endl;
+
+		printSkyBlue(" Province:  ");
+		std::cout << province << std::endl;
+
+		printSkyBlue(" Country:   ");
+		std::cout << country << std::endl;
+
+		printSkyBlue(" Contact:   ");
+		std::cout << phone << std::endl;
+
+		printSkyBlue(" Passport:  ");
+		std::cout << passport << std::endl;
+
+		printSkyBlue(" Balance:   ");
+		printSuccess("PKR " + balance);
+
+		std::cout << std::endl;
+		count++;
+	}
+
+	printBlue("==================================================\n");
+	printSuccess(" End of Users\n");
+	printBlue("==================================================\n");
+
+	file.close();
+}
+
+void manageUsers(int noOfBalanceUsers) {
+	int choice = showManageUsersMenu();
+	switch (choice)
+	{
+		case 1:
+		viewAllUsersData(noOfBalanceUsers);
+		break;
+	default:
+		break;
+	}
 }
 
 void manageFlights() {

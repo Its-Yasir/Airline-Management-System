@@ -3,6 +3,8 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <sstream>
+
 #include "models.h"
 #include "functions.h"
 
@@ -15,9 +17,13 @@ User* loadAdmins(int& size);
 
 void createAdminFile();
 
-int showMangeUsersMenu();
+int showManageUsersMenu();
+
+std::string getBalanceForUser(std::string userId, int size);
+
+void viewAllUsersData(int noOfBalanceUsers);
 
 //Admin Menu Functions
-void manageUsers();
+void manageUsers(int noOfBalanceUsers);
 void manageFlights();
 void viewReservationReportsAdmin();
