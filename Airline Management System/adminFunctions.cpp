@@ -466,7 +466,8 @@ UsersDetails getUserDetailsAfterChange(UsersDetails det, int type) {
 					errorMessage = "[INVALID_INPUT]: Username cannot be empty or spaces only!\n";
 				}
 			} while (!isValid);
-
+			return det;
+			break;
 		case 2:
 			isValid = false;
 			errorMessage = "";
@@ -503,6 +504,7 @@ UsersDetails getUserDetailsAfterChange(UsersDetails det, int type) {
 				}
 			} while (!isFound || !isValid);
 			return det;
+			break;
 		case 3:
 			isValid = false;
 			errorMessage = "";
@@ -532,6 +534,8 @@ UsersDetails getUserDetailsAfterChange(UsersDetails det, int type) {
 					}
 				}
 			} while (!isValid);
+			return det;
+			break;
 		case 4:
 			isValid = false;
 			errorMessage = "";
@@ -561,6 +565,8 @@ UsersDetails getUserDetailsAfterChange(UsersDetails det, int type) {
 					}
 				}
 			} while (!isValid);
+			return det;
+			break;
 		case 5:
 			isValid = false;
 			errorMessage = "";
@@ -590,6 +596,8 @@ UsersDetails getUserDetailsAfterChange(UsersDetails det, int type) {
 					}
 				}
 			} while (!isValid);
+			return det;
+			break;
 		case 6:
 			isValid = false;
 			errorMessage = "";
@@ -619,6 +627,8 @@ UsersDetails getUserDetailsAfterChange(UsersDetails det, int type) {
 					}
 				}
 			} while (!isValid);
+			return det;
+			break;
 		case 7:
 			isValid = false;
 			errorMessage = "";
@@ -648,6 +658,8 @@ UsersDetails getUserDetailsAfterChange(UsersDetails det, int type) {
 					}
 				}
 			} while (!isValid);
+			return det;
+			break;
 
 		case 8:
 			isValid = false;
@@ -678,6 +690,8 @@ UsersDetails getUserDetailsAfterChange(UsersDetails det, int type) {
 					}
 				}
 			} while (!isValid);
+			return det;
+			break;
 		case 9:
 			isValid = false;
 			errorMessage = "";
@@ -707,6 +721,8 @@ UsersDetails getUserDetailsAfterChange(UsersDetails det, int type) {
 					}
 				}
 			} while (!isValid);
+			return det;
+			break;
 		case 10:
 			isValid = false;
 			errorMessage = "";
@@ -747,9 +763,12 @@ UsersDetails getUserDetailsAfterChange(UsersDetails det, int type) {
 					}
 				}
 			} while (!isValid);
+			return det;
+			break;
 
 		default:
 			return det;
+			break;
 	}
 }
 
