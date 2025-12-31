@@ -1103,6 +1103,7 @@ UsersDetails getAllInputsForNewUser(UsersDetails newUserDetails, int detailsTake
 	bool isValid = false;
 	std::string errorMessage = "";
 	std::string inputTaken;
+	long long balance;
 	switch (detailsTaken) {
 	case 0:
 		do {
@@ -1359,28 +1360,23 @@ UsersDetails getAllInputsForNewUser(UsersDetails newUserDetails, int detailsTake
 				}
 			}
 			std::cout << "Enter Balance: ";
-			std::getline(std::cin >> std::ws, inputTaken);
-			if(inputTaken == "0"){
-				return newUserDetails;
+			if(std::cin>>balance){
+				if(balance < 0) {
+					errorMessage = "[ERROR]: Balance cannot be negative!\n";
+					isValid = false;
+				}else {
+					isValid = true;
+					newUserDetails.balance = balance;
+					return newUserDetails;
+					break;
+				}
+			}else{
+				std::cin.clear();
+				std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+				errorMessage = "[ERROR]: Balance must be a numeric value!\n";
+				isValid = false;
 			}
-			if(inputTaken.empty()) {
-				errorMessage = "[ERROR]: Balance cannot be empty!\n";
-				isValid = false;
-			}else if(inputTaken.length() <5) {
-				errorMessage = "[ERROR]: Balance must be at least 5 characters long!\n";
-				isValid = false;
-			}else if(std::stoi(inputTaken) < 0) {
-				errorMessage = "[ERROR]: Balance cannot be negative!\n";
-				isValid = false;
-			}else if(!std::stoll(inputTaken)) {
-				errorMessage = "[ERROR]: Balance must be a number!\n";
-				isValid = false;
-			}else {
-				isValid = true;
-				newUserDetails.balance = std::stoll(inputTaken);
-				return newUserDetails;
-				break;
-			}
+
 		} while (!isValid);
 		break;
 	default:
