@@ -2141,10 +2141,44 @@ bool addFlightToFile(Flight newFlight) {
 	return true;
 }
 
+//This function inputs a choice that tells that what thing should be edited
+int inputChoiceForFlightEdit(Flight flight) {
+	bool isValid = false;
+	std::string errorMessage = "";
+	int choice = 0;
+	do {
+		printHeader();
+		printBlue("---------- FLIGHT DETAILS ----------\n");
+		std::cout<<"1. Flight ID: "<<flight.id<<"\n";
+		std::cout<<"2. Origin: "<<flight.origin<<"\n";
+		std::cout<<"3. Destination: "<<flight.destination<<"\n";
+		std::cout<<"4. Departure Time: "<<flight.depTime<<"\n";
+		std::cout<<"5. Arrival Time: "<<flight.arrTime<<"\n";
+		std::cout<<"6. Seats for Economy Class: "<<flight.seatsEco<<"\n";
+		std::cout<<"7. Seats for Business Class: "<<flight.seatsBus<<"\n";
+		std::cout<<"8. Seats for First Class: "<<flight.seatsFirst<<"\n";
+		std::cout<<"9. Price for Economy Class: "<<flight.priceEco<<"\n";
+		std::cout<<"10. Price for Business Class: "<<flight.priceBus<<"\n";
+		std::cout<<"11. Price for First Class: "<<flight.priceFirst<<"\n";
+		std::cout<<"12. Refund: "<<flight.refund<<"\n";
+		if (!isValid) {
+			if (!errorMessage.empty()) {
+				printError(errorMessage);
+			}
+		}
+		std::cout<<"Enter your choice: ";
+		choice = getValidInteger(1,12,isValid);
+
+	} while (!isValid);
+	return choice;
+}
+
 //This function is used to edit a fligt details
 void editFlight(Flight*& flights, int noOfFlights) {
 	bool isValid = false;
+	Flight selectedFlight;
 	std::string errorMessage = "";
+	int choice = 0;
 	std::string inputId = "";
 	do {
 		printHeader();
@@ -2159,6 +2193,7 @@ void editFlight(Flight*& flights, int noOfFlights) {
 		for (int i = 0; i < noOfFlights; i++) {
 			if (flights[i].id == inputId) {
 				isValid = true;
+				selectedFlight = flights[i];
 				break;
 			}
 
@@ -2168,6 +2203,9 @@ void editFlight(Flight*& flights, int noOfFlights) {
 		}
 	} while (!isValid);
 
+	if (isValid) {
+		choice = inputChoiceForFlightEdit(selectedFlight);
+	}
 
 }
 

@@ -66,6 +66,8 @@ bool isFlightIDExists(std::string flightID);
 
 bool addFlightToFile(Flight newFlight);
 
+int inputChoiceForFlightEdit(Flight flight);
+
 void editFlight(Flight*& flights, int noOfFlights);
 
 //Admin Menu Functions
