@@ -1833,7 +1833,7 @@ Flight getAllInputsForNewFlight(Flight flight, int detailsTaken) {
 					printError(errorMessage);
 				}
 			}
-			printYellow("Format 12Dec=02:00PM\n");
+			printYellow("Format 12Dec-02:00PM\n");
 			std::cout << "Enter Departure Time: ";
 			std::getline(std::cin >> std::ws, inputTaken);
 			if (inputTaken == "-1") {
@@ -1863,7 +1863,7 @@ Flight getAllInputsForNewFlight(Flight flight, int detailsTaken) {
 					printError(errorMessage);
 				}
 			}
-			printYellow("Format 12Dec=02:00PM\n");
+			printYellow("Format 12Dec-02:00PM\n");
 			std::cout << "Enter Arrival Time: ";
 			std::getline(std::cin >> std::ws, inputTaken);
 			if (inputTaken == "-1") {
@@ -2141,6 +2141,37 @@ bool addFlightToFile(Flight newFlight) {
 	return true;
 }
 
+//This function will update flights file
+bool updateFlightToFile(Flight* flights, Flight flight, int noOfFlights) {
+	std::ofstream loadFlightsFile("database/flights.txt", std::ios::out);
+	if (!loadFlightsFile.is_open()) {
+		printError("[ERROR]: Unable to open file!");
+		return false;
+	}
+	for (int i = 0; i < noOfFlights; i++) {
+		if (flights[i].id == flight.id) {
+			flights[i] = flight;
+			break;
+		}
+	}
+	for (int i = 0; i < noOfFlights; i++) {
+		loadFlightsFile << flights[i].id << " "
+			<< flights[i].origin << " "
+			<< flights[i].destination << " "
+			<< flights[i].depTime << " "
+			<< flights[i].arrTime << " "
+			<< flights[i].seatsEco << " "
+			<< flights[i].seatsBus << " "
+			<< flights[i].seatsFirst << " "
+			<< flights[i].priceEco << " "
+			<< flights[i].priceBus << " "
+			<< flights[i].priceFirst << " "
+			<< flights[i].refund << "\n";
+	}
+	loadFlightsFile.close();
+	return true;
+}
+
 //This function inputs a choice that tells that what thing should be edited
 int inputChoiceForFlightEdit(Flight flight) {
 	bool isValid = false;
@@ -2148,29 +2179,214 @@ int inputChoiceForFlightEdit(Flight flight) {
 	int choice = 0;
 	do {
 		printHeader();
-		printBlue("---------- FLIGHT DETAILS ----------\n");
-		std::cout<<"1. Flight ID: "<<flight.id<<"\n";
-		std::cout<<"2. Origin: "<<flight.origin<<"\n";
-		std::cout<<"3. Destination: "<<flight.destination<<"\n";
-		std::cout<<"4. Departure Time: "<<flight.depTime<<"\n";
-		std::cout<<"5. Arrival Time: "<<flight.arrTime<<"\n";
-		std::cout<<"6. Seats for Economy Class: "<<flight.seatsEco<<"\n";
-		std::cout<<"7. Seats for Business Class: "<<flight.seatsBus<<"\n";
-		std::cout<<"8. Seats for First Class: "<<flight.seatsFirst<<"\n";
-		std::cout<<"9. Price for Economy Class: "<<flight.priceEco<<"\n";
-		std::cout<<"10. Price for Business Class: "<<flight.priceBus<<"\n";
-		std::cout<<"11. Price for First Class: "<<flight.priceFirst<<"\n";
-		std::cout<<"12. Refund: "<<flight.refund<<"\n";
+		printBlue("----------------- FLIGHT DETAILS -----------------\n");
+		std::cout<<"1. Departure Time           : "<<flight.depTime<<"\n";
+		std::cout<<"2. Arrival Time             : "<<flight.arrTime<<"\n";
+		std::cout<<"3. Seats for Economy Class  : "<<flight.seatsEco<<"\n";
+		std::cout<<"4. Seats for Business Class : "<<flight.seatsBus<<"\n";
+		std::cout<<"5. Seats for First Class    : "<<flight.seatsFirst<<"\n";
+		std::cout<<"6. Price for Economy Class  : "<<flight.priceEco<<"\n";
+		std::cout<<"7. Price for Business Class : "<<flight.priceBus<<"\n";
+		std::cout<<"8. Price for First Class    : "<<flight.priceFirst<<"\n";
+		std::cout<<"9. Refund                   : "<<flight.refund<<"\n";
 		if (!isValid) {
 			if (!errorMessage.empty()) {
 				printError(errorMessage);
 			}
 		}
 		std::cout<<"Enter your choice: ";
-		choice = getValidInteger(1,12,isValid);
+		choice = getValidInteger(1,9,isValid);
 
 	} while (!isValid);
 	return choice;
+}
+
+//This function changes a field of flight based on choice
+Flight editFlightField(Flight flight, int choice) {
+	bool isValid = false;
+	std::string errorMessage = "";
+	std::string inputTaken;
+	long long numericInput = 0;
+	switch (choice) {
+	case 1:
+		do {
+			printHeader();
+			printSkyBlue("Current Departure Time: " + flight.depTime + "\n");
+			if (!isValid) {
+				if (!errorMessage.empty()) {
+					printError(errorMessage);
+				}
+			}
+			std::cout << "Enter new Departure Time: ";
+			std::cin >> inputTaken;
+			if (!inputTaken.empty()) {
+				flight.depTime= inputTaken;
+				isValid = true;
+				return flight;
+				break;
+			}
+			else {
+				errorMessage = "[ERROR]: Departure time cannot be empty!\n";
+				isValid - false;
+			}
+		} while (!isValid);
+		return flight;
+		break;
+	case 2:
+		do {
+			printHeader();
+			printSkyBlue("Current Arrival Time: " + flight.arrTime+ "\n");
+			if (!isValid) {
+				if (!errorMessage.empty()) {
+					printError(errorMessage);
+				}
+			}
+			std::cout << "Enter new Arrival Time: ";
+			std::cin >> inputTaken;
+			if (!inputTaken.empty()) {
+				flight.arrTime= inputTaken;
+				isValid = true;
+				return flight;
+				break;
+				
+			}
+			else {
+				errorMessage = "[ERROR]: Arrival Time cannot be empty!\n";
+				isValid - false;
+			}
+		} while (!isValid);
+		return flight;
+		break;
+	case 3:
+		do {
+			printHeader();
+			printSkyBlue("Current Seats for Economy Class: " + std::to_string(flight.seatsEco) + "\n");
+			if (!isValid) {
+				if (!errorMessage.empty()) {
+					printError(errorMessage);
+				}
+			}
+			std::cout << "Enter new Seats for Economy: ";
+			numericInput = getValidInteger(1, 450, isValid);
+			flight.seatsEco = numericInput;
+			isValid = true;
+			return flight;
+			break;
+		} while (!isValid);
+		return flight;
+		break;
+	case 4:
+		do {
+			printHeader();
+			printSkyBlue("Current Seats for Business Class: " + std::to_string(flight.seatsBus) + "\n");
+			if (!isValid) {
+				if (!errorMessage.empty()) {
+					printError(errorMessage);
+				}
+			}
+			std::cout << "Enter new Seats for Business Class: ";
+			numericInput = getValidInteger(1, 60, isValid);
+			flight.seatsBus = numericInput;
+			isValid = true;
+			return flight;
+			break;
+		} while (!isValid);
+		return flight;
+		break;
+	case 5:
+		do {
+			printHeader();
+			printSkyBlue("Current Seats for First Class: " + std::to_string(flight.seatsFirst) + "\n");
+			if (!isValid) {
+				if (!errorMessage.empty()) {
+					printError(errorMessage);
+				}
+			}
+			std::cout << "Enter new Seats for First Class: ";
+			numericInput = getValidInteger(1, 16, isValid);
+			flight.seatsFirst = numericInput;
+			isValid = true;
+			return flight;
+			break;
+		} while (!isValid);
+		return flight;
+		break;
+	case 6:
+		do {
+			printHeader();
+			printSkyBlue("Current Fare for Economy Class: " + std::to_string(flight.priceEco) + "\n");
+			if (!isValid) {
+				if (!errorMessage.empty()) {
+					printError(errorMessage);
+				}
+			}
+			std::cout << "Enter new Fare for Economy Class: ";
+			numericInput = getValidInteger(1, 10000, isValid);
+			flight.priceEco = (long long)numericInput;
+			isValid = true;
+			return flight;
+			break;
+		} while (!isValid);
+		return flight;
+		break;
+	case 7:
+		do {
+			printHeader();
+			printSkyBlue("Current Fare for Business Class: " + std::to_string(flight.priceBus) + "\n");
+			if (!isValid) {
+				if (!errorMessage.empty()) {
+					printError(errorMessage);
+				}
+			}
+			std::cout << "Enter new Fare for Business Class: ";
+			numericInput = getValidInteger(1, 15000, isValid);
+			flight.priceBus = (long long)numericInput;
+			isValid = true;
+			return flight;
+			break;
+		} while (!isValid);
+		return flight;
+		break;
+	case 8:
+		do {
+			printHeader();
+			printSkyBlue("Current Fare for First Class: " + std::to_string(flight.priceFirst) + "\n");
+			if (!isValid) {
+				if (!errorMessage.empty()) {
+					printError(errorMessage);
+				}
+			}
+			std::cout << "Enter new Fare for First Class: ";
+			numericInput = getValidInteger(1, 30000, isValid);
+			flight.priceFirst = (long long)numericInput;
+			isValid = true;
+			return flight;
+			break;
+		} while (!isValid);
+		return flight;
+		break;
+	case 9:
+		do {
+			printHeader();
+			printSkyBlue("Current Refund Percentage: " + std::to_string(flight.refund) + "%\n");
+			if (!isValid) {
+				if (!errorMessage.empty()) {
+					printError(errorMessage);
+				}
+			}
+			std::cout << "Enter new Refund %: ";
+			numericInput = getValidInteger(1, 100, isValid);
+			flight.priceEco = numericInput;
+			isValid = true;
+			return flight;
+			break;
+		} while (!isValid);
+		return flight;
+		break;
+	default:
+		break;
+	}
+	return flight;
 }
 
 //This function is used to edit a fligt details
@@ -2207,6 +2423,15 @@ void editFlight(Flight*& flights, int noOfFlights) {
 		choice = inputChoiceForFlightEdit(selectedFlight);
 	}
 
+	selectedFlight = editFlightField(selectedFlight, choice);
+
+	if (updateFlightToFile(flights, selectedFlight, noOfFlights)) {
+		flights = loadFlights(noOfFlights);
+		printSuccess("Flights has been updated in system!\n");
+	}
+	else {
+		printError("[ERROR]: While updating flights file!\n");
+	}
 }
 
 //This function is used to add a new Flight
@@ -2225,19 +2450,6 @@ void addFlight(Flight*& flights, int& noOfFlights) {
 	else {
 		printError("[ERROR]: While updating flights file!\n");
 	}
-	/*printHeader();
-	std::cout << newFlight.id << "\n";
-	std::cout << newFlight.origin << "\n";
-	std::cout << newFlight.destination << "\n";
-	std::cout << newFlight.depTime << "\n";
-	std::cout << newFlight.arrTime << "\n";
-	std::cout << newFlight.seatsBus << "\n";
-	std::cout << newFlight.seatsEco << "\n";
-	std::cout << newFlight.seatsFirst << "\n";
-	std::cout << newFlight.priceEco << "\n";
-	std::cout << newFlight.priceBus << "\n";
-	std::cout << newFlight.priceFirst << "\n";
-	std::cout << newFlight.refund << "\n";*/
 
 }
 
@@ -2258,7 +2470,7 @@ void manageFlights(Flight*& flights, int& noOfFlights) {
 		std::cout << "  2. Edit Flight\n";
 		std::cout << "  3. Remove Flight\n";
 		std::cout << "  4. View All Flights\n";
-		printError("  5. <= Exit to Admin Menu\n");
+		printError("  5. <= Exit to Admin Menu\n\n");
 		std::cout << "Enter your choice (1-5): ";
 		choice = getValidInteger(1, 5, isValid);
 	} while (!isValid);

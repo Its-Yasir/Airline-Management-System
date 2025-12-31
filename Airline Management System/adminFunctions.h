@@ -68,6 +68,10 @@ bool addFlightToFile(Flight newFlight);
 
 int inputChoiceForFlightEdit(Flight flight);
 
+Flight editFlightField(Flight flight, int choice);
+
+bool updateFlightToFile(Flight* flights, Flight flight, int noOfFlights);
+
 void editFlight(Flight*& flights, int noOfFlights);
 
 //Admin Menu Functions
