@@ -7,6 +7,8 @@
 
 int getValidInteger(int min, int max, bool& valid);
 
+std::string cleanString(std::string str);
+
 //Function for bookings
 void createBookingFile();
 void saveBookingToFile(SelectedFlight sec, std::string userID);

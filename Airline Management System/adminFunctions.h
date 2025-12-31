@@ -17,6 +17,10 @@ bool isUserIDExists(std::string userId);
 
 int showAdminMenu();
 
+void deleteUser(int& noOfUsers, User*& users, int& noOfBalanceUsers, UserBalance*& userBalances, std::string userId, Flight* flights, int& noOfFlights, SelectedFlight* userbookings);
+
+void removeUser(int& noOfUsers, User*& users, int& noOfBalanceUsers, UserBalance*& userBalances, Flight* flights, int& noOfFlights, SelectedFlight* userbookings);
+
 User* loadAdmins(int& size);
 
 void createAdminFile();
@@ -49,7 +53,9 @@ UsersDetails getUserDetailsAfterChange(UsersDetails det, int type);
 
 UsersDetails getDetailsForOneUser(std::string userId, int noOfBalanceUsers, User myUsers[], int noOfUsers);
 
+bool confirmDeleteUser(int& noOfUsers, std::string userId, User* users, int& noOfBalanceUsers, UserBalance* userBalances);
+
 //Admin Menu Functions
-void manageUsers(int& noOfBalanceUsers, User*& users, int& noOfUsers, UserBalance*& userBalances);
+void manageUsers(int& noOfBalanceUsers, User*& users, int& noOfUsers, UserBalance*& userBalances, Flight* flights, int noOfFlights, SelectedFlight* userbookings);
 void manageFlights();
 void viewReservationReportsAdmin();

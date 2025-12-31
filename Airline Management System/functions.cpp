@@ -54,6 +54,16 @@ int getValidInteger(int min, int max, bool& valid) {
 	}
 }
 
+std::string cleanString(std::string str) {
+	std::string clean = "";
+	for (char c : str) {
+		if (c != ' ' && c != '\t' && c != '\n' && c != '\r') {
+			clean += c;
+		}
+	}
+	return clean;
+}
+
 void SaveBalanceForUsers(UserBalance arr[], int size) {
 	std::ofstream userBalanceFile("database/users-balance.txt");
 	if (!userBalanceFile.is_open()) {

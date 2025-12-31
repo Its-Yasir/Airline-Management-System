@@ -306,8 +306,9 @@ void updateUserDetailsFile(UsersDetails userDetail) {
 
 
 	bool found = false;
+	std::string inputIDClean = cleanString(userDetail.id);
 	for (int i = 0; i < loadedCount; i++) {
-		if (allUserDetails[i].id == userDetail.id) {
+		if (allUserDetails[i].id == inputIDClean) {
 			allUserDetails[i] = userDetail; // Update existing
 			found = true;
 			break;
@@ -368,7 +369,6 @@ bool isUserIDExists(std::string userId) {
 	}
 	return false;
 }
-
 
 //Function to update passengers file when userID is changed
 void updatePassengersFile(std::string newUserId, std::string oldUserId, User users[], int noOfUsers) {
@@ -1448,8 +1448,197 @@ void addUser(int& noOfUsers, User*& users, int& noOfBalanceUsers, UserBalance*& 
 	}
 }
 
+//This function to confirm deletion of user
+bool confirmDeleteUser(int& noOfUsers, std::string userId, User* users, int& noOfBalanceUsers, UserBalance* userBalances){
+	bool isValid = false;
+	std::string errorMessage = "";
+	char confirmation;
+	do {
+		std::cout << "Are you sure you want to delete User ID: " << userId << "? (y/n): ";
+		std::cin >> confirmation;
+		if (confirmation == 'y' || confirmation == 'Y') {
+			isValid = true;
+			return isValid;
+			break;
+		}
+		else if (confirmation == 'n' || confirmation == 'N') {
+			return false;
+		}
+		else {
+			isValid = false;
+			errorMessage = "[INVAID_INPUT]: Please enter 'y' for yes or 'n' for no.\n";
+		}
+	} while (!isValid);
+}
+
+//This function deleted user from file and update users and user balances arrays
+void deleteUser(
+	int& noOfUsers,
+	User*& users,
+	int& noOfBalanceUsers,
+	UserBalance*& userBalances,
+	std::string userId,
+	Flight* flights,
+	int& noOfFlights,
+	SelectedFlight* userbookings
+) {
+	// Create temp array and copy all users except the one to delete
+	User* tempArrUsers = new User[noOfUsers - 1];
+	int tempIndex = 0;
+	for (int i = 0; i < noOfUsers; i++) {
+		if (!(userId == users[i].userID)) {
+			tempArrUsers[tempIndex] = users[i];
+			tempIndex++;
+		}
+	}
+
+	delete[] users;
+	users = tempArrUsers;
+	noOfUsers--;
+
+	std::ofstream savePassengersFile("database/passengers.txt");
+	if (!savePassengersFile.is_open()) {
+		printError("There was an error while saving updated passengers file.\n");
+	}
+	else {
+		for (int i = 0; i < noOfUsers; i++) {
+			savePassengersFile << users[i].userID << " " << users[i].password << "\n";
+		}
+		savePassengersFile.close();
+		printSuccess("Passengers file has been updated with new Password!\n");
+	}
+
+	// Create temp array and copy all user balances except the one to delete
+	UserBalance* tempUserBalanceArr = new UserBalance[noOfBalanceUsers - 1];
+	tempIndex = 0;
+	for (int i = 0; i < noOfBalanceUsers; i++) {
+		if (!(userId == userBalances[i].userId)) {
+			tempUserBalanceArr[tempIndex] = userBalances[i];
+			tempIndex++;
+		}
+	}
+
+	delete[] userBalances;
+	userBalances = tempUserBalanceArr;
+	noOfBalanceUsers--;
+
+	std::ofstream saveUserBalanceFile("database/users-balance.txt");
+	if (!saveUserBalanceFile.is_open()) {
+		printError("There was an error while saving updated users-balance file.\n");
+	}
+	else {
+		for (int i = 0; i < noOfBalanceUsers; i++) {
+			saveUserBalanceFile << userBalances[i].userId << " " << userBalances[i].balance << "\n";
+		}
+		saveUserBalanceFile.close();
+		printSuccess("Users-balance file has been updated with new Password!\n");
+	}
+
+
+	UsersDetails* allUserDetails = new UsersDetails[noOfUsers];
+
+	std::ifstream loadUserDetailsFile("database/users-extra-data.txt");
+	if (!loadUserDetailsFile.is_open())
+		printError("There was an error while loading users-extra-data.txt file.\n");
+	else {
+		std::string line;
+		int count = 0;
+		while (std::getline(loadUserDetailsFile, line)) {
+			std::stringstream ss(line);
+			std::string username, userID, address, city, province, country, phone, passport, balance, password;
+
+			// Read all fields first
+			std::getline(ss, username, '|');
+			std::getline(ss, userID, '|');
+			std::getline(ss, address, '|');
+			std::getline(ss, city, '|');
+			std::getline(ss, province, '|');
+			std::getline(ss, country, '|');
+			std::getline(ss, phone, '|');
+			std::getline(ss, passport, '|');
+			std::getline(ss, password, '|');
+			std::getline(ss, balance, '|');
+
+			// Only add to array if it's not the user to delete
+			if(userID != userId) {
+				allUserDetails[count] = {
+					username,
+					userID,
+					address,
+					city,
+					province,
+					country,
+					phone,
+					passport,
+					password,
+					std::stoll(balance)
+				};
+				count++;
+			}
+		}
+		loadUserDetailsFile.close();
+	}
+
+	std::ofstream saveUserDetailsFile("database/users-extra-data.txt");
+	if(!saveUserDetailsFile.is_open()) {
+		printError("There was an error while saving updated user-details file.\n");
+	}
+	else {
+		for(int i = 0; i < noOfUsers; i++) {
+			saveUserDetailsFile <<
+				allUserDetails[i].userName << "|"
+				<< allUserDetails[i].id << "|"
+				<< allUserDetails[i].address << "|"
+				<< allUserDetails[i].city << "|"
+				<< allUserDetails[i].province << "|"
+				<< allUserDetails[i].country << "|"
+				<< allUserDetails[i].contact << "|"
+				<< allUserDetails[i].passport << "|"
+				<< allUserDetails[i].password << "|"
+				<< allUserDetails[i].balance << "\n";
+		}
+		saveUserDetailsFile.close();
+		printSuccess("User-details file has been updated with new Password!\n");
+	}
+	
+	delete[] allUserDetails;
+}
+
+//Function to remove a user
+void removeUser(int& noOfUsers, User*& users, int& noOfBalanceUsers, UserBalance*& userBalances, Flight* flights, int& noOfFlights, SelectedFlight* userbookings){
+	bool isValid = false;
+	std::string userId;
+	std::string errorMessage = "";
+	do{
+		if (!isValid) {
+			if(!errorMessage.empty()){
+				printError(errorMessage);
+			}
+		}
+		displayUsersWithIDs(users, noOfUsers);
+		std::cout << "Enter User ID to remove: ";
+		std::cin >> userId;
+		if (isUserIDExists(userId)) {
+			isValid = true;
+			break;
+		} else {
+			errorMessage = "User ID does not exist!\n";
+			isValid = false;
+		}
+	} while (!isValid);
+
+	if (confirmDeleteUser(noOfUsers, userId, users, noOfBalanceUsers, userBalances)) {
+		deleteUser(noOfUsers, users, noOfBalanceUsers, userBalances, userId, flights, noOfFlights, userbookings);
+	}
+	else {
+		printSuccess("User deletion canceled.\n");
+		std::cout << "Press any key to exit!\n";
+		return;
+	}
+
+}
 //Function to manage users
-void manageUsers(int& noOfBalanceUsers, User*& users, int& noOfUsers, UserBalance*& userBalances) {
+void manageUsers(int& noOfBalanceUsers, User*& users, int& noOfUsers, UserBalance*& userBalances, Flight* flights, int noOfFlights, SelectedFlight* userbookings) {
 	int choice = showManageUsersMenu();
 	switch (choice)
 	{
@@ -1462,10 +1651,14 @@ void manageUsers(int& noOfBalanceUsers, User*& users, int& noOfUsers, UserBalanc
 	case 3:
 		addUser(noOfUsers, users, noOfBalanceUsers, userBalances);
 		break;
+	case 4:
+		removeUser(noOfUsers, users, noOfBalanceUsers, userBalances, flights, noOfFlights, userbookings);
+		break;
 	default:
 		break;
 	}
 }
+
 void manageFlights() {
 	printSuccess("Flights managed Successfully");
 }
