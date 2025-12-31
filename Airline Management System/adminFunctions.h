@@ -55,7 +55,15 @@ UsersDetails getDetailsForOneUser(std::string userId, int noOfBalanceUsers, User
 
 bool confirmDeleteUser(int& noOfUsers, std::string userId, User* users, int& noOfBalanceUsers, UserBalance* userBalances);
 
+void addFlight(Flight*& flights, int& noOfFlights);
+
+void printAddFlightHeader(Flight flight);
+
+Flight getAllInputsForNewFlight(Flight flight, int detailsTaken);
+
+bool isFlightIDExists(std::string flightID);
+
 //Admin Menu Functions
 void manageUsers(int& noOfBalanceUsers, User*& users, int& noOfUsers, UserBalance*& userBalances, Flight* flights, int noOfFlights, SelectedFlight* userbookings);
-void manageFlights();
+void manageFlights(Flight*& flights, int& noOfFlights);
 void viewReservationReportsAdmin();

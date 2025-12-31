@@ -1637,6 +1637,7 @@ void removeUser(int& noOfUsers, User*& users, int& noOfBalanceUsers, UserBalance
 	}
 
 }
+
 //Function to manage users
 void manageUsers(int& noOfBalanceUsers, User*& users, int& noOfUsers, UserBalance*& userBalances, Flight* flights, int noOfFlights, SelectedFlight* userbookings) {
 	int choice = showManageUsersMenu();
@@ -1659,8 +1660,430 @@ void manageUsers(int& noOfBalanceUsers, User*& users, int& noOfUsers, UserBalanc
 	}
 }
 
-void manageFlights() {
-	printSuccess("Flights managed Successfully");
+//Function to print add flight header
+void printAddFlightHeader(Flight flight) {
+	printHeader();
+	printBlue("--------------- ADD NEW FLIGHT ---------------\n\n");
+	printSkyBlue("Enter -1 at any point to cancel adding a new flight.\n");
+	if (!flight.id.empty()) {
+		printBlue("Flight ID: " + flight.id + "\n");
+	}
+	if(!flight.origin.empty()) {
+		printBlue("Origin City: " + flight.origin + "\n");
+	}
+	if(!flight.destination.empty()) {
+		printBlue("Departure City: " + flight.destination+ "\n");
+	}
+	if (!flight.depTime.empty()) {
+		printBlue("Departure Time: " + flight.depTime+ "\n");
+	}
+	if (!flight.arrTime.empty()) {
+		printBlue("Arrival Time: " + flight.arrTime+ "\n");
+	}
+	if (flight.seatsEco != -1) {
+		printBlue("Seats for Economy Class: " + std::to_string(flight.seatsEco) + "\n");
+	}
+	if (flight.seatsBus != -1) {
+		printBlue("Seats for Business Class: " + std::to_string(flight.seatsBus) + "\n");
+	}
+	if (flight.seatsFirst!= -1) {
+		printBlue("Seats for First Class: " + std::to_string(flight.seatsFirst) + "\n");
+	}
+	if(flight.priceEco != -1) {
+		printBlue("Price for Economy Class: " + std::to_string(flight.priceEco) + "\n");
+	}
+	if(flight.priceBus != -1) {
+		printBlue("Price for Business Class: " + std::to_string(flight.priceBus) + "\n");
+	}
+	if(flight.priceFirst != -1) {
+		printBlue("Price for First Class: " + std::to_string(flight.priceFirst) + "\n");
+	}
+	if (flight.refund != -1) {
+		printBlue("Refund percentage(%) : " + std::to_string(flight.refund) + "\n");
+	}
+
+}
+
+// This function checks wether a flight ID already exists
+bool isFlightIDExists(std::string flightID) {
+	std::ifstream loadFlightsFile("database/flights.txt");
+	if (!loadFlightsFile.is_open()) {
+		printError("There was an error while loading flights file.\n");
+		return false;
+	}
+	else {
+		std::string line;
+		while (std::getline(loadFlightsFile, line)) {
+			std::stringstream sss(line);
+			std::string id;
+			std::getline(sss, id, ' ');
+			if (id == flightID) {
+				loadFlightsFile.close();
+				return true;
+			}
+		}
+		loadFlightsFile.close();
+		return false;
+	}
+}
+
+//Function to input flight details required to add a new flight
+Flight getAllInputsForNewFlight(Flight flight, int detailsTaken) {
+	bool isValid = false;
+	std::string errorMessage = "";
+	std::string inputTaken;
+	long long numbericInputs = 0;
+	switch (detailsTaken) {
+	case 0:
+		do {
+			printAddFlightHeader(flight);
+			if (!isValid) {
+				if (!errorMessage.empty()) {
+					printError(errorMessage);
+				}
+			}
+			//Check wehter this ID already exists
+			std::cout << "Enter Flight ID: ";
+			std::getline(std::cin >> std::ws, inputTaken);
+			if (inputTaken == "-1") {
+				return flight;
+			}
+			if (inputTaken.empty()) {
+				errorMessage = "[ERROR]: Flight ID cannot be empty!\n";
+				isValid = false;
+			}
+			else if (inputTaken.length() < 4) {
+				errorMessage = "[ERROR]: Flight ID must be at least 4 characters long!\n";
+				isValid = false;
+			}
+			else {
+				isValid = true;
+				flight.id = inputTaken;
+				return flight;
+				break;
+			}
+		} while (!isValid);
+		break;
+	case 1:
+		do {
+			viewCreateNewUserHeader(newUserDetails, detailsTaken);
+			if (!isValid) {
+				if (!errorMessage.empty()) {
+					printError(errorMessage);
+				}
+			}
+			std::cout << "Enter User ID: ";
+			std::getline(std::cin >> std::ws, inputTaken);
+			if (inputTaken == "0") {
+				return newUserDetails;
+			}
+			if (inputTaken.empty()) {
+				errorMessage = "[ERROR]: User ID cannot be empty!\n";
+				isValid = false;
+			}
+			else if (inputTaken.length() < 5) {
+				errorMessage = "[ERROR]: User ID must be at least 5 characters long!\n";
+				isValid = false;
+			}
+			else if (isUserIDExists(inputTaken)) {
+				errorMessage = "[ERROR]: User ID already exists!\n";
+				isValid = false;
+			}
+			else {
+				isValid = true;
+				newUserDetails.id = inputTaken;
+				return newUserDetails;
+				break;
+			}
+		} while (!isValid);
+		break;
+	case 2:
+		do {
+			viewCreateNewUserHeader(newUserDetails, detailsTaken);
+			if (!isValid) {
+				if (!errorMessage.empty()) {
+					printError(errorMessage);
+				}
+			}
+			std::cout << "Enter Address: ";
+			std::getline(std::cin >> std::ws, inputTaken);
+			if (inputTaken == "0") {
+				return newUserDetails;
+			}
+			if (inputTaken.empty()) {
+				errorMessage = "[ERROR]: Address cannot be empty!\n";
+				isValid = false;
+			}
+			else if (inputTaken.length() < 10) {
+				errorMessage = "[ERROR]: Address must be at least 10 characters long!\n";
+				isValid = false;
+			}
+			else {
+				isValid = true;
+				newUserDetails.address = inputTaken;
+				return newUserDetails;
+				break;
+			}
+		} while (!isValid);
+		break;
+	case 3:
+		do {
+			viewCreateNewUserHeader(newUserDetails, detailsTaken);
+			if (!isValid) {
+				if (!errorMessage.empty()) {
+					printError(errorMessage);
+				}
+			}
+			std::cout << "Enter City: ";
+			std::getline(std::cin >> std::ws, inputTaken);
+			if (inputTaken == "0") {
+				return newUserDetails;
+			}
+			if (inputTaken.empty()) {
+				errorMessage = "[ERROR]: City cannot be empty!\n";
+				isValid = false;
+			}
+			else if (inputTaken.length() < 5) {
+				errorMessage = "[ERROR]: City must be at least 5 characters long!\n";
+				isValid = false;
+			}
+			else {
+				isValid = true;
+				newUserDetails.city = inputTaken;
+				return newUserDetails;
+				break;
+			}
+		} while (!isValid);
+		break;
+	case 4:
+		do {
+			viewCreateNewUserHeader(newUserDetails, detailsTaken);
+			if (!isValid) {
+				if (!errorMessage.empty()) {
+					printError(errorMessage);
+				}
+			}
+			std::cout << "Enter Province: ";
+			std::getline(std::cin >> std::ws, inputTaken);
+			if (inputTaken == "0") {
+				return newUserDetails;
+			}
+			if (inputTaken.empty()) {
+				errorMessage = "[ERROR]: Province cannot be empty!\n";
+				isValid = false;
+			}
+			else if (inputTaken.length() < 5) {
+				errorMessage = "[ERROR]: Province must be at least 5 characters long!\n";
+				isValid = false;
+			}
+			else {
+				isValid = true;
+				newUserDetails.province = inputTaken;
+				return newUserDetails;
+				break;
+			}
+		} while (!isValid);
+		break;
+	case 5:
+		do {
+			viewCreateNewUserHeader(newUserDetails, detailsTaken);
+			if (!isValid) {
+				if (!errorMessage.empty()) {
+					printError(errorMessage);
+				}
+			}
+			std::cout << "Enter Country: ";
+			std::getline(std::cin >> std::ws, inputTaken);
+			if (inputTaken == "0") {
+				return newUserDetails;
+			}
+			if (inputTaken.empty()) {
+				errorMessage = "[ERROR]: Country cannot be empty!\n";
+				isValid = false;
+			}
+			else if (inputTaken.length() < 5) {
+				errorMessage = "[ERROR]: Country must be at least 5 characters long!\n";
+				isValid = false;
+			}
+			else {
+				isValid = true;
+				newUserDetails.country = inputTaken;
+				return newUserDetails;
+				break;
+			}
+		} while (!isValid);
+		break;
+	case 6:
+		do {
+			viewCreateNewUserHeader(newUserDetails, detailsTaken);
+			if (!isValid) {
+				if (!errorMessage.empty()) {
+					printError(errorMessage);
+				}
+			}
+			std::cout << "Enter Contact: ";
+			std::getline(std::cin >> std::ws, inputTaken);
+			if (inputTaken == "0") {
+				return newUserDetails;
+			}
+			if (inputTaken.empty()) {
+				errorMessage = "[ERROR]: Contact cannot be empty!\n";
+				isValid = false;
+			}
+			else if (inputTaken.length() < 10) {
+				errorMessage = "[ERROR]: Contact must be at least 10 characters long!\n";
+				isValid = false;
+			}
+			else {
+				isValid = true;
+				newUserDetails.contact = inputTaken;
+				return newUserDetails;
+				break;
+			}
+		} while (!isValid);
+		break;
+	case 7:
+		do {
+			viewCreateNewUserHeader(newUserDetails, detailsTaken);
+			if (!isValid) {
+				if (!errorMessage.empty()) {
+					printError(errorMessage);
+				}
+			}
+			std::cout << "Enter Passport NO#: ";
+			std::getline(std::cin >> std::ws, inputTaken);
+			if (inputTaken == "0") {
+				return newUserDetails;
+			}
+			if (inputTaken.empty()) {
+				errorMessage = "[ERROR]: Passport NO# cannot be empty!\n";
+				isValid = false;
+			}
+			else if (inputTaken.length() < 5) {
+				errorMessage = "[ERROR]: Passport NO# must be at least 5 characters long!\n";
+				isValid = false;
+			}
+			else {
+				isValid = true;
+				newUserDetails.passport = inputTaken;
+				return newUserDetails;
+				break;
+			}
+		} while (!isValid);
+		break;
+	case 8:
+		do {
+			viewCreateNewUserHeader(newUserDetails, detailsTaken);
+			if (!isValid) {
+				if (!errorMessage.empty()) {
+					printError(errorMessage);
+				}
+			}
+			std::cout << "Enter Password: ";
+			std::getline(std::cin >> std::ws, inputTaken);
+			if (inputTaken == "0") {
+				return newUserDetails;
+			}
+			if (inputTaken.empty()) {
+				errorMessage = "[ERROR]: Password cannot be empty!\n";
+				isValid = false;
+			}
+			else if (inputTaken.length() < 5) {
+				errorMessage = "[ERROR]: Password must be at least 5 characters long!\n";
+				isValid = false;
+			}
+			else {
+				isValid = true;
+				newUserDetails.password = inputTaken;
+				return newUserDetails;
+				break;
+			}
+		} while (!isValid);
+		break;
+	case 9:
+		do {
+			viewCreateNewUserHeader(newUserDetails, detailsTaken);
+			if (!isValid) {
+				if (!errorMessage.empty()) {
+					printError(errorMessage);
+				}
+			}
+			std::cout << "Enter Balance: ";
+			if (std::cin >> balance) {
+				if (balance < 0) {
+					errorMessage = "[ERROR]: Balance cannot be negative!\n";
+					isValid = false;
+				}
+				else {
+					isValid = true;
+					newUserDetails.balance = balance;
+					return newUserDetails;
+					break;
+				}
+			}
+			else {
+				std::cin.clear();
+				std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+				errorMessage = "[ERROR]: Balance must be a numeric value!\n";
+				isValid = false;
+			}
+
+		} while (!isValid);
+		break;
+	default:
+		break;
+	}
+	return newUserDetails;
+}
+
+
+
+
+void addFlight(Flight*& flights, int& noOfFlights) {
+	Flight newFlight = { "", "", "", "", "", -1, -1, -1, -1, -1, -1, -1 };
+	int inputs = 12;
+	for(int i = 1; i <= inputs; i++) {
+		
+	}
+
+}
+
+void manageFlights(Flight*& flights, int& noOfFlights) {
+	bool isValid = false;
+	int choice = 0;
+	std::string errorMessage = "";
+
+	do {
+		printHeader();
+		printBlue("--------------- MANAGE FLIGHTS ---------------\n\n");
+		if (!isValid) {
+			if (!errorMessage.empty()) {
+				printError(errorMessage);
+			}
+		}
+		std::cout << "\t1. Add Flight\n";
+		std::cout << "\t2. Edit Flight\n";
+		std::cout << "\t3. Remove Flight\n";
+		std::cout << "\t4. View All Flights\n";
+		std::cout << "\t5. Exit to Admin Menu\n";
+		std::cout << "Enter your choice (1-5): ";
+		choice = getValidInteger(1, 5, isValid);
+	} while (!isValid);
+
+	switch (choice) {
+	case 1:
+		addFlight(flights, noOfFlights);
+		break;
+	case 2:
+		//editFlight();
+		break;
+	case 3:
+		//removeFlight();
+		break;
+	default:
+		break;
+	}
+	
 }
 
 void viewReservationReportsAdmin() {
