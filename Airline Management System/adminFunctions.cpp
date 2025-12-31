@@ -1395,6 +1395,57 @@ void addUser(int& noOfUsers, User*& users, int& noOfBalanceUsers, UserBalance*& 
 			break;
 		}
 	}
+	if(detailsTaken == 10) {
+		int originalNoOfUsers = noOfBalanceUsers;
+		
+		std::ofstream savePassengersFile;
+		savePassengersFile.open("database/passengers.txt");
+		if (!savePassengersFile.is_open()) {
+			printError("There was an error while saving updated passengers file.\n");
+		}
+		else {
+			for (int i = 0; i < originalNoOfUsers; i++) {
+				savePassengersFile << users[i].userID << " " << users[i].password << "\n";
+			}
+			savePassengersFile << newUserDetails.id << " " << newUserDetails.password << "\n";
+			printSuccess("Passengers file has been updated with new Password!\n");
+			savePassengersFile.close();
+		}
+
+		std::ofstream saveUserBalanceFile("database/users-balance.txt");
+		if(!saveUserBalanceFile.is_open()) {
+			printError("There was an error while saving updated users-balance file.\n");
+		}
+		else {
+			for(int i = 0; i < originalNoOfUsers; i++) {
+				saveUserBalanceFile << userBalances[i].userId << " " << userBalances[i].balance << "\n";
+			}
+			saveUserBalanceFile << newUserDetails.id << " " << newUserDetails.balance << "\n";
+			printSuccess("Users-balance file has been updated with new Password!\n");
+			saveUserBalanceFile.close();
+		}
+
+		updateUserDetailsFile(newUserDetails);
+		
+		User* newUsersArray = new User[noOfUsers + 1];
+        for(int i=0; i<noOfUsers; i++) newUsersArray[i] = users[i];
+        newUsersArray[noOfUsers].userID = newUserDetails.id;
+        newUsersArray[noOfUsers].password = newUserDetails.password;
+        delete[] users;
+        users = newUsersArray;
+        noOfUsers++;
+
+
+        UserBalance* newBalArray = new UserBalance[noOfBalanceUsers + 1];
+        for(int i=0; i<noOfBalanceUsers; i++) newBalArray[i] = userBalances[i];
+        newBalArray[noOfBalanceUsers].userId = newUserDetails.id;
+        newBalArray[noOfBalanceUsers].balance = newUserDetails.balance;
+        delete[] userBalances;
+        userBalances = newBalArray;
+        noOfBalanceUsers++;
+
+        printSuccess("User added successfully to System!\n");
+	}
 }
 
 //Function to manage users
