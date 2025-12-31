@@ -2268,7 +2268,7 @@ Flight editFlightField(Flight flight, int choice) {
 			}
 			std::cout << "Enter new Seats for Economy: ";
 			numericInput = getValidInteger(1, 450, isValid);
-			flight.seatsEco = numericInput;
+			flight.seatsEco = int(numericInput);
 			isValid = true;
 			return flight;
 			break;
@@ -2286,7 +2286,7 @@ Flight editFlightField(Flight flight, int choice) {
 			}
 			std::cout << "Enter new Seats for Business Class: ";
 			numericInput = getValidInteger(1, 60, isValid);
-			flight.seatsBus = numericInput;
+			flight.seatsBus = int(numericInput);
 			isValid = true;
 			return flight;
 			break;
@@ -2304,7 +2304,7 @@ Flight editFlightField(Flight flight, int choice) {
 			}
 			std::cout << "Enter new Seats for First Class: ";
 			numericInput = getValidInteger(1, 16, isValid);
-			flight.seatsFirst = numericInput;
+			flight.seatsFirst = int(numericInput);
 			isValid = true;
 			return flight;
 			break;
@@ -2321,8 +2321,8 @@ Flight editFlightField(Flight flight, int choice) {
 				}
 			}
 			std::cout << "Enter new Fare for Economy Class: ";
-			numericInput = getValidInteger(1, 10000, isValid);
-			flight.priceEco = (long long)numericInput;
+			numericInput = getValidInteger(10000, 1000000000, isValid);
+			flight.priceEco = numericInput;
 			isValid = true;
 			return flight;
 			break;
@@ -2339,8 +2339,8 @@ Flight editFlightField(Flight flight, int choice) {
 				}
 			}
 			std::cout << "Enter new Fare for Business Class: ";
-			numericInput = getValidInteger(1, 15000, isValid);
-			flight.priceBus = (long long)numericInput;
+			numericInput = getValidInteger(15000, 1000000000, isValid);
+			flight.priceBus = numericInput;
 			isValid = true;
 			return flight;
 			break;
@@ -2357,8 +2357,8 @@ Flight editFlightField(Flight flight, int choice) {
 				}
 			}
 			std::cout << "Enter new Fare for First Class: ";
-			numericInput = getValidInteger(1, 30000, isValid);
-			flight.priceFirst = (long long)numericInput;
+			numericInput = getValidInteger(30000, 1000000000, isValid);
+			flight.priceFirst = numericInput;
 			isValid = true;
 			return flight;
 			break;
@@ -2376,7 +2376,7 @@ Flight editFlightField(Flight flight, int choice) {
 			}
 			std::cout << "Enter new Refund %: ";
 			numericInput = getValidInteger(1, 100, isValid);
-			flight.priceEco = numericInput;
+			flight.priceEco = int(numericInput);
 			isValid = true;
 			return flight;
 			break;
@@ -2426,7 +2426,6 @@ void editFlight(Flight*& flights, int noOfFlights) {
 	selectedFlight = editFlightField(selectedFlight, choice);
 
 	if (updateFlightToFile(flights, selectedFlight, noOfFlights)) {
-		flights = loadFlights(noOfFlights);
 		printSuccess("Flights has been updated in system!\n");
 	}
 	else {
