@@ -1869,9 +1869,14 @@ Flight getAllInputsForNewFlight(Flight flight, int detailsTaken) {
 			if (inputTaken == "-1") {
 				return flight;
 			}
-			if (inputTaken.empty()) {
-				errorMessage = "[ERROR]: Arrival Time cannot be empty!\n";
+			if (!(std::cin >> numbericInputs)) {
+				std::cin.clear();
+				std::cin.ignore(1000, '\n');
+				errorMessage = "[ERROR]: Invalid input! Please enter a numeric value.\n";
 				isValid = false;
+			}
+			else if (numbericInputs == -1) {
+				return flight;
 			}
 			else if (inputTaken.length() < 5) {
 				errorMessage = "[ERROR]: Arrival Time must be at least 5 characters long!\n";
@@ -1895,7 +1900,13 @@ Flight getAllInputsForNewFlight(Flight flight, int detailsTaken) {
 			}
 			std::cout << "Enter Fare for Economy Class: ";
 			std::cin >> numbericInputs;
-			if (numbericInputs == -1) {
+			if (!(std::cin >> numbericInputs)) {
+				std::cin.clear();
+				std::cin.ignore(1000, '\n');
+				errorMessage = "[ERROR]: Invalid input! Please enter a numeric value.\n";
+				isValid = false;
+			}
+			else if (numbericInputs == -1) {
 				return flight;
 			}
 			else if (numbericInputs < 10000) {
@@ -1920,7 +1931,13 @@ Flight getAllInputsForNewFlight(Flight flight, int detailsTaken) {
 			}
 			std::cout << "Enter Fare for Business Class: ";
 			std::cin >> numbericInputs;
-			if (numbericInputs == -1) {
+			if (!(std::cin >> numbericInputs)) {
+				std::cin.clear();
+				std::cin.ignore(1000, '\n');
+				errorMessage = "[ERROR]: Invalid input! Please enter a numeric value.\n";
+				isValid = false;
+			}
+			else if (numbericInputs == -1) {
 				return flight;
 			}
 			else if (numbericInputs < 15000) {
@@ -1945,7 +1962,13 @@ Flight getAllInputsForNewFlight(Flight flight, int detailsTaken) {
 			}
 			std::cout << "Enter Fare for First Class: ";
 			std::cin >> numbericInputs;
-			if (numbericInputs == -1) {
+			if (!(std::cin >> numbericInputs)) {
+				std::cin.clear();
+				std::cin.ignore(1000, '\n');
+				errorMessage = "[ERROR]: Invalid input! Please enter a numeric value.\n";
+				isValid = false;
+			}
+			else if (numbericInputs == -1) {
 				return flight;
 			}
 			else if (numbericInputs < 20000) {
@@ -1970,7 +1993,13 @@ Flight getAllInputsForNewFlight(Flight flight, int detailsTaken) {
 			}
 			std::cout << "Enter Seats for Economy Class: ";
 			std::cin >> numbericInputs;
-			if (numbericInputs == -1) {
+			if (!(std::cin >> numbericInputs)) {
+				std::cin.clear();
+				std::cin.ignore(1000, '\n');
+				errorMessage = "[ERROR]: Invalid input! Please enter a numeric value.\n";
+				isValid = false;
+			}
+			else if (numbericInputs == -1) {
 				return flight;
 			}
 			else if (numbericInputs > 450) {
@@ -1995,7 +2024,13 @@ Flight getAllInputsForNewFlight(Flight flight, int detailsTaken) {
 			}
 			std::cout << "Enter Seats for Business Class: ";
 			std::cin >> numbericInputs;
-			if (numbericInputs == -1) {
+			if (!(std::cin >> numbericInputs)) {
+				std::cin.clear();
+				std::cin.ignore(1000, '\n');
+				errorMessage = "[ERROR]: Invalid input! Please enter a numeric value.\n";
+				isValid = false;
+			}
+			else if (numbericInputs == -1) {
 				return flight;
 			}
 			else if (numbericInputs > 60) {
@@ -2020,7 +2055,13 @@ Flight getAllInputsForNewFlight(Flight flight, int detailsTaken) {
 			}
 			std::cout << "Enter Seats for First Class: ";
 			std::cin >> numbericInputs;
-			if (numbericInputs == -1) {
+			if (!(std::cin >> numbericInputs)) {
+				std::cin.clear();
+				std::cin.ignore(1000, '\n');
+				errorMessage = "[ERROR]: Invalid input! Please enter a numeric value.\n";
+				isValid = false;
+			}
+			else if (numbericInputs == -1) {
 				return flight;
 			}
 			else if (numbericInputs > 16) {
@@ -2045,7 +2086,13 @@ Flight getAllInputsForNewFlight(Flight flight, int detailsTaken) {
 			}
 			std::cout << "Enter Refund for this flight: ";
 			std::cin >> numbericInputs;
-			if (numbericInputs == -1) {
+			if (!(std::cin >> numbericInputs)) {
+				std::cin.clear();
+				std::cin.ignore(1000, '\n');
+				errorMessage = "[ERROR]: Invalid input! Please enter a numeric value.\n";
+				isValid = false;
+			}
+			else if (numbericInputs == -1) {
 				return flight;
 			}
 			else if (numbericInputs > 100) {
@@ -2069,16 +2116,78 @@ Flight getAllInputsForNewFlight(Flight flight, int detailsTaken) {
 	return flight;
 }
 
+//This function adds a new flight in file
+bool addFlightToFile(Flight newFlight) {
+	std::ofstream loadFlightsFile("database/flights.txt", std::ios::app);
+
+	if (!loadFlightsFile.is_open()) {
+		printError("[ERROR]: Unable to open file!");
+		return false;
+	}
+
+	loadFlightsFile << newFlight.id << " "
+		<< newFlight.origin << " "
+		<< newFlight.destination << " "
+		<< newFlight.depTime << " "
+		<< newFlight.arrTime << " "
+		<< newFlight.seatsEco << " "
+		<< newFlight.seatsBus << " "
+		<< newFlight.seatsFirst << " "
+		<< newFlight.priceEco << " "
+		<< newFlight.priceBus << " "
+		<< newFlight.priceFirst << " "
+		<< newFlight.refund << "\n";
+	loadFlightsFile.close();
+	return true;
+}
+
+//This function is used to edit a fligt details
+void editFlight(Flight*& flights, int noOfFlights) {
+	bool isValid = false;
+	std::string errorMessage = "";
+	std::string inputId = "";
+	do {
+		printHeader();
+		viewAvailableFlights(flights, noOfFlights);
+		if (!isValid) {
+			if (!errorMessage.empty()) {
+				printError(errorMessage);
+			}
+		}
+		printBlue("Enter an ID of flight ot proceed: \n");
+		std::cin >> inputId;
+		for (int i = 0; i < noOfFlights; i++) {
+			if (flights[i].id == inputId) {
+				isValid = true;
+				break;
+			}
+
+			if (!isValid) {
+				errorMessage = "[INVALID_INPUT]: Flight ID not found!\n";
+			}
+		}
+	} while (!isValid);
 
 
+}
 
+//This function is used to add a new Flight
 void addFlight(Flight*& flights, int& noOfFlights) {
 	Flight newFlight = { "", "", "", "", "", -1, -1, -1, -1, -1, -1, -1 };
 	int inputs = 12;
 	for(int i = 1; i <= inputs; i++) {
 		newFlight = getAllInputsForNewFlight(newFlight, i);
 	}
-	printHeader();
+	if (addFlightToFile(newFlight)) {
+		printSuccess("Flights has been added to system!\n");
+		noOfFlights++;
+		flights = loadFlights(noOfFlights);
+		printYellow("Press any key to exit!\n");
+	}
+	else {
+		printError("[ERROR]: While updating flights file!\n");
+	}
+	/*printHeader();
 	std::cout << newFlight.id << "\n";
 	std::cout << newFlight.origin << "\n";
 	std::cout << newFlight.destination << "\n";
@@ -2090,7 +2199,7 @@ void addFlight(Flight*& flights, int& noOfFlights) {
 	std::cout << newFlight.priceEco << "\n";
 	std::cout << newFlight.priceBus << "\n";
 	std::cout << newFlight.priceFirst << "\n";
-	std::cout << newFlight.refund << "\n";
+	std::cout << newFlight.refund << "\n";*/
 
 }
 
@@ -2107,11 +2216,11 @@ void manageFlights(Flight*& flights, int& noOfFlights) {
 				printError(errorMessage);
 			}
 		}
-		std::cout << "\t1. Add Flight\n";
-		std::cout << "\t2. Edit Flight\n";
-		std::cout << "\t3. Remove Flight\n";
-		std::cout << "\t4. View All Flights\n";
-		std::cout << "\t5. Exit to Admin Menu\n";
+		std::cout << "  1. Add Flight\n";
+		std::cout << "  2. Edit Flight\n";
+		std::cout << "  3. Remove Flight\n";
+		std::cout << "  4. View All Flights\n";
+		printError("  5. <= Exit to Admin Menu\n");
 		std::cout << "Enter your choice (1-5): ";
 		choice = getValidInteger(1, 5, isValid);
 	} while (!isValid);
@@ -2121,7 +2230,7 @@ void manageFlights(Flight*& flights, int& noOfFlights) {
 		addFlight(flights, noOfFlights);
 		break;
 	case 2:
-		//editFlight();
+		editFlight(flights, noOfFlights);
 		break;
 	case 3:
 		//removeFlight();

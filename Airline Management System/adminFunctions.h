@@ -9,6 +9,7 @@
 
 #include "models.h"
 #include "functions.h"
+#include "userFunctions.h"
 
 
 bool adminLogin(User arr[], int a);
@@ -62,6 +63,10 @@ void printAddFlightHeader(Flight flight);
 Flight getAllInputsForNewFlight(Flight flight, int detailsTaken);
 
 bool isFlightIDExists(std::string flightID);
+
+bool addFlightToFile(Flight newFlight);
+
+void editFlight(Flight*& flights, int noOfFlights);
 
 //Admin Menu Functions
 void manageUsers(int& noOfBalanceUsers, User*& users, int& noOfUsers, UserBalance*& userBalances, Flight* flights, int noOfFlights, SelectedFlight* userbookings);
