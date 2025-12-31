@@ -1093,6 +1093,7 @@ bool checkBreakFunction(int detailsTaken, UsersDetails newUserDetails) {
 		}
 		break;
 	default:
+		return false;
 		break;
 	}
 }
@@ -1106,8 +1107,16 @@ UsersDetails getAllInputsForNewUser(UsersDetails newUserDetails, int detailsTake
 	case 0:
 		do {
 			viewCreateNewUserHeader(newUserDetails, detailsTaken);
+			if(!isValid){
+				if(!errorMessage.empty()){
+					printError(errorMessage);
+				}
+			}
 			std::cout << "Enter Username: ";
 			std::getline(std::cin >> std::ws, inputTaken);
+			if(inputTaken == "0"){
+				return newUserDetails;
+			}
 			if(inputTaken.empty()) {
 				errorMessage = "[ERROR]: Username cannot be empty!\n";
 				isValid = false;
@@ -1116,7 +1125,8 @@ UsersDetails getAllInputsForNewUser(UsersDetails newUserDetails, int detailsTake
 				isValid = false;
 			}else {
 				isValid = true;
-				newUserDetails.username = inputTaken;
+				newUserDetails.userName = inputTaken;
+				return newUserDetails;
 				break;
 			}
 		} while (!isValid);
@@ -1124,8 +1134,16 @@ UsersDetails getAllInputsForNewUser(UsersDetails newUserDetails, int detailsTake
 	case 1:
 		do {
 			viewCreateNewUserHeader(newUserDetails, detailsTaken);
+			if(!isValid){
+				if(!errorMessage.empty()){
+					printError(errorMessage);
+				}
+			}
 			std::cout << "Enter User ID: ";
 			std::getline(std::cin >> std::ws, inputTaken);
+			if(inputTaken == "0"){
+				return newUserDetails;
+			}
 			if(inputTaken.empty()) {
 				errorMessage = "[ERROR]: User ID cannot be empty!\n";
 				isValid = false;
@@ -1137,7 +1155,8 @@ UsersDetails getAllInputsForNewUser(UsersDetails newUserDetails, int detailsTake
 				isValid = false;
 			}else {
 				isValid = true;
-				newUserDetails.userId = inputTaken;
+				newUserDetails.id = inputTaken;
+				return newUserDetails;
 				break;
 			}
 		} while (!isValid);
@@ -1145,8 +1164,16 @@ UsersDetails getAllInputsForNewUser(UsersDetails newUserDetails, int detailsTake
 	case 2:
 		do {
 			viewCreateNewUserHeader(newUserDetails, detailsTaken);
+			if(!isValid){
+				if(!errorMessage.empty()){
+					printError(errorMessage);
+				}
+			}
 			std::cout << "Enter Address: ";
 			std::getline(std::cin >> std::ws, inputTaken);
+			if(inputTaken == "0"){
+				return newUserDetails;
+			}
 			if(inputTaken.empty()) {
 				errorMessage = "[ERROR]: Address cannot be empty!\n";
 				isValid = false;
@@ -1156,11 +1183,210 @@ UsersDetails getAllInputsForNewUser(UsersDetails newUserDetails, int detailsTake
 			}else {
 				isValid = true;
 				newUserDetails.address = inputTaken;
+				return newUserDetails;
 				break;
 			}
 		} while (!isValid);
 		break;
+	case 3:
+		do {
+			viewCreateNewUserHeader(newUserDetails, detailsTaken);
+			if(!isValid){
+				if(!errorMessage.empty()){
+					printError(errorMessage);
+				}
+			}
+			std::cout << "Enter City: ";	
+			std::getline(std::cin >> std::ws, inputTaken);	
+			if(inputTaken == "0"){
+				return newUserDetails;
+			}
+			if(inputTaken.empty()) {
+				errorMessage = "[ERROR]: City cannot be empty!\n";
+				isValid = false;
+			}else if(inputTaken.length() <5) {
+				errorMessage = "[ERROR]: City must be at least 5 characters long!\n";
+				isValid = false;
+			}else {
+				isValid = true;
+				newUserDetails.city = inputTaken;
+				return newUserDetails;
+				break;
+			}
+		} while (!isValid);
+		break;
+	case 4:
+		do {
+			viewCreateNewUserHeader(newUserDetails, detailsTaken);
+			if(!isValid){
+				if(!errorMessage.empty()){
+					printError(errorMessage);
+				}
+			}
+			std::cout << "Enter Province: ";
+			std::getline(std::cin >> std::ws, inputTaken);
+			if(inputTaken == "0"){
+				return newUserDetails;
+			}
+			if(inputTaken.empty()) {
+				errorMessage = "[ERROR]: Province cannot be empty!\n";
+				isValid = false;
+			}else if(inputTaken.length() <5) {
+				errorMessage = "[ERROR]: Province must be at least 5 characters long!\n";
+				isValid = false;
+			}else {
+				isValid = true;
+				newUserDetails.province = inputTaken;
+				return newUserDetails;
+				break;
+			}
+		} while (!isValid);
+		break;
+	case 5:
+		do {
+			viewCreateNewUserHeader(newUserDetails, detailsTaken);
+			if(!isValid){
+				if(!errorMessage.empty()){
+					printError(errorMessage);
+				}
+			}
+			std::cout << "Enter Country: ";
+			std::getline(std::cin >> std::ws, inputTaken);
+			if(inputTaken == "0"){
+				return newUserDetails;
+			}
+			if(inputTaken.empty()) {
+				errorMessage = "[ERROR]: Country cannot be empty!\n";
+				isValid = false;
+			}else if(inputTaken.length() <5) {
+				errorMessage = "[ERROR]: Country must be at least 5 characters long!\n";
+				isValid = false;
+			}else {
+				isValid = true;
+				newUserDetails.country = inputTaken;
+				return newUserDetails;
+				break;
+			}
+		} while (!isValid);
+		break;
+	case 6:
+		do {
+			viewCreateNewUserHeader(newUserDetails, detailsTaken);
+			if(!isValid){
+				if(!errorMessage.empty()){
+					printError(errorMessage);
+				}
+			}
+			std::cout << "Enter Contact: ";
+			std::getline(std::cin >> std::ws, inputTaken);
+			if(inputTaken == "0"){
+				return newUserDetails;
+			}
+			if(inputTaken.empty()) {
+				errorMessage = "[ERROR]: Contact cannot be empty!\n";
+				isValid = false;
+			}else if(inputTaken.length() <10) {
+				errorMessage = "[ERROR]: Contact must be at least 10 characters long!\n";
+				isValid = false;
+			}else {
+				isValid = true;
+				newUserDetails.contact = inputTaken;
+				return newUserDetails;
+				break;
+			}
+		} while (!isValid);
+		break;
+	case 7:
+		do {
+			viewCreateNewUserHeader(newUserDetails, detailsTaken);
+			if(!isValid){
+				if(!errorMessage.empty()){
+					printError(errorMessage);
+				}
+			}
+			std::cout << "Enter Passport NO#: ";
+			std::getline(std::cin >> std::ws, inputTaken);	
+			if(inputTaken == "0"){
+				return newUserDetails;
+			}
+			if(inputTaken.empty()) {
+				errorMessage = "[ERROR]: Passport NO# cannot be empty!\n";
+				isValid = false;
+			}else if(inputTaken.length() <5) {
+				errorMessage = "[ERROR]: Passport NO# must be at least 5 characters long!\n";
+				isValid = false;
+			}else {
+				isValid = true;
+				newUserDetails.passport = inputTaken;
+				return newUserDetails;
+				break;
+			}
+		} while (!isValid);
+		break;
+	case 8:
+		do {
+			viewCreateNewUserHeader(newUserDetails, detailsTaken);
+			if(!isValid){
+				if(!errorMessage.empty()){
+					printError(errorMessage);
+				}
+			}
+			std::cout << "Enter Password: ";
+			std::getline(std::cin >> std::ws, inputTaken);
+			if(inputTaken == "0"){
+				return newUserDetails;
+			}
+			if(inputTaken.empty()) {
+				errorMessage = "[ERROR]: Password cannot be empty!\n";
+				isValid = false;
+			}else if(inputTaken.length() <5) {
+				errorMessage = "[ERROR]: Password must be at least 5 characters long!\n";
+				isValid = false;
+			}else {
+				isValid = true;
+				newUserDetails.password = inputTaken;
+				return newUserDetails;
+				break;
+			}
+		} while (!isValid);
+		break;
+	case 9:
+		do {
+			viewCreateNewUserHeader(newUserDetails, detailsTaken);
+			if(!isValid){
+				if(!errorMessage.empty()){
+					printError(errorMessage);
+				}
+			}
+			std::cout << "Enter Balance: ";
+			std::getline(std::cin >> std::ws, inputTaken);
+			if(inputTaken == "0"){
+				return newUserDetails;
+			}
+			if(inputTaken.empty()) {
+				errorMessage = "[ERROR]: Balance cannot be empty!\n";
+				isValid = false;
+			}else if(inputTaken.length() <5) {
+				errorMessage = "[ERROR]: Balance must be at least 5 characters long!\n";
+				isValid = false;
+			}else if(std::stoi(inputTaken) < 0) {
+				errorMessage = "[ERROR]: Balance cannot be negative!\n";
+				isValid = false;
+			}else if(!std::stoll(inputTaken)) {
+				errorMessage = "[ERROR]: Balance must be a number!\n";
+				isValid = false;
+			}else {
+				isValid = true;
+				newUserDetails.balance = std::stoll(inputTaken);
+				return newUserDetails;
+				break;
+			}
+		} while (!isValid);
+		break;
+	default:
+		break;
 	}
+	return newUserDetails;
 }
 
 //Function to add a new user
