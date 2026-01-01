@@ -14,6 +14,7 @@ int main()
     int totalAdmins = 0;
     int totalFlight = 0;
     int noOfBookingsForCurrentUser = 0;
+	int totalBookings = 0;
     std::string userID = "";
 
     
@@ -24,6 +25,7 @@ int main()
 	Flight* availableFlight = nullptr;
     availableFlight = loadFlights(totalFlight);
     SelectedFlight* bookingsForUser = nullptr;
+	SelectedFlight* allBookings = loadBookings(totalBookings);
     UserBalance* userBalances = nullptr;
 	userBalances = loadBalanceForUsers(totalUsersWithBalance);
 
@@ -99,7 +101,7 @@ int main()
 
                 switch (adminChoice) {
                 case 1: manageUsers(totalUsersWithBalance, myUsers, totalUsers, userBalances, availableFlight, totalFlight, bookingsForUser ); (void)_getch(); break;
-                case 2: manageFlights(availableFlight, totalFlight); (void)_getch(); break;
+                case 2: manageFlights(availableFlight, totalFlight, allBookings, totalBookings  ); (void)_getch(); break;
                 case 3: viewReservationReportsAdmin(); (void)_getch(); break;
                 }
             }

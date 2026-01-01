@@ -2570,7 +2570,83 @@ void removeFlight(Flight*& flights, int& noOfFlights) {
 	}
 }
 
-void manageFlights(Flight*& flights, int& noOfFlights) {
+//Function to view current bookings
+void printBookingsTableHeaderForAdmin() {
+	std::string cCyan = "\033[1;36m";
+	std::string cYellow = "\033[1;33m";
+	std::string cReset = "\033[0m";
+
+	printHeader();
+
+	std::cout << cYellow << "=====================================================================================================================================" << cReset << std::endl;
+
+	std::cout << cYellow << "|" << cReset;
+	std::cout << cCyan << "ID " << cReset;
+	std::cout << cYellow << "|" << cReset;
+	std::cout << cCyan << " Flight-ID" << cReset;
+	std::cout << cYellow << " |" << cReset;
+	std::cout << cCyan << " Origin     " << cReset;
+	std::cout << cYellow << " |" << cReset;
+	std::cout << cCyan << " Destination  " << cReset;
+	std::cout << cYellow << " |" << cReset;
+	std::cout << cCyan << " Depart Time  " << cReset;
+	std::cout << cYellow << " |" << cReset;
+	std::cout << cCyan << " Arrival Time " << cReset;
+	std::cout << cYellow << " |" << cReset;
+	std::cout << cCyan << " Price  " << cReset;
+	std::cout << cYellow << " |" << cReset;
+	std::cout << cCyan << " Class    " << cReset;
+	std::cout << cYellow << " |" << cReset;
+	std::cout << cCyan << " Seats    " << cReset;
+	std::cout << cYellow << " |" << cReset;
+	std::cout << cCyan << " Refund %" << cReset;
+	std::cout << cYellow << " |" << cReset;
+
+	std::cout << std::endl;
+	std::cout << cYellow << "=====================================================================================================================================" << cReset << std::endl;
+}
+
+void viewReservationsForAdmin(SelectedFlight* bookings, int size) {
+	printBookingsTableHeaderForAdmin();
+	const int wID = 10;
+	const int wCity = 12;
+	const int wTime = 14;
+	const int wPrice = 10;
+	const int wSeat = 7;
+	std::string cYellow = "\033[1;33m";
+	std::string cReset = "\033[0m";
+	for (int i = 0; i < size; i++) {
+		std::cout << cYellow << "|" << cReset;
+
+
+		std::cout << std::left << std::setw(2) << i << cYellow << " |" << cReset;
+		std::cout << std::left << std::setw(wID) << bookings[i].id << cYellow << " |" << cReset;
+		std::cout << std::left << std::setw(wCity) << bookings[i].origin << cYellow << " |" << cReset;
+		std::cout << std::left << std::setw(wCity + 2) << bookings[i].destination << cYellow << " |" << cReset;
+		std::cout << std::left << std::setw(wTime) << bookings[i].depTime << cYellow << " |" << cReset;
+		std::cout << std::left << std::setw(wTime) << bookings[i].arrTime << cYellow << " |" << cReset;
+
+
+		std::cout << std::left << std::setw(8) << bookings[i].price << cYellow << " |" << cReset;
+		std::cout << std::left << std::setw(wPrice) << bookings[i].classSelected << cYellow << " |" << cReset;
+
+
+		std::cout << std::left << std::setw(11) << std::to_string(bookings[i].seats) << cYellow << "|" << cReset;
+
+
+		std::cout << std::left << std::setw(9) << std::to_string(bookings[i].refund) + "%" << cYellow << " |" << cReset;
+
+		std::cout << std::endl;
+		std::cout << "-------------------------------------------------------------------------------------------------------------------------------------" << std::endl;
+	}
+}
+
+//This function removes Bookings
+void removeBooking( SelectedFlight*& bookings, int& noOfBookings ){
+	viewReservationsForAdmin(bookings, noOfBookings);
+}
+
+void manageFlights(Flight*& flights, int& noOfFlights, SelectedFlight*& bookings, int& noOfBookings) {
 	bool isValid = false;
 	int choice = 0;
 	std::string errorMessage = "";
@@ -2604,7 +2680,7 @@ void manageFlights(Flight*& flights, int& noOfFlights) {
 		removeFlight(flights, noOfFlights);
 		break;
 	case 4:
-		//removeBooking();
+		removeBooking(bookings, noOfBookings);
 		break;
 	default:
 		break;

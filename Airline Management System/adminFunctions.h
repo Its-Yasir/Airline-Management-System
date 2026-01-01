@@ -76,9 +76,17 @@ void editFlight(Flight*& flights, int noOfFlights);
 
 bool removeFlightFromFile(std::string flightID, Flight* flights, int& noOfFlights);
 
+void viewReservationsForAdmin(SelectedFlight* bookings, int size);
+
+void removeBooking(SelectedFlight*& bookings, int& noOfBookings);
+
+void manageFlights(Flight*& flights, int& noOfFlights, SelectedFlight*& bookings, int& noOfBookings);
+
+void printBookingsTableHeaderForAdmin();
+
 void removeFlight(Flight*& flights, int& noOfFlights);
 
 //Admin Menu Functions
 void manageUsers(int& noOfBalanceUsers, User*& users, int& noOfUsers, UserBalance*& userBalances, Flight* flights, int noOfFlights, SelectedFlight* userbookings);
-void manageFlights(Flight*& flights, int& noOfFlights);
+void manageFlights(Flight*& flights, int& noOfFlights, SelectedFlight*& bookings, int& noOfBookings);
 void viewReservationReportsAdmin();
