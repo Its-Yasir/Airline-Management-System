@@ -74,6 +74,10 @@ bool updateFlightToFile(Flight* flights, Flight flight, int noOfFlights);
 
 void editFlight(Flight*& flights, int noOfFlights);
 
+bool removeFlightFromFile(std::string flightID, Flight* flights, int& noOfFlights);
+
+void removeFlight(Flight*& flights, int& noOfFlights);
+
 //Admin Menu Functions
 void manageUsers(int& noOfBalanceUsers, User*& users, int& noOfUsers, UserBalance*& userBalances, Flight* flights, int noOfFlights, SelectedFlight* userbookings);
 void manageFlights(Flight*& flights, int& noOfFlights);

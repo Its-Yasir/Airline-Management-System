@@ -2104,7 +2104,7 @@ Flight getAllInputsForNewFlight(Flight flight, int detailsTaken) {
 			}
 			else {
 				isValid = true;
-				flight.refund = numbericInputs;
+				flight.refund = int(numbericInputs);
 				return flight;
 				break;
 			}
@@ -2227,7 +2227,7 @@ Flight editFlightField(Flight flight, int choice) {
 			}
 			else {
 				errorMessage = "[ERROR]: Departure time cannot be empty!\n";
-				isValid - false;
+				isValid = false;
 			}
 		} while (!isValid);
 		return flight;
@@ -2252,7 +2252,7 @@ Flight editFlightField(Flight flight, int choice) {
 			}
 			else {
 				errorMessage = "[ERROR]: Arrival Time cannot be empty!\n";
-				isValid - false;
+				isValid = false;
 			}
 		} while (!isValid);
 		return flight;
@@ -2452,6 +2452,124 @@ void addFlight(Flight*& flights, int& noOfFlights) {
 
 }
 
+//This functione  delete flight from file
+bool removeFlightFromFile(std::string flightID, Flight* flights, int& noOfFlights) {
+	std::ofstream updateFlightsFile("database/flights.txt", std::ios::out);
+	if(!updateFlightsFile.is_open()) {
+		printError("[ERROR]: Unable to open file!");
+		return false;
+	}
+	else {
+		for (int i = 0; i < noOfFlights; i++) {
+			if (flights[i].id != flightID) {
+				updateFlightsFile << flights[i].id << " "
+					<< flights[i].origin << " "
+					<< flights[i].destination << " "
+					<< flights[i].depTime << " "
+					<< flights[i].arrTime << " "
+					<< flights[i].seatsEco << " "
+					<< flights[i].seatsBus << " "
+					<< flights[i].seatsFirst << " "
+					<< flights[i].priceEco << " "
+					<< flights[i].priceBus << " "
+					<< flights[i].priceFirst << " "
+					<< flights[i].refund << "\n";
+			}
+		}
+		updateFlightsFile.close();	
+		noOfFlights--;
+		flights = loadFlights(noOfFlights);
+		return true;
+	}
+}
+
+// this function is used to remove a flight
+void removeFlight(Flight*& flights, int& noOfFlights) {
+	Flight selectedFlight = { "", "", "", "", "", -1, -1, -1, -1, -1, -1, -1 };
+	bool isValid = false;
+	std::string errorMessage = "";
+	char choice = 'n';
+	std::string inputId = "";
+	do {
+		printHeader();
+		viewAvailableFlights(flights, noOfFlights);
+		if (!isValid) {
+			if (!errorMessage.empty()) {
+				printError(errorMessage);
+			}
+		}
+		printBlue("Enter an ID of flight to remove: \n");
+		std::cin >> inputId;
+		for (int i = 0; i < noOfFlights; i++) {
+			if (flights[i].id == inputId) {
+				isValid = true;
+				selectedFlight = flights[i];
+				break;
+			}
+
+			if (!isValid) {
+				errorMessage = "[INVALID_INPUT]: Flight ID not found!\n";
+			}
+		}
+	} while (!isValid);
+
+	if (isValid) {
+		isValid = false;
+		errorMessage = "";
+		do {
+			printHeader();
+			printBlue("-------------------- FLIGHT DETAILS -------------------\n\n");
+			std::cout << "Flight ID                : " << selectedFlight.id << "\n";
+			std::cout << "Flight Source            : " << selectedFlight.origin << "\n";
+			std::cout << "Flight Destination       : " << selectedFlight.destination << "\n";
+			std::cout << "Arrival Time             : " << selectedFlight.arrTime << "\n";
+			std::cout << "Departure Time           : " << selectedFlight.depTime << "\n";
+			std::cout << "Seats for Economy Class  : " << selectedFlight.seatsEco << "\n";
+			std::cout << "Seats for Business Class : " << selectedFlight.seatsBus << "\n";
+			std::cout << "Seats for First Class    : " << selectedFlight.seatsFirst << "\n";
+			std::cout << "Economy Class Fare       : " << selectedFlight.priceEco << "\n";
+			std::cout << "Business Class Fare      : " << selectedFlight.priceBus << "\n";
+			std::cout << "First Class Fare         : " << selectedFlight.priceFirst << "\n";
+			std::cout << "Refund Percentage        : " << selectedFlight.refund << "\n";
+			if (!isValid) {
+				if (!errorMessage.empty()) {
+					printError(errorMessage);
+				}
+			}
+			printYellow("Are you sure you want to delete this flight?(y/n)\n");
+			std::cin >> choice;
+			if (choice == 'y' || choice == 'Y' || choice == 'n' || choice == 'N') {
+				if (choice == 'y' || choice == 'Y') {
+					isValid = true;
+					break;
+				}
+				else if (choice == 'n' || choice == 'N') {
+					isValid = true;
+					break;
+				}
+			}
+			else {
+				errorMessage = "[INVALID_INPUT]: Press y or n!\n";
+			}
+		} while (!isValid);
+	}
+
+	if (isValid) {
+		if (choice == 'y' || choice == 'Y') {
+			if (removeFlightFromFile(selectedFlight.id, flights, noOfFlights)) {
+				printSuccess("Flight has been removed from system!\n");
+			}
+			else {
+				printError("[ERROR]: While removing flight from file!\n");
+			}
+		}else if(choice == 'n' || choice == 'N') {
+			printSuccess("Flight removal canceled.\n");
+			std::cout << "Press any key to exit!\n";
+			return;
+		}
+	}
+}
+
 void manageFlights(Flight*& flights, int& noOfFlights) {
 	bool isValid = false;
 	int choice = 0;
@@ -2459,7 +2577,7 @@ void manageFlights(Flight*& flights, int& noOfFlights) {
 
 	do {
 		printHeader();
-		printBlue("--------------- MANAGE FLIGHTS ---------------\n\n");
+		printBlue("--------------- MANAGE FLIGHTS & BOOKINGS ---------------\n\n");
 		if (!isValid) {
 			if (!errorMessage.empty()) {
 				printError(errorMessage);
@@ -2468,10 +2586,11 @@ void manageFlights(Flight*& flights, int& noOfFlights) {
 		std::cout << "  1. Add Flight\n";
 		std::cout << "  2. Edit Flight\n";
 		std::cout << "  3. Remove Flight\n";
-		std::cout << "  4. View All Flights\n";
-		printError("  5. <= Exit to Admin Menu\n\n");
-		std::cout << "Enter your choice (1-5): ";
-		choice = getValidInteger(1, 5, isValid);
+		std::cout << "  4. Remove Booking\n";
+		std::cout << "  5. View All Flights\n";
+		printError("  6. <= Exit to Admin Menu\n\n");
+		std::cout << "Enter your choice (1-6): ";
+		choice = getValidInteger(1, 6, isValid);
 	} while (!isValid);
 
 	switch (choice) {
@@ -2482,7 +2601,10 @@ void manageFlights(Flight*& flights, int& noOfFlights) {
 		editFlight(flights, noOfFlights);
 		break;
 	case 3:
-		//removeFlight();
+		removeFlight(flights, noOfFlights);
+		break;
+	case 4:
+		//removeBooking();
 		break;
 	default:
 		break;
