@@ -34,7 +34,6 @@ struct SelectedFlight {
     std::string classSelected = "";
     int refund = 0;
     long long price = 0;
-
     int seats = 0;
 };
 

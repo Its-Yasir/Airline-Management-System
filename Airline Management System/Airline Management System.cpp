@@ -17,7 +17,7 @@ int main()
 	int totalBookings = 0;
     std::string userID = "";
 
-    
+
 
     std::string currentlyLoggenIn = "";
     User* Admins = loadAdmins(totalAdmins);
@@ -107,6 +107,7 @@ int main()
             }
         }
     }
+
 
     delete[] userBalances;
     delete[] bookingsForUser;

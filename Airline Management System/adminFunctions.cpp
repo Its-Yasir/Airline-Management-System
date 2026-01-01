@@ -2581,31 +2581,34 @@ void printBookingsTableHeaderForAdmin() {
 	std::cout << cYellow << "=====================================================================================================================================" << cReset << std::endl;
 
 	std::cout << cYellow << "|" << cReset;
-	std::cout << cCyan << "ID " << cReset;
+	std::cout << cCyan << "Index" << cReset;
 	std::cout << cYellow << "|" << cReset;
-	std::cout << cCyan << " Flight-ID" << cReset;
+	std::cout << cCyan << "User-ID     " << cReset;
+	std::cout << cYellow << "|" << cReset;
+	std::cout << cCyan << "Flight-ID" << cReset;
+	std::cout << cYellow << "|" << cReset;
+	std::cout << cCyan << "Origin    " << cReset;
 	std::cout << cYellow << " |" << cReset;
-	std::cout << cCyan << " Origin     " << cReset;
+	std::cout << cCyan << "Destination " << cReset;
 	std::cout << cYellow << " |" << cReset;
-	std::cout << cCyan << " Destination  " << cReset;
+	std::cout << cCyan << "Depart Time  " << cReset;
 	std::cout << cYellow << " |" << cReset;
-	std::cout << cCyan << " Depart Time  " << cReset;
-	std::cout << cYellow << " |" << cReset;
-	std::cout << cCyan << " Arrival Time " << cReset;
+	std::cout << cCyan << "Arrival Time " << cReset;
 	std::cout << cYellow << " |" << cReset;
 	std::cout << cCyan << " Price  " << cReset;
 	std::cout << cYellow << " |" << cReset;
-	std::cout << cCyan << " Class    " << cReset;
+	std::cout << cCyan << "Class    " << cReset;
 	std::cout << cYellow << " |" << cReset;
-	std::cout << cCyan << " Seats    " << cReset;
+	std::cout << cCyan << "Seats" << cReset;
 	std::cout << cYellow << " |" << cReset;
-	std::cout << cCyan << " Refund %" << cReset;
+	std::cout << cCyan << "Refund %" << cReset;
 	std::cout << cYellow << " |" << cReset;
 
 	std::cout << std::endl;
 	std::cout << cYellow << "=====================================================================================================================================" << cReset << std::endl;
 }
 
+//This function display bookings for admin with index
 void viewReservationsForAdmin(SelectedFlight* bookings, int size) {
 	printBookingsTableHeaderForAdmin();
 	const int wID = 10;
@@ -2619,31 +2622,141 @@ void viewReservationsForAdmin(SelectedFlight* bookings, int size) {
 		std::cout << cYellow << "|" << cReset;
 
 
-		std::cout << std::left << std::setw(2) << i << cYellow << " |" << cReset;
-		std::cout << std::left << std::setw(wID) << bookings[i].id << cYellow << " |" << cReset;
-		std::cout << std::left << std::setw(wCity) << bookings[i].origin << cYellow << " |" << cReset;
-		std::cout << std::left << std::setw(wCity + 2) << bookings[i].destination << cYellow << " |" << cReset;
-		std::cout << std::left << std::setw(wTime) << bookings[i].depTime << cYellow << " |" << cReset;
-		std::cout << std::left << std::setw(wTime) << bookings[i].arrTime << cYellow << " |" << cReset;
+		std::cout << std::left << std::setw(4) << i + 1 << cYellow << " |" << cReset;
+		std::cout << std::left << std::setw(11) << bookings[i].userId << cYellow << " |" << cReset;
+		std::cout << std::left << std::setw(8) << bookings[i].id << cYellow << " |" << cReset;
+		std::cout << std::left << std::setw(10) << bookings[i].origin << cYellow << " |" << cReset;
+		std::cout << std::left << std::setw(wCity) << bookings[i].destination << cYellow << " |" << cReset;
+		std::cout << std::left << std::setw(13) << bookings[i].depTime << cYellow << " |" << cReset;
+		std::cout << std::left << std::setw(13) << bookings[i].arrTime << cYellow << " |" << cReset;
 
 
 		std::cout << std::left << std::setw(8) << bookings[i].price << cYellow << " |" << cReset;
-		std::cout << std::left << std::setw(wPrice) << bookings[i].classSelected << cYellow << " |" << cReset;
+		std::cout << std::left << std::setw(9) << bookings[i].classSelected << cYellow << " |" << cReset;
 
 
-		std::cout << std::left << std::setw(11) << std::to_string(bookings[i].seats) << cYellow << "|" << cReset;
+		std::cout << std::left << std::setw(6) << std::to_string(bookings[i].seats) << cYellow << "|" << cReset;
 
 
-		std::cout << std::left << std::setw(9) << std::to_string(bookings[i].refund) + "%" << cYellow << " |" << cReset;
+		std::cout << std::left << std::setw(8) << std::to_string(bookings[i].refund) + "%" << cYellow << " |" << cReset;
 
 		std::cout << std::endl;
 		std::cout << "-------------------------------------------------------------------------------------------------------------------------------------" << std::endl;
 	}
 }
 
+void removeBookingUsingIndex(SelectedFlight*& bookings, int& noOfFlights) {
+	bool isValid = false;
+	std::string errorMessage = "";
+	int choice = 0;
+	do {
+		printHeader();
+		printBlue("--------------- REMOVE BOOKING USING INDEX ---------------\n\n");
+		if (!isValid) {
+			if (!errorMessage.empty()) {
+				printError(errorMessage);
+			}
+		}
+		viewReservationsForAdmin(bookings, noOfFlights);
+		std::cout << "Enter the index of the booking to remove: ";
+		choice = getValidInteger(0, noOfFlights, isValid);	
+	} while (!isValid);
+
+	if (isValid) {
+		if (removeBookingFromFileUsingIndex(--choice, bookings, noOfFlights)) {
+			printSuccess("Booking has been removed from system!\n");
+		}
+		else {
+			printError("[ERROR]: While removing booking from file!\n");
+		}
+	}
+}
+
+bool removeBookingFromFileUsingIndex(int bookingIndex, SelectedFlight*& bookings, int& noOfBookings) {
+	if (noOfBookings <= 0 || bookingIndex < 0 || bookingIndex >= noOfBookings) {
+		return false;
+	}
+
+	if (noOfBookings == 1) {
+		delete[] bookings;
+		bookings = nullptr;
+		noOfBookings = 0;
+
+		std::ofstream updateBookingsFile("database/bookings.txt", std::ios::trunc);
+		updateBookingsFile.close();
+		return true;
+	}
+
+	int newCount = noOfBookings - 1;
+
+	SelectedFlight* newArrayOfBookings = nullptr;
+	newArrayOfBookings = new SelectedFlight[newCount];
+	int count = 0;
+	for (int i = 0; i < noOfBookings; i++) {
+		if (i != bookingIndex) {
+			newArrayOfBookings[count] = bookings[i];
+			count++;
+		}
+	}
+	delete[] bookings;
+	bookings = newArrayOfBookings;
+	noOfBookings--;
+
+	std::ofstream updateBookingsFile("database/bookings.txt");
+	if(updateBookingsFile.is_open()){
+		for (int i = 0; i < newCount; i++) {
+			updateBookingsFile << bookings[i].userId << " "
+							 << bookings[i].id << " "
+							 << bookings[i].origin << " "
+							 << bookings[i].destination << " "
+							 << bookings[i].depTime << " "
+							 << bookings[i].arrTime << " "
+							 << bookings[i].classSelected << " "
+							 << bookings[i].price << " "	
+							 << bookings[i].refund << " "	
+							 << bookings[i].seats << "\n";
+		}
+		updateBookingsFile.close();
+	}
+	else{
+		return false;
+	}
+	return true;
+}
+
 //This function removes Bookings
 void removeBooking( SelectedFlight*& bookings, int& noOfBookings ){
-	viewReservationsForAdmin(bookings, noOfBookings);
+	bool isValid = false;
+	std::string errorMessage = "";
+
+	do {
+		printHeader();
+		printBlue("--------------- REMOVE BOOKING ---------------\n\n");
+		if (!isValid) {
+			if (!errorMessage.empty()) {
+				printError(errorMessage);
+			}
+		}
+		std::cout<<"Chose one of the following menu: \n";
+		std::cout<<"  1. Remove Booking Using Index\n";
+		std::cout<<"  2. Remove Booking Using User ID\n";
+		printError("  3. <= Exit to Admin Menu\n\n");
+		
+		int choice = getValidInteger(1, 3, isValid);
+		
+		switch(choice){
+			case 1:
+				removeBookingUsingIndex(bookings, noOfBookings);
+				break;
+			case 2:
+				//removeBookingUsingUserID(bookings, noOfBookings);
+				break;
+			default:
+				break;
+		}
+		
+	} while (!isValid);
+	
 }
 
 void manageFlights(Flight*& flights, int& noOfFlights, SelectedFlight*& bookings, int& noOfBookings) {

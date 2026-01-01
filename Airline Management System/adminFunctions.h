@@ -84,7 +84,11 @@ void manageFlights(Flight*& flights, int& noOfFlights, SelectedFlight*& bookings
 
 void printBookingsTableHeaderForAdmin();
 
+bool removeBookingFromFileUsingIndex(int bookingIndex, SelectedFlight*& bookings, int& noOfBookings);
+
 void removeFlight(Flight*& flights, int& noOfFlights);
+
+void removeBookingUsingIndex(SelectedFlight*& bookings, int& noOfFlights);
 
 //Admin Menu Functions
 void manageUsers(int& noOfBalanceUsers, User*& users, int& noOfUsers, UserBalance*& userBalances, Flight* flights, int noOfFlights, SelectedFlight* userbookings);

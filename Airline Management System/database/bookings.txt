@@ -1,3 +1,1 @@
 yasir_ali PK-110 Lahore Dubai 12Dec-08:00PM 13Dec-05:00PM Business 1000000 10 2
-roshan_ali PK-102 Karachi Dubai 12Dec-08:00PM 13Dec-05:00PM First 2000000 20 1
-saim_farooq PK-101 Lahore Istanbul 12Dec-08:00AM 12Dec-02:00PM Economy 1500000 15 10
