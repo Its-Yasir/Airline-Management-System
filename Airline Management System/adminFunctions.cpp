@@ -2610,6 +2610,10 @@ void printBookingsTableHeaderForAdmin() {
 
 //This function display bookings for admin with index
 void viewReservationsForAdmin(SelectedFlight* bookings, int size) {
+	if (size == 0) {
+		printError("There are no Boookings found!\n");
+		return;
+	}
 	printBookingsTableHeaderForAdmin();
 	const int wID = 10;
 	const int wCity = 12;
@@ -2658,6 +2662,10 @@ void removeBookingUsingIndex(SelectedFlight*& bookings, int& noOfFlights) {
 			}
 		}
 		viewReservationsForAdmin(bookings, noOfFlights);
+		if (noOfFlights == 0) {
+			printYellow("Press any key to exit!\n");
+			return;
+		}
 		std::cout << "Enter the index of the booking to remove: ";
 		choice = getValidInteger(0, noOfFlights, isValid);	
 	} while (!isValid);
@@ -2694,8 +2702,10 @@ bool removeBookingFromFileUsingIndex(int bookingIndex, SelectedFlight*& bookings
 	int count = 0;
 	for (int i = 0; i < noOfBookings; i++) {
 		if (i != bookingIndex) {
-			newArrayOfBookings[count] = bookings[i];
-			count++;
+			if(count < noOfBookings) {
+				newArrayOfBookings[count] = bookings[i];
+				count++;
+			}
 		}
 	}
 	delete[] bookings;
@@ -2704,7 +2714,7 @@ bool removeBookingFromFileUsingIndex(int bookingIndex, SelectedFlight*& bookings
 
 	std::ofstream updateBookingsFile("database/bookings.txt");
 	if(updateBookingsFile.is_open()){
-		for (int i = 0; i < newCount; i++) {
+		for (int i = 0; i < noOfBookings; i++) {
 			updateBookingsFile << bookings[i].userId << " "
 							 << bookings[i].id << " "
 							 << bookings[i].origin << " "
@@ -2722,6 +2732,107 @@ bool removeBookingFromFileUsingIndex(int bookingIndex, SelectedFlight*& bookings
 		return false;
 	}
 	return true;
+}
+
+bool isUserIDExistsInBookings(std::string userId, int noOfBookings, SelectedFlight* bookings){
+	for(int i = 0; i < noOfBookings; i++){
+		if(bookings[i].userId == userId){
+			return true;
+		}
+	}
+	return false;
+}
+
+bool deleteBookingsFromFileUsingUserId(std::string userId, SelectedFlight* bookings, int& noOfBookings){
+	if(noOfBookings <= 0 || userId.empty()){
+		return false;
+	}
+
+	if(noOfBookings == 1){
+		delete[] bookings;
+		bookings = nullptr;
+		noOfBookings = 0;
+
+		std::ofstream updateBookingsFile("database/bookings.txt", std::ios::trunc);
+		updateBookingsFile.close();
+		return true;
+	}
+	
+	SelectedFlight* newBookingsArray = nullptr;
+
+	int newBookingsCount = 0;
+	for(int i = 0; i < noOfBookings; i++){
+		if(bookings[i].userId != userId){
+			newBookingsCount++;
+		}
+	}
+	
+	newBookingsArray = new SelectedFlight[newBookingsCount];
+	int count = 0;
+	for(int i = 0; i < noOfBookings; i++){
+		if(bookings[i].userId != userId){
+			if (count < newBookingsCount) {
+				newBookingsArray[count] = bookings[i];
+				count++;
+			}
+		}
+	}
+	delete[] bookings;
+	bookings = newBookingsArray;
+	noOfBookings = newBookingsCount;
+	
+	std::ofstream updateBookingsFile("database/bookings.txt");
+	if(updateBookingsFile.is_open()){
+		for(int i = 0; i < noOfBookings; i++){
+			updateBookingsFile << bookings[i].userId << " "
+							 << bookings[i].id << " "
+							 << bookings[i].origin << " "
+							 << bookings[i].destination << " "
+							 << bookings[i].depTime << " "
+							 << bookings[i].arrTime << " "
+							 << bookings[i].classSelected << " "
+							 << bookings[i].price << " "	
+							 << bookings[i].refund << " "	
+							 << bookings[i].seats << "\n";
+		}
+		updateBookingsFile.close();
+	}
+	else{
+		return false;
+	}
+	return true;
+}
+
+void removeBookingUsingUserID(SelectedFlight*& bookings, int& noOfBookings){
+	bool isValid = false;
+	std::string errorMessage = "";
+	std::string userId = "";
+	
+	do{
+		printHeader();
+		printBlue("--------------- REMOVE BOOKING USING USER ID ---------------\n\n");
+		viewReservationsForAdmin(bookings, noOfBookings);
+		if (!isValid) {
+			if (!errorMessage.empty()) {
+				printError(errorMessage);
+			}
+		}
+		std::cout << "Enter the user ID of the booking to remove: ";
+		std::cin >> userId;
+		isValid = isUserIDExistsInBookings(userId, noOfBookings, bookings);
+		if(!isValid){
+			errorMessage = "[ERROR]: User ID does not exist!\n";
+		}
+	}while(!isValid);
+
+	if (isValid) {
+		if (deleteBookingsFromFileUsingUserId(userId, bookings, noOfBookings)) {
+			printSuccess("Booking(s) has been removed from system!\n");
+		}
+		else {
+			printError("[ERROR]: While removing booking(s) from file!\n");
+		}
+	}
 }
 
 //This function removes Bookings
@@ -2749,7 +2860,7 @@ void removeBooking( SelectedFlight*& bookings, int& noOfBookings ){
 				removeBookingUsingIndex(bookings, noOfBookings);
 				break;
 			case 2:
-				//removeBookingUsingUserID(bookings, noOfBookings);
+				removeBookingUsingUserID(bookings, noOfBookings);
 				break;
 			default:
 				break;

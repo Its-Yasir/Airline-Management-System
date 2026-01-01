@@ -88,7 +88,14 @@ bool removeBookingFromFileUsingIndex(int bookingIndex, SelectedFlight*& bookings
 
 void removeFlight(Flight*& flights, int& noOfFlights);
 
+void removeBookingUsingUserID(SelectedFlight*& bookings, int& noOfBookings);
+
+bool isUserIDExistsInBookings(std::string userId, int noOfBookings, SelectedFlight* bookings);
+
+bool deleteBookingsFromFileUsingUserId(std::string userId, SelectedFlight* bookings, int& noOfBookings);
+
 void removeBookingUsingIndex(SelectedFlight*& bookings, int& noOfFlights);
+
 
 //Admin Menu Functions
 void manageUsers(int& noOfBalanceUsers, User*& users, int& noOfUsers, UserBalance*& userBalances, Flight* flights, int noOfFlights, SelectedFlight* userbookings);
