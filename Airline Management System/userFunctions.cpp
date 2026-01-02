@@ -40,7 +40,7 @@ int showUserMenu() {
 		}
 
 		printSkyBlue("Chose an option from the below(1-5): \n");
-		std::cout << "1. Book FLighrs =>\n";
+		std::cout << "1. Book FLights =>\n";
 		std::cout << "2. Cancel Reservations =>\n";
 		std::cout << "3. View Available Flights =>\n";
 		std::cout << "4. Genrerate Bookign Reports =>\n";
@@ -491,6 +491,8 @@ void cancelReservations(SelectedFlight* bookings, int size, std::string userId) 
 				updateBookings(userId, selectedFlight.id);
 				updateFlightFile(selectedFlight.id, selectedFlight.classSelected, selectedFlight.seats);
 				printSuccess("Reservation canceled successfully!\n");
+				isValidConfirmation = true;
+				break;
 			}
 
 			isValidConfirmation = true;
