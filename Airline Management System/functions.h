@@ -7,6 +7,8 @@
 
 int getValidInteger(int min, int max, bool& valid);
 
+void showLoading(std::string message);
+
 std::string cleanString(std::string str);
 
 //Function for bookings

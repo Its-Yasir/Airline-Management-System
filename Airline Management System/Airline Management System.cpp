@@ -86,8 +86,6 @@ int main()
                         generateUserReservationReport(userID, noOfBookingsForCurrentUser); 
                         (void)_getch(); 
                         break;
-                    case 5:
-                        viewAnalytic(totalFlight, totalUsers, allBookings);
                 }
             }
         }

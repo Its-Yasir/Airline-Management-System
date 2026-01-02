@@ -387,6 +387,7 @@ void viewReservations(SelectedFlight* bookings, int size) {
 	const int wSeat = 7;
 	std::string cYellow = "\033[1;33m";
 	std::string cReset = "\033[0m";
+	showLoading("Loading Reservations");
 	for (int i = 0; i < size; i++) {
 		std::cout << cYellow << "|" << cReset;
 
@@ -503,6 +504,7 @@ void cancelReservations(SelectedFlight* bookings, int size, std::string userId) 
 }
 
 void viewAvailableFlights(Flight arr[], int size) {
+	showLoading("Loading Flights");
 	displayFlightHeader();
 	const int wID = 9;
 	const int wCity = 11;
@@ -545,6 +547,7 @@ void generateUserReservationReport(std::string userId, int& count) {
 
 	if (count == 0) {
 		printHeader();
+		showLoading("Loading Reservation Report");
 		printError("\n[INFO]: No flight history found for user: " + userId + "\n");
 		if (bookingsForUser != nullptr) delete[] bookingsForUser;
 		return;

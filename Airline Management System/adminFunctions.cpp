@@ -1,6 +1,5 @@
 #include "adminFunctions.h"
 
-
 //Admin Login Function
 bool adminLogin(User arr[], int a) {
 	bool isAuthentic = false;

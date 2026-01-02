@@ -31,6 +31,28 @@ UserBalance* loadBalanceForUsers(int& size) {
 	}
 }
 
+#include <iostream>
+#include <thread> // For sleep_for
+#include <chrono> // For seconds/milliseconds
+
+// Function to show a simple loading animation
+void showLoading(std::string message) {
+	std::cout << "\n";
+
+	char animationChars[] = { '|', '/', '-', '\\' };
+	int animationIndex = 0;
+
+	for (int i = 0; i < 20; i++) {
+		std::cout << "\r " << message << " " << animationChars[animationIndex] << " " << std::flush;
+
+		animationIndex++;
+		if (animationIndex > 3) animationIndex = 0;
+		std::this_thread::sleep_for(std::chrono::milliseconds(100));
+	}
+
+	std::cout << "\r" << std::string(message.length() + 5, ' ') << "\r";
+}
+
 int getValidInteger(int min, int max, bool& valid) {
 	int value;
 	while (true) {
