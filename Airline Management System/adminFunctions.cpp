@@ -50,11 +50,12 @@ int showAdminMenu() {
 			printError("[INVALID_INPUT]: Press 1, 2, 3, or 4\n");
 		}
 
-		printSkyBlue("Chose an option from the below(1-4): \n");
+		printSkyBlue("Chose an option from the below(1-5): \n");
 		std::cout << "1. Manage Users =>\n";
 		std::cout << "2. Manage Flight Inventory =>\n";
 		std::cout << "3. View Reservation Reports =>\n";
-		printError("4. <= Exit\n");
+		std::cout << "4. Show Analytic =>\n";
+		printError("5. <= Exit\n");
 		std::cin >> choice;
 
 		if (std::cin.fail()) {
@@ -63,7 +64,7 @@ int showAdminMenu() {
 			choice = 0;
 		}
 
-		if (choice < 1 || choice > 5) {
+		if (choice < 1 || choice > 6) {
 			isValid = false;
 		}
 		else {
@@ -2912,6 +2913,26 @@ void manageFlights(Flight*& flights, int& noOfFlights, SelectedFlight*& bookings
 	
 }
 
-void viewReservationReportsAdmin() {
-	printSuccess("Reports generated successfully by admin");
+void viewReservationReportsAdmin(User* users, UserBalance* userBalance, int size) {
+	bool isValid = false;
+	std::string errorMessage = "";
+	std::string inputId;
+	do{
+		displayUsersWithIDs(users, size);
+		if (!isValid) {
+			if (!errorMessage.empty()) {
+				printError(errorMessage);
+			}
+		}
+		std::cout << "Enter the user ID of the user to view their reservations: ";
+		std::cin >> inputId;
+		isValid = isUserIDExists(inputId);
+		if(!isValid){
+			errorMessage = "[ERROR]: User ID does not exist!\n";
+		}
+	}while(!isValid);
+
+	if(isValid){
+		generateUserReservationReport(inputId, size);
+	}
 }

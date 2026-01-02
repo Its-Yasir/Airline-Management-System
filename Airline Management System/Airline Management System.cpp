@@ -18,7 +18,6 @@ int main()
     std::string userID = "";
 
 
-
     std::string currentlyLoggenIn = "";
     User* Admins = loadAdmins(totalAdmins);
     User* myUsers = loadUsers(totalUsers);
@@ -83,10 +82,12 @@ int main()
                         viewAvailableFlights(availableFlight, totalFlight); 
                         (void)_getch();
                         break;
-                    case 4: 
-                        generateUserReservationReport(userID, noOfBookingsForCurrentUser, userBalances, totalUsersWithBalance); 
+                    case 4:
+                        generateUserReservationReport(userID, noOfBookingsForCurrentUser); 
                         (void)_getch(); 
                         break;
+                    case 5:
+                        viewAnalytic(totalFlight, totalUsers, allBookings);
                 }
             }
         }
@@ -102,7 +103,7 @@ int main()
                 switch (adminChoice) {
                 case 1: manageUsers(totalUsersWithBalance, myUsers, totalUsers, userBalances, availableFlight, totalFlight, bookingsForUser ); (void)_getch(); break;
                 case 2: manageFlights(availableFlight, totalFlight, allBookings, totalBookings  ); (void)_getch(); break;
-                case 3: viewReservationReportsAdmin(); (void)_getch(); break;
+                case 3: viewReservationReportsAdmin(myUsers, userBalances, totalUsers); (void)_getch(); break;
                 }
             }
         }

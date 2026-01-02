@@ -100,4 +100,4 @@ void removeBookingUsingIndex(SelectedFlight*& bookings, int& noOfFlights);
 //Admin Menu Functions
 void manageUsers(int& noOfBalanceUsers, User*& users, int& noOfUsers, UserBalance*& userBalances, Flight* flights, int noOfFlights, SelectedFlight* userbookings);
 void manageFlights(Flight*& flights, int& noOfFlights, SelectedFlight*& bookings, int& noOfBookings);
-void viewReservationReportsAdmin();
+void viewReservationReportsAdmin(User* users, UserBalance* userBalance, int size);

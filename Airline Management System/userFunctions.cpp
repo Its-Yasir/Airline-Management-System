@@ -539,24 +539,36 @@ void viewAvailableFlights(Flight arr[], int size) {
 	}
 }
 
-void generateUserReservationReport(std::string userId, int& count, UserBalance* userBalance, int size) {
+void generateUserReservationReport(std::string userId, int& count) {
 	SelectedFlight* bookingsForUser = getBookingsByUserId(userId, count);
 
-	UserBalance* allBalanceForUsers = loadBalanceForUsers(size);
-
-	UserBalance balanceForUser = { "", 0 };
-	for (int i = 0; i < size; i++) {
-		if (allBalanceForUsers[i].userId == userId) {
-			balanceForUser = allBalanceForUsers[i];
-			break;
-		}
-	}
 
 	if (count == 0) {
 		printHeader();
 		printError("\n[INFO]: No flight history found for user: " + userId + "\n");
 		if (bookingsForUser != nullptr) delete[] bookingsForUser;
 		return;
+	}
+
+
+	int totalUsersCount = 0;
+	UserBalance* allBalanceForUsers = loadBalanceForUsers(totalUsersCount);
+
+
+	UserBalance balanceForUser = { "", 0 };
+	bool balanceFound = false;
+
+
+	for (int i = 0; i < totalUsersCount; i++) {
+		if (allBalanceForUsers[i].userId == userId) {
+			balanceForUser = allBalanceForUsers[i];
+			balanceFound = true;
+			break;
+		}
+	}
+	
+	if (allBalanceForUsers != nullptr) {
+		delete[] allBalanceForUsers;
 	}
 
 
@@ -584,6 +596,7 @@ void generateUserReservationReport(std::string userId, int& count, UserBalance* 
 		}
 	}
 
+
 	std::string highestClass = "None";
 	long long highestAmount = 0;
 
@@ -600,9 +613,10 @@ void generateUserReservationReport(std::string userId, int& count, UserBalance* 
 		highestAmount = spendFirst;
 	}
 
+
 	printHeader();
 	printBlue("\n===========================================================\n");
-	printBold("               PERSONAL RESERVATION REPORT                 \n");
+	printBold("               PERSONAL RESERVATION REPORT                  \n");
 	printBlue("===========================================================\n");
 
 	std::cout << " User ID: " << userId << "\n";
@@ -644,7 +658,10 @@ void generateUserReservationReport(std::string userId, int& count, UserBalance* 
 	printSkyBlue(highestClass + " (" + std::to_string(highestAmount) + "/- PKR)\n");
 	printYellow("-----------------------------------------------------------\n");
 
-	delete[] bookingsForUser;
+	// 8. Final Cleanup
+	if (bookingsForUser != nullptr) {
+		delete[] bookingsForUser;
+	}
 }
 
 
