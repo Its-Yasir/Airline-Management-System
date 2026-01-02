@@ -180,6 +180,7 @@ void viewAllUsersData(int noOfBalanceUsers) {
 	std::string line;
 	int count = 1;
 	printHeader();
+	showLoading("Loading Users Data");
 	printBlue("==========================================");
 	printYellow("           ALL USERS DETAILES                    ");
 	printBlue("==========================================\n");
@@ -2905,6 +2906,13 @@ void manageFlights(Flight*& flights, int& noOfFlights, SelectedFlight*& bookings
 		break;
 	case 4:
 		removeBooking(bookings, noOfBookings);
+		break;
+	case 5:
+		printHeader();
+		viewAvailableFlights(flights, noOfFlights);
+		printYellow("Press any key to exit!\n");
+		break;
+	case 6:
 		break;
 	default:
 		break;
