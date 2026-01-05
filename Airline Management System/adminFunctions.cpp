@@ -1,7 +1,7 @@
 #include "adminFunctions.h"
 
 //Admin Login Function
-bool adminLogin(User arr[], int a) {
+bool adminLogin(User arr[], int a, User& admin) {
 	bool isAuthentic = false;
 	std::string inputAdminId;
 	std::string inputPass;
@@ -36,6 +36,11 @@ bool adminLogin(User arr[], int a) {
 		}
 	} while (!isAuthentic);
 
+	if (isAuthentic) {
+		admin.userID = inputAdminId;
+		admin.password = inputPass;
+	}
+
 	return isAuthentic;
 }
 
@@ -46,15 +51,16 @@ int showAdminMenu() {
 	do {
 		printHeader();
 		if (!isValid) {
-			printError("[INVALID_INPUT]: Press 1, 2, 3, or 4\n");
+			printError("[INVALID_INPUT]: Press 1, 2, 3, 4, 5 or 6\n");
 		}
 
-		printSkyBlue("Chose an option from the below(1-5): \n");
+		printSkyBlue("Chose an option from the below(1-6): \n");
 		std::cout << "1. Manage Users =>\n";
 		std::cout << "2. Manage Flight Inventory =>\n";
 		std::cout << "3. View Reservation Reports =>\n";
 		std::cout << "4. Show Analytic =>\n";
-		printError("5. <= Exit\n");
+		std::cout << "5. Change Password =>\n";
+		printError("6. <= Exit\n");
 		std::cin >> choice;
 
 		if (std::cin.fail()) {
@@ -2941,5 +2947,66 @@ void viewReservationReportsAdmin(User* users, UserBalance* userBalance, int size
 
 	if(isValid){
 		generateUserReservationReport(inputId, size);
+	}
+}
+
+void viewAnalytics(int totalFlight, int totalBookings, User* users, SelectedFlight* allBookings, int totalUsers){
+	printHeader();
+	printBlue("------- ALL ANALYTICS -------\n\n");
+	std::cout << "Total #No of passengars: " << totalUsers << std::endl;
+	std::cout << "Total available flights : " << totalFlight << std::endl;
+	std::cout << "Total flights booked: " << totalBookings << std::endl;
+	long long totalRevenue = 0;
+	for(int i = 0; i < totalBookings; i++){
+		totalRevenue += allBookings[i].price;
+	}
+	long long revenueInMillion = totalRevenue / 1000000;
+	std::cout << "Total revenue: " << revenueInMillion << " million" << std::endl;
+}
+
+void changePassword(User& admin, User* admins, int size){
+	bool isValid = false;
+	std::string errorMessage = "";
+	std::string inputPass;
+	do{
+		printHeader();
+		if (!isValid) {
+			if (!errorMessage.empty()) {
+				printError(errorMessage);
+			}
+		}
+		std::cout << "Enter your current password: ";
+		std::cin >> inputPass;
+		isValid = ( admin.password == inputPass );
+		if(!isValid){
+			errorMessage = "[ERROR]: Password does not match!\n";
+		}
+	}while(!isValid);
+
+	if(isValid){
+		std::string newPassword;
+		std::cout << "Enter your new password: ";
+		std::cin >> newPassword;
+		admin.password = newPassword;
+		
+		std::ofstream updateAdminFile("database/admins.txt");
+
+		for(int i = 0; i < size; i++){
+			if(admins[i].userID == admin.userID){
+				admins[i].password = newPassword;
+				break;
+			}
+		}	
+
+		if(!updateAdminFile.is_open()){
+			printError("[ERROR]: While updating admin file!\n");
+			return;
+		}else{
+			for(int i = 0; i < size; i++){
+				updateAdminFile << admins[i].userID << " " << admins[i].password << "\n";
+			}
+			updateAdminFile.close();
+			printSuccess("Password changed successfully!\n");
+		}
 	}
 }

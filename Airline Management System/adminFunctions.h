@@ -12,7 +12,7 @@
 #include "userFunctions.h"
 
 
-bool adminLogin(User arr[], int a);
+bool adminLogin(User arr[], int a, User& admin);
 
 bool isUserIDExists(std::string userId);
 
@@ -101,3 +101,5 @@ void removeBookingUsingIndex(SelectedFlight*& bookings, int& noOfFlights);
 void manageUsers(int& noOfBalanceUsers, User*& users, int& noOfUsers, UserBalance*& userBalances, Flight* flights, int noOfFlights, SelectedFlight* userbookings);
 void manageFlights(Flight*& flights, int& noOfFlights, SelectedFlight*& bookings, int& noOfBookings);
 void viewReservationReportsAdmin(User* users, UserBalance* userBalance, int size);
+void viewAnalytics(int totalFlight, int totalBookings, User* users, SelectedFlight* allBookings, int totalUsers);
+void changePassword(User& admin, User* admins, int size);

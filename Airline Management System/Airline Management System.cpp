@@ -16,6 +16,7 @@ int main()
     int noOfBookingsForCurrentUser = 0;
 	int totalBookings = 0;
     std::string userID = "";
+    User loggedInAdmin = { "", "" };
 
 
     std::string currentlyLoggenIn = "";
@@ -36,7 +37,7 @@ int main()
             break;
         }
         else if (choice == 1) {
-            if (adminLogin(Admins, totalAdmins)) {
+            if (adminLogin(Admins, totalAdmins, loggedInAdmin)) {
                 currentlyLoggenIn = "admin";
             }
         }
@@ -93,7 +94,7 @@ int main()
             while (true) {
                 int adminChoice = showAdminMenu();
 
-                if (adminChoice == 4) {
+                if (adminChoice == 6) {
                     break;
                 }
 
@@ -102,6 +103,8 @@ int main()
                 case 1: manageUsers(totalUsersWithBalance, myUsers, totalUsers, userBalances, availableFlight, totalFlight, bookingsForUser ); (void)_getch(); break;
                 case 2: manageFlights(availableFlight, totalFlight, allBookings, totalBookings  ); (void)_getch(); break;
                 case 3: viewReservationReportsAdmin(myUsers, userBalances, totalUsers); (void)_getch(); break;
+                case 4: viewAnalytics(totalFlight, totalBookings, myUsers, allBookings, totalUsers); (void)_getch(); break;
+                case 5: changePassword(loggedInAdmin, Admins, totalAdmins); (void)_getch(); break;
                 }
             }
         }

@@ -624,26 +624,24 @@ void generateUserReservationReport(std::string userId, int& count) {
 	printBold("               PERSONAL RESERVATION REPORT                  \n");
 	printBlue("===========================================================\n");
 
-	std::cout << " User ID: " << userId << "\n";
-	std::cout << " Total Bookings: " << count << " flight(s)\n\n";
+	std::cout << " My User ID: " << userId << "\n";
+	std::cout << " Total flights I hace booked: " << count << " flight\n\n";
 
 	printYellow("---------------------- SUMMARY ----------------------------\n");
-	std::cout << " Total Seats Booked:    " << totalSeats << "\n";
-	std::cout << " Total Amount Spent:    ";
+	std::cout << " Total seats I have booked:    " << totalSeats << "\n";
+	std::cout << " Total Amount I have Spent:    ";
 	printSuccess(std::to_string(totalSpent) + "/- PKR\n");
-	std::cout << " Available Balance:      ";
+	std::cout << " My available Balance:      ";
 	if (balanceForUser.balance <= 0) {
 		printError(std::to_string(balanceForUser.balance) + "/- PKR\n");
 	}
 	else {
 		printSuccess(std::to_string(balanceForUser.balance) + "/- PKR\n");
 	}
-	printYellow("-----------------------------------------------------------\n\n");
 
-	printSkyBlue(" CLASS BREAKDOWN:\n");
-	std::cout << std::left << std::setw(15) << " Category"
+	std::cout << std::left << std::setw(15) << " Class"
 		<< std::left << std::setw(15) << " | Seats"
-		<< std::left << std::setw(20) << " | Total Spent" << "\n";
+		<< std::left << std::setw(20) << " | Total Money Spent" << "\n";
 	std::cout << " --------------------------------------------------\n";
 
 	std::cout << std::left << std::setw(16) << " Economy"
@@ -659,7 +657,7 @@ void generateUserReservationReport(std::string userId, int& count) {
 		<< "| " << spendFirst << "/- PKR\n\n";
 
 	printYellow("---------------------- INSIGHTS ---------------------------\n");
-	std::cout << " Most Money Spent On:   ";
+	std::cout << " Most money I spent on:   ";
 	printSkyBlue(highestClass + " (" + std::to_string(highestAmount) + "/- PKR)\n");
 	printYellow("-----------------------------------------------------------\n");
 
