@@ -213,6 +213,9 @@ void viewAllUsersData(int noOfBalanceUsers) {
 		printYellow(header);
 		printBlue(" --------------------------------------------------------\n");
 
+		printSkyBlue(" User ID:   ");
+		std::cout << userId << std::endl;
+
 		printSkyBlue(" Address:   ");
 		std::cout << address << std::endl;
 
@@ -1871,18 +1874,19 @@ Flight getAllInputsForNewFlight(Flight flight, int detailsTaken) {
 				}
 			}
 			printYellow("Format 12Dec-02:00PM\n");
+			inputTaken = "";
 			std::cout << "Enter Arrival Time: ";
 			std::getline(std::cin >> std::ws, inputTaken);
 			if (inputTaken == "-1") {
 				return flight;
 			}
-			if (!(std::cin >> numbericInputs)) {
+			if (!(std::cin >> inputTaken)) {
 				std::cin.clear();
 				std::cin.ignore(1000, '\n');
 				errorMessage = "[ERROR]: Invalid input! Please enter a numeric value.\n";
 				isValid = false;
 			}
-			else if (numbericInputs == -1) {
+			else if (inputTaken == "- 1") {
 				return flight;
 			}
 			else if (inputTaken.length() < 5) {
