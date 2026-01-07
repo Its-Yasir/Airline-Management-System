@@ -483,6 +483,11 @@ void createFlightsFile() {
 }
 
 void updateFlightsFile(Flight arr[], int size, std::string flightID, int seats, std::string clasS) {
+	if (size <= 0) {
+		printError("[ERROR]: Flight list is empty. Cannot update file.\n");
+		return;
+	}
+	
 	for (int i = 0; i < size; i++) {
 		if (flightID == arr[i].id) {
 			if (clasS == "Economy") {
@@ -494,16 +499,17 @@ void updateFlightsFile(Flight arr[], int size, std::string flightID, int seats, 
 			else if (clasS == "First") {
 				arr[i].seatsFirst -= seats;
 			}
+			break;
 		}
 	}
 
-	std::ofstream updateFlightsFile("database/flights.txt");
-	if (!updateFlightsFile.is_open()) {
+	std::ofstream saveFlightsFile("database/flights.txt");
+	if (!saveFlightsFile.is_open()) {
 		printError("[ERROR]: While opening file for upadting flights\n");
 	}
 	else {
 		for (int i = 0; i < size; i++) {
-			updateFlightsFile
+			saveFlightsFile
 				<< arr[i].id
 				<< " "
 				<< arr[i].origin
@@ -527,11 +533,10 @@ void updateFlightsFile(Flight arr[], int size, std::string flightID, int seats, 
 				<< arr[i].seatsFirst
 				<< " "
 				<< arr[i].refund
-				<< " "
-				<< std::endl;
+				<< "\n";
 		}
 
-		updateFlightsFile.close();
+		saveFlightsFile.close();
 	}
 }
 

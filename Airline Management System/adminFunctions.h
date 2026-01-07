@@ -60,7 +60,7 @@ void addFlight(Flight*& flights, int& noOfFlights);
 
 void printAddFlightHeader(Flight flight);
 
-Flight getAllInputsForNewFlight(Flight flight, int detailsTaken);
+Flight getAllInputsForNewFlight(Flight flight, int detailsTaken, bool& isCanceled);
 
 bool isFlightIDExists(std::string flightID);
 
