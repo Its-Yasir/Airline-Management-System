@@ -480,7 +480,7 @@ void cancelReservations(SelectedFlight* bookings, int size, std::string userId) 
 		std::cin >> choice;
 		if (choice == 'y' || choice == 'n') {
 			if (choice == 'n') {
-				printSuccess("Reservation in not canceled!\n");
+				printSuccess("Reservation is not canceled!\n");
 				printYellow("Press any key to exit!\n");
 				(void)_getch();
 			}
@@ -656,7 +656,7 @@ void generateUserReservationReport(std::string userId, int& count) {
 		<< "| " << std::left << std::setw(13) << seatsFirst
 		<< "| " << spendFirst << "/- PKR\n\n";
 
-	printYellow("---------------------- INSIGHTS ---------------------------\n");
+	printYellow("---------------------- Most Spent ---------------------------\n");
 	std::cout << " Most money I spent on:   ";
 	printSkyBlue(highestClass + " (" + std::to_string(highestAmount) + "/- PKR)\n");
 	printYellow("-----------------------------------------------------------\n");
