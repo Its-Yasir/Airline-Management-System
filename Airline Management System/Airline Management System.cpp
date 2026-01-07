@@ -74,6 +74,7 @@ int main()
                         cancelReservations(bookingsForUser, noOfBookingsForCurrentUser, userID);
                         if (availableFlight != nullptr) delete[] availableFlight;
                         availableFlight = loadFlights(totalFlight);
+                        if (availableFlight != nullptr) delete[] availableFlight;
                         userBalances = loadBalanceForUsers(totalUsersWithBalance);
                         (void)_getch();
                         break;
@@ -112,6 +113,7 @@ int main()
 
 
     delete[] userBalances;
+    delete[] allBookings;
     delete[] bookingsForUser;
     delete[] availableFlight;
     delete[] myUsers;

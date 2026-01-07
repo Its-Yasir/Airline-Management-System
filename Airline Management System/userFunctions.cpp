@@ -168,10 +168,24 @@ SelectedFlight handleClassSeatsInput(Flight selectedFlight) {
 		std::cout << "Choose class to book 1(Economy) / 2(Business)/ 3(First): ";
 		int classChoice;
 		std::cin >> classChoice;
+		if (std::cin.fail()) {
+			std::cin.clear();
+			std::cin.ignore(1000, '\n');
+			errorMessage = "[INVALID_INPUT]: Please enter a number.\n";
+			isValidClassSeats = false;
+			continue;
+		}
 		std::cout << "Choose number of seats: ";
 		int seatsInput;
 		int seatsAvailable = 0;
 		std::cin >> seatsInput;
+		if (std::cin.fail()) {
+			std::cin.clear();
+			std::cin.ignore(1000, '\n');
+			errorMessage = "[INVALID_INPUT]: Please enter a valid number of seats.\n";
+			isValidClassSeats = false;
+			continue;
+		}
 		if (classChoice > 0 && classChoice < 4) {
 			if (classChoice == 1) {
 				if (selectedFlight.seatsEco > 0) {
