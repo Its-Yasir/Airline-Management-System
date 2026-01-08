@@ -5,7 +5,6 @@
 #include <string>
 #include <sstream>
 #include <conio.h>
-#include <limits>
 
 #include "models.h"
 #include "functions.h"
@@ -42,7 +41,7 @@ void updatePassengersFile(std::string newUserId, std::string oldUserId, User use
 
 void editAField(std::string userId, UsersDetails det, int type, int noOfBalanceUsers, User users[]);
 
-void updateUserDetailsFile(UsersDetails userDetail);
+void updateUserDetailsFile(UsersDetails userDetail, std::string olderId);
 
 void viewCreateNewUserHeader(UsersDetails newUserDetails, int detailsTaken);
 
@@ -95,6 +94,8 @@ bool isUserIDExistsInBookings(std::string userId, int noOfBookings, SelectedFlig
 bool deleteBookingsFromFileUsingUserId(std::string userId, SelectedFlight* bookings, int& noOfBookings);
 
 void removeBookingUsingIndex(SelectedFlight*& bookings, int& noOfFlights);
+
+void updateBalanceBookingsFiles(std::string oldUserId, std::string newUserId);
 
 
 //Admin Menu Functions

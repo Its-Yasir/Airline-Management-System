@@ -1,10 +1,2 @@
-roshan_ali PK-102 Karachi Dubai 12Dec-08:00PM 13Dec-05:00PM First 2000000 20 1
-yasir_ali PK-101 Lahore Istanbul 12Dec-08:00AM 12Dec-02:00PM Economy 1500000 15 10
-yasir_ali PK-102 Karachi Dubai 13Dec-10:00AM 13Dec-01:00PM Business 800000 25 5
-yasir_ali PK-101 Lahore Istanbul 12Dec-08:00AM 12Dec-02:00PM Economy 40 15 1
-yasir_ali PK-101 Lahore Istanbul 12Dec-08:00AM 12Dec-02:00PM Economy 40 15 1
-yasir_ali PK-555 Islamabad Beijing 22Dec-07:00AM 22Dec-03:00PM Economy 220000 0 1
-malaika_imran PK-555 Islamabad Beijing 22Dec-07:00AM 22Dec-03:00PM Economy 220000 0 1
-roshan_ali PK-555 Islamabad Beijing 22Dec-07:00AM 22Dec-03:00PM Economy 440000 0 2
-yasir_ali PK-555 Islamabad Beijing 22Dec-07:00AM 22Dec-03:00PM Economy 220000 0 1
-yasir_ali PK-701 Karachi New_York 19Dec-02:00AM 19Dec-06:00PM Economy 350000 30 1
+yasir_ali PK-110 Lahore Dubai 12Dec-08:00PM 13Dec-05:00PM Business 1000000 10 2
+roshan_haider PK-102 Karachi Dubai 12Dec-08:00PM 13Dec-05:00PM First 2500000 20 1

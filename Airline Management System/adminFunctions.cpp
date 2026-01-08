@@ -261,7 +261,7 @@ void displayUsersWithIDs(User* users, int noOfUsers) {
 }
 
 //Update Users Extra data file
-void updateUserDetailsFile(UsersDetails userDetail) {
+void updateUserDetailsFile(UsersDetails userDetail, std::string oldUserID) {
 	std::ifstream countFile("database/users-extra-data.txt");
 	int actualCount = 0;
 	std::string tempLine;
@@ -272,7 +272,7 @@ void updateUserDetailsFile(UsersDetails userDetail) {
 		countFile.close();
 	}
 
-	int maxCapacity = actualCount + 1;
+	int maxCapacity = actualCount + 5;
 	UsersDetails* allUserDetails = new UsersDetails[maxCapacity];
 
 	std::ifstream loadFile("database/users-extra-data.txt");
@@ -316,7 +316,7 @@ void updateUserDetailsFile(UsersDetails userDetail) {
 
 
 	bool found = false;
-	std::string inputIDClean = cleanString(userDetail.id);
+	std::string inputIDClean = cleanString(oldUserID);
 	for (int i = 0; i < loadedCount; i++) {
 		if (allUserDetails[i].id == inputIDClean) {
 			allUserDetails[i] = userDetail; // Update existing
@@ -824,46 +824,102 @@ UsersDetails getUserDetailsAfterChange(UsersDetails det, int type) {
 	}
 }
 
+void updateBalanceBookingsFiles(std::string oldUserId, std::string newUserId) {
+	UserBalance* users = nullptr;
+	int size = 0;
+	users = loadBalanceForUsers(size);
+	std::ofstream updateBalanceBookingsFile("database/users-balance.txt");
+	if (!updateBalanceBookingsFile.is_open()) {
+		printError("There was an error while saving updated balance bookings file.\n");
+	}
+	else {
+		for (int i = 0; i < size; i++) {
+			if (users[i].userId == oldUserId) {
+				users[i].userId = newUserId;
+				break;
+			}
+		}
+		for (int i = 0; i < size; i++) {
+			updateBalanceBookingsFile << users[i].userId << " " << users[i].balance << "\n";
+		}
+		updateBalanceBookingsFile.close();
+	}
+
+	SelectedFlight* bookings = nullptr;
+	int bookingsSize = 0;
+	bookings = loadBookings(bookingsSize);
+	std::ofstream updateBookingsFile("database/bookings.txt");
+	if(!updateBookingsFile.is_open()) {
+		printError("There was an error while saving updated bookings file.\n");
+	}
+	else {
+		for(int i = 0; i < bookingsSize; i++) {
+			if(bookings[i].userId == oldUserId) {
+				bookings[i].userId = newUserId;
+			}
+		}
+		for(int i = 0; i < bookingsSize; i++) {
+			updateBookingsFile 
+				<< bookings[i].userId << " "
+				<< bookings[i].id << " "
+				<< bookings[i].origin << " "
+				<< bookings[i].destination << " "
+				<< bookings[i].depTime << " "
+				<< bookings[i].arrTime << " "
+				<< bookings[i].classSelected << " "
+				<< bookings[i].price << " "
+				<< bookings[i].refund << " "
+				<< bookings[i].seats << "\n";
+		}
+		updateBookingsFile.close();
+	}
+
+	delete[] users;
+	delete[] bookings;
+}
+
 //Function to edit a field and save changes in file
 void editAField(std::string userId, UsersDetails det, int type, int noOfBalanceUsers, User users[]) {
 	std::ofstream savePassengersFile;
+	std::string oldUserID = userId;
 	switch (type) {
 		case 1:
 			det = getUserDetailsAfterChange(det, 1);
-			updateUserDetailsFile(det);
+			updateUserDetailsFile(det, userId);
 			break;
 		case 2:
 			det = getUserDetailsAfterChange(det, 2);
-			updateUserDetailsFile(det);
-			updatePassengersFile(det.id, userId, users, noOfBalanceUsers);
+			updateUserDetailsFile(det, userId);
+			updatePassengersFile(det.id, oldUserID, users, noOfBalanceUsers);
+			updateBalanceBookingsFiles(oldUserID, det.id);
 			break;
 		case 3:
 			det = getUserDetailsAfterChange(det, 3);
-			updateUserDetailsFile(det);
+			updateUserDetailsFile(det, userId);
 			break;
 		case 4:
 			det = getUserDetailsAfterChange(det, 4);
-			updateUserDetailsFile(det);
+			updateUserDetailsFile(det, userId);
 			break;
 		case 5:
 			det = getUserDetailsAfterChange(det, 5);
-			updateUserDetailsFile(det);
+			updateUserDetailsFile(det, userId);
 			break;
 		case 6:
 			det = getUserDetailsAfterChange(det, 6);
-			updateUserDetailsFile(det);
+			updateUserDetailsFile(det, userId);
 			break;
 		case 7:
 			det = getUserDetailsAfterChange(det, 7);
-			updateUserDetailsFile(det);
+			updateUserDetailsFile(det, userId);
 			break;
 		case 8:
 			det = getUserDetailsAfterChange(det, 8);
-			updateUserDetailsFile(det);
+			updateUserDetailsFile(det, userId);
 			break;
 		case 9:
 			det = getUserDetailsAfterChange(det, 9);
-			updateUserDetailsFile(det);
+			updateUserDetailsFile(det, userId);
 			for (int i = 0; i < noOfBalanceUsers; i++) {
 				if (users[i].userID == det.id) {
 					users[i].password = det.password;
@@ -885,7 +941,7 @@ void editAField(std::string userId, UsersDetails det, int type, int noOfBalanceU
 
 		case 10:
 			det = getUserDetailsAfterChange(det, 10);
-			updateUserDetailsFile(det);
+			updateUserDetailsFile(det, userId);
 			break;
 		default:
 			break;
@@ -934,7 +990,7 @@ void editUserDetails(User* users, int noOfUsers, int noOfBalanceUsers) {
 		userDetails.contact = "Not Set";
 		userDetails.passport = "Not Set";
 		userDetails.balance = 0;
-		updateUserDetailsFile(userDetails);
+		updateUserDetailsFile(userDetails, userDetails.id);
 
 		printSuccess("New user details created with default values. You can edit them now.\n");
 	}
@@ -1436,7 +1492,7 @@ void addUser(int& noOfUsers, User*& users, int& noOfBalanceUsers, UserBalance*& 
 			saveUserBalanceFile.close();
 		}
 
-		updateUserDetailsFile(newUserDetails);
+		updateUserDetailsFile(newUserDetails, newUserDetails.id);
 		
 		User* newUsersArray = new User[noOfUsers + 1];
         for(int i=0; i<noOfUsers; i++) newUsersArray[i] = users[i];
@@ -1445,7 +1501,6 @@ void addUser(int& noOfUsers, User*& users, int& noOfBalanceUsers, UserBalance*& 
         delete[] users;
         users = newUsersArray;
         noOfUsers++;
-
 
         UserBalance* newBalArray = new UserBalance[noOfBalanceUsers + 1];
         for(int i=0; i<noOfBalanceUsers; i++) newBalArray[i] = userBalances[i];
@@ -2977,8 +3032,8 @@ void viewAnalytics(int totalFlight, int totalBookings, User* users, SelectedFlig
 	for(int i = 0; i < totalBookings; i++){
 		totalRevenue += allBookings[i].price;
 	}
-	long long revenueInMillion = totalRevenue / 1000000;
-	std::cout << "Total revenue: " << revenueInMillion << " million" << std::endl;
+	double revenueInMillion = (double)totalRevenue / 1000000.0;
+	std::cout << "Total revenue: " << std::fixed << std::setprecision(2) << revenueInMillion << " million" << std::endl;
 }
 
 void changePassword(User& admin, User* admins, int size){
