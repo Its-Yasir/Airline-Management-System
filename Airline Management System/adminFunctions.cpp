@@ -878,6 +878,34 @@ void updateBalanceBookingsFiles(std::string oldUserId, std::string newUserId) {
 	delete[] bookings;
 }
 
+//This function updates user balance in file
+void updateUserBalanceAfterEdit(long long amount, std::string userId) {
+	UserBalance* users = nullptr;
+	int size = 0;
+	users = loadBalanceForUsers(size);
+	if (size > 0) {
+		std::ofstream updateBalanceFileAdminEdit("database/users-balance.txt");
+		if (!updateBalanceFileAdminEdit.is_open()) {
+			printError("There was an error while saving updated balance file.\n");
+			return;
+		}
+		else {
+			for (int i = 0; i < size; i++) {
+				if (users[i].userId == userId) {
+					users[i].balance = amount;
+					break;
+				}
+			}
+			for (int i = 0; i < size; i++) {
+				updateBalanceFileAdminEdit << users[i].userId << " " << users[i].balance << "\n";
+			}
+			printSuccess("User balance has been updated successfully!\n");
+			updateBalanceFileAdminEdit.close();
+		}
+	}
+
+}
+
 //Function to edit a field and save changes in file
 void editAField(std::string userId, UsersDetails det, int type, int noOfBalanceUsers, User users[]) {
 	std::ofstream savePassengersFile;
@@ -941,7 +969,9 @@ void editAField(std::string userId, UsersDetails det, int type, int noOfBalanceU
 
 		case 10:
 			det = getUserDetailsAfterChange(det, 10);
+			updateUserBalanceAfterEdit(det.balance, det.id);
 			updateUserDetailsFile(det, userId);
+
 			break;
 		default:
 			break;
@@ -3070,8 +3100,9 @@ void viewReservationReportsAdmin(User* users, UserBalance* userBalance, int size
 	}
 }
 
-void viewAnalytics(int totalFlight, int totalBookings, User* users, SelectedFlight* allBookings, int totalUsers){
+void viewAnalytics(int totalFlight, int totalBookings, User* users, int totalUsers){
 	printHeader();
+	SelectedFlight* allBookings = loadBookings(totalBookings);
 	printBlue("------- ALL ANALYTICS -------\n\n");
 	std::cout << "Total #No of passengars: " << totalUsers << std::endl;
 	std::cout << "Total available flights : " << totalFlight << std::endl;
@@ -3082,6 +3113,8 @@ void viewAnalytics(int totalFlight, int totalBookings, User* users, SelectedFlig
 	}
 	double revenueInMillion = (double)totalRevenue / 1000000.0;
 	std::cout << "Total revenue: " << std::fixed << std::setprecision(2) << revenueInMillion << " million" << std::endl;
+
+	delete[] allBookings;
 }
 
 void changePassword(User& admin, User* admins, int size){

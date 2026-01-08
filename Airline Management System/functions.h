@@ -24,7 +24,7 @@ int showMenu();
 
 //Functions for Flights
 void createFlightsFile();
-void updateFlightsFile(Flight arr[], int size, std::string flightID, int seats, std::string clasS);
+void updateFlightsFile(int size, std::string flightID, int seats, std::string clasS);
 Flight* loadFlights(int& size);
 void updateFlightFile(std::string flightId, std::string clasS, int seats);
 

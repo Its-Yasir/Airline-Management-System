@@ -93,7 +93,7 @@ bool passengerLogin(User arr[], int a, std::string& userID) {
 		if (!errrorMessage.empty()) {
 			printError(errrorMessage);
 		}
-		std::cout << "Enter Username: ";
+		std::cout << "Enter User ID: ";
 		std::cin >> inputUserId;
 		std::cout << "Enter Password: ";
 		std::cin >> inputPass;
@@ -335,6 +335,7 @@ bool handleFinalBookFlight(SelectedFlight sec, std::string userId, UserBalance* 
 				DeductBalanceForUser(userId, sec.price, arr, size, isAmountOk);
 				if (isAmountOk) {
 					SaveBalanceForUsers(arr, size);
+					updateFlightsFile(flightSize, sec.id, sec.seats, sec.classSelected);
 					return true;
 				}
 				else {
@@ -465,7 +466,7 @@ void cancelReservations(SelectedFlight* bookings, int size, std::string userId) 
 		std::cout << "Class         : " << selectedFlight.classSelected << std::endl;
 		std::cout << "Seats         : " << selectedFlight.seats << std::endl;
 		std::cout << "Refund        : " << std::to_string(selectedFlight.refund) + "%" << std::endl << std::endl;
-		getBack = selectedFlight.price * selectedFlight.refund / 100;
+		getBack = selectedFlight.price * (selectedFlight.refund / 100);
 		if (getBack == 0) {
 			std::cout << "Money You Get Back : ";
 			printError(std::to_string(getBack) + "/- PKR\n");

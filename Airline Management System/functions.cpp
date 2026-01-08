@@ -305,52 +305,53 @@ void updateBookings(std::string userId, std::string flightId) {
 void updateFlightFile(std::string flightId, std::string clasS, int seats) {
 	int noOfFlights = 0;
 	Flight* flightsArray = nullptr;
-	std::ifstream updateFlightsFile("database/flights.txt");
-	if (!updateFlightsFile.is_open()) {
+
+	std::ifstream updateFlightsFileAftCancelRes("database/flights.txt");
+	if (!updateFlightsFileAftCancelRes.is_open()) {
 		printError("[ERROR]: While opening flights file!\n");
 		return;
 	}
-	else {
-		std::string line;
-		while (std::getline(updateFlightsFile, line)) {
-			if (!line.empty()) {
-				noOfFlights++;
-			}
+
+	std::string line;
+	while (std::getline(updateFlightsFileAftCancelRes, line)) {
+		if (!line.empty()) {
+			noOfFlights++;
 		}
-		updateFlightsFile.clear();
-		updateFlightsFile.seekg(0, std::ios::beg);
-		flightsArray = new Flight[noOfFlights];
-		int count = 0;
-		while (count < noOfFlights && updateFlightsFile
-			>> flightsArray[count].id
-			>> flightsArray[count].origin
-			>> flightsArray[count].destination
-			>> flightsArray[count].depTime
-			>> flightsArray[count].arrTime
-			>> flightsArray[count].priceEco
-			>> flightsArray[count].priceBus
-			>> flightsArray[count].priceFirst
-			>> flightsArray[count].seatsEco
-			>> flightsArray[count].seatsBus
-			>> flightsArray[count].seatsFirst
-			>> flightsArray[count].refund
-			) {
-			count++;
-		}
-		updateFlightsFile.close();
-		for (int j = 0; j < noOfFlights; j++) {
-			if (flightsArray[j].id == flightId) {
-				if (clasS == "Economy") {
-					flightsArray[j].seatsEco += seats;
-				}
-				else if (clasS == "Business") {
-					flightsArray[j].seatsBus += seats;
-				}
-				else if (clasS == "First") {
-					flightsArray[j].seatsFirst += seats;
-				}
-				break;
+	}
+	updateFlightsFileAftCancelRes.clear();
+	updateFlightsFileAftCancelRes.seekg(0, std::ios::beg);
+	flightsArray = new Flight[noOfFlights];
+	int count = 0;
+	while (count < noOfFlights && updateFlightsFileAftCancelRes
+		>> flightsArray[count].id
+		>> flightsArray[count].origin
+		>> flightsArray[count].destination
+		>> flightsArray[count].depTime
+		>> flightsArray[count].arrTime
+		>> flightsArray[count].seatsEco
+		>> flightsArray[count].seatsBus
+		>> flightsArray[count].seatsFirst
+		>> flightsArray[count].priceEco
+		>> flightsArray[count].priceBus
+		>> flightsArray[count].priceFirst
+		>> flightsArray[count].refund
+		) {
+		count++;
+	}
+	updateFlightsFileAftCancelRes.close();
+
+	for (int j = 0; j < count; j++) {
+		if (flightsArray[j].id == flightId) {
+			if (clasS == "Economy") {
+				flightsArray[j].seatsEco += seats;
 			}
+			else if (clasS == "Business") {
+				flightsArray[j].seatsBus += seats;
+			}
+			else if (clasS == "First") {
+				flightsArray[j].seatsFirst += seats;
+			}
+			break;
 		}
 	}
 
@@ -442,12 +443,12 @@ Flight* loadFlights(int& size) {
 			>> flightsArray[count].destination
 			>> flightsArray[count].depTime
 			>> flightsArray[count].arrTime
-			>> flightsArray[count].priceEco
-			>> flightsArray[count].priceBus
-			>> flightsArray[count].priceFirst
 			>> flightsArray[count].seatsEco
 			>> flightsArray[count].seatsBus
 			>> flightsArray[count].seatsFirst
+			>> flightsArray[count].priceEco
+			>> flightsArray[count].priceBus
+			>> flightsArray[count].priceFirst
 			>> flightsArray[count].refund
 			) {
 			count++;
@@ -466,22 +467,26 @@ void createFlightsFile() {
 	else {
 		//Format I am using
 		//ID ORIGIN DESTINATION DEPARTURE ARRIVAL EcoPRICE BusPRICE FirstPRICE EcoSEATS BusSEATS FirstSEATS
-		creatingFlightsFile << "PK-101 Lahore Istanbul 12Dec-08:00AM 12Dec-02:00PM 150000 450000 900000 60 20 8 15" << std::endl;
-		creatingFlightsFile << "PK-102 Karachi Dubai 13Dec-10:00AM 13Dec-01:00PM 80000 160000 300000 50 30 5 25" << std::endl;
-		creatingFlightsFile << "PK-205 Islamabad London 14Dec-03:00AM 14Dec-01:00PM 280000 600000 1200000 100 25 10 0" << std::endl;
-		creatingFlightsFile << "PK-050 Lahore Karachi 15Dec-06:00PM 15Dec-08:00PM 25000 55000 0 120 15 0 100" << std::endl;
-		creatingFlightsFile << "PK-301 Islamabad Jeddah 16Dec-05:00AM 16Dec-09:00AM 190000 400000 750000 80 20 10 50" << std::endl;
-		creatingFlightsFile << "PK-404 Peshawar Doha 17Dec-11:00PM 18Dec-02:00AM 110000 250000 500000 60 15 5 75" << std::endl;
-		creatingFlightsFile << "PK-701 Karachi New_York 19Dec-02:00AM 19Dec-06:00PM 350000 850000 1800000 150 40 12 30" << std::endl;
-		creatingFlightsFile << "PK-010 Lahore Islamabad 20Dec-09:00AM 20Dec-10:00AM 18000 35000 0 40 10 0 90" << std::endl;
-		creatingFlightsFile << "PK-110 Sialkot Dubai 21Dec-04:00PM 21Dec-07:00PM 85000 170000 320000 55 20 0 10" << std::endl;
-		creatingFlightsFile << "PK-555 Islamabad Beijing 22Dec-07:00AM 22Dec-03:00PM 220000 480000 800000 70 20 6 0" << std::endl;
+		creatingFlightsFile << "PK-101 Lahore Istanbul 12Dec-08:00AM 12Dec-02:00PM 60 20 8 150000 450000 900000 15" << std::endl;
+		creatingFlightsFile << "PK-102 Karachi Dubai 13Dec-10:00AM 13Dec-01:00PM 50 30 5 80000 160000 300000 25" << std::endl;
+		creatingFlightsFile << "PK-205 Islamabad London 14Dec-03:00AM 14Dec-01:00PM 100 25 10 280000 600000 1200000 0" << std::endl;
+		creatingFlightsFile << "PK-050 Lahore Karachi 15Dec-06:00PM 15Dec-08:00PM 120 15 0 25000 55000 0 100" << std::endl;
+		creatingFlightsFile << "PK-301 Islamabad Jeddah 16Dec-05:00AM 16Dec-09:00AM 80 20 10 190000 400000 750000 50" << std::endl;
+		creatingFlightsFile << "PK-404 Peshawar Doha 17Dec-11:00PM 18Dec-02:00AM 60 15 5 110000 250000 500000 75" << std::endl;
+		creatingFlightsFile << "PK-701 Karachi New_York 19Dec-02:00AM 19Dec-06:00PM 150 40 12 350000 850000 1800000 30" << std::endl;
+		creatingFlightsFile << "PK-010 Lahore Islamabad 20Dec-09:00AM 20Dec-10:00AM 40 10 0 18000 35000 0 90" << std::endl;
+		creatingFlightsFile << "PK-110 Sialkot Dubai 21Dec-04:00PM 21Dec-07:00PM 55 20 0 85000 170000 320000 10" << std::endl;
+		creatingFlightsFile << "PK-555 Islamabad Beijing 22Dec-07:00AM 22Dec-03:00PM 70 20 6 220000 480000 800000 0" << std::endl;
 		std::cout << "File created Successfully!";
 		creatingFlightsFile.close();
 	}
 }
 
-void updateFlightsFile(Flight arr[], int size, std::string flightID, int seats, std::string clasS) {
+void updateFlightsFile(int size, std::string flightID, int seats, std::string clasS) {
+
+	Flight* arr = nullptr;
+	arr = loadFlights(size);
+
 	if (size <= 0) {
 		printError("[ERROR]: Flight list is empty. Cannot update file.\n");
 		return;
@@ -519,17 +524,17 @@ void updateFlightsFile(Flight arr[], int size, std::string flightID, int seats, 
 				<< " "
 				<< arr[i].arrTime
 				<< " "
-				<< arr[i].priceEco
-				<< " "
-				<< arr[i].priceBus
-				<< " "
-				<< arr[i].priceFirst
-				<< " "
 				<< arr[i].seatsEco
 				<< " "
 				<< arr[i].seatsBus
 				<< " "
 				<< arr[i].seatsFirst
+				<< " "
+				<< arr[i].priceEco
+				<< " "
+				<< arr[i].priceBus
+				<< " "
+				<< arr[i].priceFirst
 				<< " "
 				<< arr[i].refund
 				<< "\n";
@@ -537,6 +542,8 @@ void updateFlightsFile(Flight arr[], int size, std::string flightID, int seats, 
 
 		saveFlightsFile.close();
 	}
+
+	delete[] arr;
 }
 
 SelectedFlight* loadBookings(int& size) {

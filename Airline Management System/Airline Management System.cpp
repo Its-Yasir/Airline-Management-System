@@ -59,6 +59,8 @@ int main()
 
                 switch (userChoice) {
                     case 1: 
+						if (availableFlight != nullptr) delete[] availableFlight;
+						availableFlight = loadFlights(totalFlight);
                         sec = bookFlights(availableFlight, totalFlight, userID, userBalances, totalUsersWithBalance, totalFlight ); 
                         if (sec.id != "0") {
                             saveBookingToFile(sec, userID);
@@ -75,7 +77,6 @@ int main()
                         cancelReservations(bookingsForUser, noOfBookingsForCurrentUser, userID);
                         if (availableFlight != nullptr) delete[] availableFlight;
                         availableFlight = loadFlights(totalFlight);
-                        if (availableFlight != nullptr) delete[] availableFlight;
                         userBalances = loadBalanceForUsers(totalUsersWithBalance);
                         (void)_getch();
                         break;
@@ -105,7 +106,7 @@ int main()
                 case 1: manageUsers(totalUsersWithBalance, myUsers, totalUsers, userBalances, availableFlight, totalFlight, bookingsForUser ); (void)_getch(); break;
                 case 2: manageFlights(availableFlight, totalFlight, allBookings, totalBookings  ); (void)_getch(); break;
                 case 3: viewReservationReportsAdmin(myUsers, userBalances, totalUsers); (void)_getch(); break;
-                case 4: viewAnalytics(totalFlight, totalBookings, myUsers, allBookings, totalUsers); (void)_getch(); break;
+                case 4: viewAnalytics(totalFlight, totalBookings, myUsers, totalUsers); (void)_getch(); break;
                 case 5: changePassword(loggedInAdmin, Admins, totalAdmins); (void)_getch(); break;
                 }
             }
