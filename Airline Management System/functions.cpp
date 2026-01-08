@@ -1,9 +1,11 @@
 ﻿#include <stdlib.h>
 #include <iomanip>
+#include <iostream>
+#include <thread>
+#include <chrono>
 
 #include "functions.h"
 #include "models.h"
-
 
 UserBalance* loadBalanceForUsers(int& size) {
 	size = 0;
@@ -31,11 +33,6 @@ UserBalance* loadBalanceForUsers(int& size) {
 	}
 }
 
-#include <iostream>
-#include <thread> // For sleep_for
-#include <chrono> // For seconds/milliseconds
-
-// Function to show a simple loading animation
 void showLoading(std::string message) {
 	std::cout << "\n";
 
@@ -68,7 +65,7 @@ int getValidInteger(int min, int max, bool& valid) {
 		}
 		else {
 			std::cin.clear();
-			std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+			std::cin.ignore(1000, '\n');
 			printError("[INVALID_INPUT] Please enter a number.");
 			valid = false;
 		}
@@ -311,6 +308,7 @@ void updateFlightFile(std::string flightId, std::string clasS, int seats) {
 	std::ifstream updateFlightsFile("database/flights.txt");
 	if (!updateFlightsFile.is_open()) {
 		printError("[ERROR]: While opening flights file!\n");
+		return;
 	}
 	else {
 		std::string line;
@@ -379,6 +377,7 @@ void updateFlightFile(std::string flightId, std::string clasS, int seats) {
 		saveUpdatedFlightsFile.close();
 	}
 
+	delete[] flightsArray;
 }
 
 void printError(std::string message) {

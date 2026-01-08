@@ -1439,7 +1439,7 @@ UsersDetails getAllInputsForNewUser(UsersDetails newUserDetails, int detailsTake
 				}
 			}else{
 				std::cin.clear();
-				std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+				std::cin.ignore(1000, '\n');
 				errorMessage = "[ERROR]: Balance must be a numeric value!\n";
 				isValid = false;
 			}
@@ -1668,6 +1668,54 @@ void deleteUser(
 	}
 	
 	delete[] allUserDetails;
+
+	int bookingsSize = 0;
+	SelectedFlight* bookings = loadBookings(bookingsSize);
+	if (bookingsSize > 0) {
+		SelectedFlight* tempBookingsArr = nullptr;
+		int noOfBookingsFound = 0;
+		for(int i = 0; i < bookingsSize; i++) {
+			if(bookings[i].userId == userId) {
+				noOfBookingsFound++;
+			}
+		}
+
+		if (noOfBookingsFound > 0) {
+			tempBookingsArr = new SelectedFlight[bookingsSize - noOfBookingsFound];
+			for (int i = 0, j = 0; i < bookingsSize; i++) {
+				if (!(bookings[i].userId == userId)) {
+					tempBookingsArr[j] = bookings[i];
+					j++;
+				}
+			}
+
+			std::ofstream updateBookingsFileUserDel("database/bookings.txt");
+			if (!updateBookingsFileUserDel.is_open()) {
+				printError("There was an error while updating bookings file after user deletion.\n");
+			}
+			else {
+				for (int i = 0; i < bookingsSize - noOfBookingsFound; i++) {
+					updateBookingsFileUserDel <<
+						tempBookingsArr[i].userId << " "
+						<< tempBookingsArr[i].id << " "
+						<< tempBookingsArr[i].origin << " "
+						<< tempBookingsArr[i].destination << " "
+						<< tempBookingsArr[i].depTime << " "
+						<< tempBookingsArr[i].arrTime << " "
+						<< tempBookingsArr[i].classSelected << " "
+						<< tempBookingsArr[i].price << " "
+						<< tempBookingsArr[i].refund << " "
+						<< tempBookingsArr[i].seats << "\n";
+				}
+				updateBookingsFileUserDel.close();
+				printSuccess("Bookings file has been updated after user deletion!\n");
+			}
+		}
+
+		delete[] tempBookingsArr;
+	}
+	delete[] bookings;
+
 }
 
 //Function to remove a user

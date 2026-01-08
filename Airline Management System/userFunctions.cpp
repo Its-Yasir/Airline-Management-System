@@ -335,7 +335,6 @@ bool handleFinalBookFlight(SelectedFlight sec, std::string userId, UserBalance* 
 				DeductBalanceForUser(userId, sec.price, arr, size, isAmountOk);
 				if (isAmountOk) {
 					SaveBalanceForUsers(arr, size);
-					updateFlightsFile(flightArr, flightSize, sec.id, sec.seats, sec.classSelected);
 					return true;
 				}
 				else {
